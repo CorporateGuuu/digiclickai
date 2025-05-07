@@ -1,0 +1,33 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18.17.0"
+  NPM_VERSION = "9.6.7"
+  NETLIFY_USE_PYTHON = "false"
+  SITE_NAME = "Digiclick Website"
+
+# These redirects are crucial for a Next.js application
+[[redirects]]
+  from = "/_next/static/*"
+  to = "/_next/static/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/_next/data/*"
+  to = "/_next/data/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/_next/image*"
+  to = "/_next/image:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

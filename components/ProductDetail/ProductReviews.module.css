@@ -1,0 +1,189 @@
+.productReviews {
+  margin-top: 3rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.averageRating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ratingValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.stars {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.starFilled {
+  color: #f59e0b;
+}
+
+.starEmpty {
+  color: #e5e7eb;
+}
+
+.reviewCount {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.writeReviewButton {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.writeReviewButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.reviewForm {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.reviewForm h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+.ratingSelector {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.ratingStar {
+  color: #e5e7eb;
+  transition: color 0.2s ease;
+  margin-right: 0.25rem;
+}
+
+.ratingStar:hover,
+.ratingStar:hover ~ .ratingStar {
+  color: #f59e0b;
+}
+
+.submitButton {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.review:last-child {
+  border-bottom: none;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.reviewAuthor {
+  font-weight: 600;
+  color: #111827;
+}
+
+.reviewDate {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.reviewRating {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.verifiedBadge {
+  margin-left: 0.75rem;
+  font-size: 0.75rem;
+  background-color: #ecfdf5;
+  color: #047857;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.reviewTitle {
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem;
+}
+
+.reviewContent {
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0;
+}

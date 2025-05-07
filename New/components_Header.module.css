@@ -1,0 +1,46 @@
+.topBanner {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+}
+
+.topBanner a {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+.mainHeader {
+  background: linear-gradient(to right, #1a1a1a, #333);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.search {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-right: 20px;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav a {
+  color: #fff;
+  text-decoration: none;
+}

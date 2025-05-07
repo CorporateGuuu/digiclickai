@@ -1,0 +1,124 @@
+.categoriesContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.categoriesHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.categoriesHeader h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.categoriesHeader p {
+  font-size: 1.1rem;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.categoryCard {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+}
+
+.categoryCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.categoryImageContainer {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.categoryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.categoryCard:hover .categoryImage {
+  transform: scale(1.05);
+}
+
+.categoryContent {
+  padding: 1.5rem;
+}
+
+.categoryTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.categoryDescription {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.productCount {
+  font-size: 0.9rem;
+  color: #718096;
+  margin-bottom: 1.5rem;
+}
+
+.viewProductsButton {
+  display: inline-block;
+  background-color: #0066cc;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.viewProductsButton:hover {
+  background-color: #0055aa;
+}
+
+.emptyCategories {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.emptyCategories p {
+  font-size: 1.1rem;
+  color: #718096;
+}
+
+@media (max-width: 768px) {
+  .categoriesHeader h1 {
+    font-size: 2rem;
+  }
+
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .categoryImageContainer {
+    height: 180px;
+  }
+}

@@ -1,0 +1,437 @@
+.marketplaceContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.marketplaceTitle {
+  font-size: 1.8rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.marketplaceTabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.marketplaceTabs::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Edge */
+}
+
+.tabButton {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tabButton:hover {
+  color: #0066cc;
+}
+
+.activeTab {
+  color: #0066cc;
+  border-bottom-color: #0066cc;
+}
+
+.marketplaceContent {
+  min-height: 300px;
+}
+
+.marketplaceCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.marketplaceCard {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marketplaceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.marketplaceCardHeader {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.marketplaceCardHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.marketplaceLogo {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.marketplaceCardBody {
+  padding: 15px;
+}
+
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.statusIndicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.connected {
+  background-color: #4caf50;
+}
+
+.disconnected {
+  background-color: #f44336;
+}
+
+.marketplaceStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.statValue {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.marketplaceButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.marketplaceButton:hover {
+  background-color: #0052a3;
+}
+
+.marketplaceSummary {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.marketplaceSummary h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.summaryStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.summaryStatItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.summaryStatLabel {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.summaryStatValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0066cc;
+}
+
+.comingSoon {
+  text-align: center;
+  padding: 50px 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* 4seller Integration Styles */
+.fourSellerContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+.fourSellerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.fourSellerLogo {
+  display: flex;
+  align-items: center;
+}
+
+.fourSellerLogoImg {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.fourSellerContent {
+  padding: 20px;
+}
+
+.connectionForm {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.connectButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.connectButton:hover {
+  background-color: #0052a3;
+}
+
+.connectButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.syncInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.lastSync {
+  display: flex;
+  flex-direction: column;
+}
+
+.syncLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.syncValue {
+  font-weight: 500;
+  color: #333;
+}
+
+.syncButton {
+  padding: 8px 15px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.syncButton:hover {
+  background-color: #0052a3;
+}
+
+.syncButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.inventoryStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.statCard {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 15px;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #0066cc;
+  margin-bottom: 5px;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.viewInventoryButton {
+  flex: 1;
+  padding: 10px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.viewInventoryButton:hover {
+  background-color: #0052a3;
+}
+
+.disconnectButton {
+  padding: 10px 15px;
+  background-color: transparent;
+  color: #e53e3e;
+  border: 1px solid #e53e3e;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.disconnectButton:hover {
+  background-color: #e53e3e;
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .marketplaceCards {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplaceStats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .summaryStats {
+    grid-template-columns: 1fr;
+  }
+
+  .inventoryStats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .inventoryStats {
+    grid-template-columns: 1fr;
+  }
+
+  .syncInfo {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}

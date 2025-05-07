@@ -1,0 +1,181 @@
+/* ProductList.module.css */
+.productList {
+  background-color: black;
+  color: white;
+  padding: 60px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.categories {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.categoryButton {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #444;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.categoryButton:hover {
+  background-color: #333;
+}
+
+.categoryButton.active {
+  background-color: #0066cc;
+  border-color: #0066cc;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.product {
+  background-color: #111;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.product:hover {
+  transform: translateY(-5px);
+}
+
+.imageContainer {
+  height: 200px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.product:hover .image {
+  transform: scale(1.05);
+}
+
+.content {
+  padding: 20px;
+}
+
+.category {
+  color: #0066cc;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.addToCart {
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  width: 100%;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.addToCart:hover {
+  background-color: #e62e2e;
+}
+
+.viewMore {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.viewMoreLink {
+  display: inline-block;
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.viewMoreLink:hover {
+  background-color: white;
+  color: black;
+}
+
+@media (max-width: 768px) {
+  .productList {
+    padding: 40px 15px;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .products {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .categories {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .categoryButton {
+    width: 100%;
+    max-width: 300px;
+  }
+}

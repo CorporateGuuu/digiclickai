@@ -1,0 +1,52 @@
+<div style="max-width: 400px; margin: 0 auto;">
+  <h1>Register</h1>
+  
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-danger">
+      <%= error %>
+    </div>
+  <% } %>
+  
+  <div class="card">
+    <div class="card-body">
+      <form action="/register" method="post">
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirm_password" class="form-label">Confirm Password</label>
+          <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="first_name" class="form-label">First Name</label>
+          <input type="text" name="first_name" id="first_name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" name="last_name" id="last_name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone (optional)</label>
+          <input type="tel" name="phone" id="phone" class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer">
+      <p class="mb-0">Already have an account? <a href="/login">Login</a></p>
+    </div>
+  </div>
+</div>

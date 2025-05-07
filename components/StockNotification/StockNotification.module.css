@@ -1,0 +1,115 @@
+.stockNotification {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.form {
+  margin-bottom: 0.75rem;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.emailInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.emailInput:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+}
+
+.emailInput.hasError {
+  border-color: #ef4444;
+}
+
+.submitButton {
+  padding: 0.75rem 1rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #0055aa;
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.privacyNote {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #dcfce7;
+  border-radius: 0.375rem;
+  color: #16a34a;
+}
+
+.successMessage svg {
+  flex-shrink: 0;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .inputGroup {
+    flex-direction: column;
+  }
+  
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

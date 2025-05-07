@@ -1,0 +1,416 @@
+.inventoryManagement {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  margin-bottom: 24px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 16px;
+}
+
+.sectionHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.sectionDescription {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.inventoryActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.inventoryFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1;
+}
+
+.searchBox {
+  flex: 1;
+  min-width: 250px;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.filterBox select,
+.sortBox select {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
+.sortBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortOrderButton {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.inventoryButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.addButton,
+.importButton,
+.exportButton,
+.syncButton {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addButton {
+  background-color: #0066cc;
+  color: white;
+}
+
+.importButton,
+.exportButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.syncButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.inventoryTable th {
+  background-color: #f5f5f5;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.inventoryTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.inventoryTable tr:last-child td {
+  border-bottom: none;
+}
+
+.inventoryTable tr:hover td {
+  background-color: #f9f9f9;
+}
+
+.productCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.productImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productName {
+  font-weight: 500;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.inStock {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.outOfStock {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.lowStock {
+  color: #ff9800;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: none;
+}
+
+.editButton {
+  background-color: #e3f2fd;
+  color: #0066cc;
+}
+
+.deleteButton {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.syncPlatformsContainer {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.syncPlatformsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.syncPlatformsButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.platformButton {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: white;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.platformButton:hover {
+  background-color: #f5f5f5;
+}
+
+.noResults {
+  text-align: center;
+  padding: 24px;
+  color: #666;
+}
+
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #0066cc;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.formInput,
+.formTextarea,
+.formSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modalFooter {
+  padding: 16px 24px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelButton {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.submitButton {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .inventoryActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .inventoryFilters {
+    flex-direction: column;
+  }
+  
+  .inventoryButtons {
+    justify-content: space-between;
+  }
+  
+  .inventoryTable {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,122 @@
+.priceRangeSlider {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.sliderContainer {
+  position: relative;
+  height: 6px;
+  margin: 0 10px;
+}
+
+.sliderTrack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+}
+
+.sliderRange {
+  position: absolute;
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+.sliderThumb {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  appearance: none;
+  pointer-events: none;
+  outline: none;
+  z-index: 2;
+}
+
+.sliderThumb::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background-color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.2s ease;
+}
+
+.sliderThumb::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background-color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.2s ease;
+}
+
+.sliderThumb::-webkit-slider-thumb:hover,
+.sliderThumb::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+  background-color: var(--primary-color);
+  border-color: white;
+}
+
+.sliderThumb::-moz-range-thumb:hover,
+.sliderThumb::-moz-range-thumb:active {
+  transform: scale(1.2);
+  background-color: var(--primary-color);
+  border-color: white;
+}
+
+.priceInputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.priceInput {
+  flex: 1;
+}
+
+.priceInput label {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.inputWithPrefix {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.inputWithPrefix span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-size: 0.875rem;
+  border-right: 1px solid #e5e7eb;
+}
+
+.inputWithPrefix input {
+  flex: 1;
+  border: none;
+  padding: 0.5rem;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.inputWithPrefix input:focus {
+  outline: none;
+}

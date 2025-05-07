@@ -1,0 +1,504 @@
+.deviceSystemHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: linear-gradient(to right, #f0f4f8, #e6f0f9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.deviceSystemHeader h1 {
+  font-size: 2.25rem;
+  margin-bottom: 0.75rem;
+  color: #0066cc;
+}
+
+.deviceSystemHeader p {
+  max-width: 800px;
+  margin: 0 auto;
+  color: #4a5568;
+  font-size: 1.1rem;
+}
+
+.deviceSystemFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filterGroup label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.filterGroup input[type="text"],
+.filterGroup select {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #2d3748;
+  background-color: white;
+}
+
+.filterGroup input[type="text"]:focus,
+.filterGroup select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-top: 1.75rem;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #0066cc;
+}
+
+.deviceSystemResults {
+  margin-bottom: 3rem;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.resultsHeader h2 {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+.downloadSection {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.downloadButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.downloadButton:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+  color: #2d3748;
+}
+
+.downloadButton svg {
+  color: #0066cc;
+}
+
+.deviceGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .deviceGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .deviceGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.deviceCard {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #edf2f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.deviceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+}
+
+.deviceImageContainer {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(to bottom right, #f7fafc, #edf2f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.deviceImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.deviceCard:hover .deviceImage {
+  transform: scale(1.08);
+}
+
+.conditionBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.conditionA {
+  background-color: #48bb78;
+}
+
+.conditionB {
+  background-color: #4299e1;
+}
+
+.conditionC {
+  background-color: #ecc94b;
+}
+
+.conditionD {
+  background-color: #f56565;
+}
+
+.outOfStockBadge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+.deviceContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.deviceCategory {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.deviceName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.4;
+  color: #1a202c;
+}
+
+.deviceSpecs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.specItem {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+}
+
+.specLabel {
+  color: #6b7280;
+  text-transform: capitalize;
+  margin-bottom: 0.25rem;
+}
+
+.specValue {
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.deviceFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+}
+
+.devicePrice {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0066cc;
+}
+
+.deviceStock {
+  font-size: 0.875rem;
+}
+
+.inStock {
+  color: #48bb78;
+  font-weight: 500;
+}
+
+.outOfStock {
+  color: #f56565;
+  font-weight: 500;
+}
+
+.deviceActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.detailsButton {
+  flex: 1;
+  background-color: white;
+  color: #0066cc;
+  border: 2px solid #0066cc;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.detailsButton:hover {
+  background-color: #f0f7ff;
+}
+
+.orderButton {
+  flex: 1;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.orderButton:hover {
+  background-color: #0052a3;
+}
+
+.orderButton:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.noResults {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  color: #4a5568;
+}
+
+.noResults svg {
+  color: #cbd5e0;
+  margin-bottom: 1.5rem;
+}
+
+.noResults h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #1a202c;
+}
+
+.noResults p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.resetButton {
+  display: inline-block;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resetButton:hover {
+  background-color: #0052a3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 102, 204, 0.3);
+}
+
+.deviceSystemInfo {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.deviceSystemInfo h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
+
+.deviceSystemInfo p {
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.gradingLegend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gradingItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gradeBadge {
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.learnMoreLink {
+  display: inline-block;
+  color: #0066cc;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.learnMoreLink:hover {
+  color: #0052a3;
+  text-decoration: underline;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #0066cc;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 3rem;
+  background-color: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+  color: #c53030;
+  margin: 2rem 0;
+}
+
+.errorContainer h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.retryButton:hover {
+  background-color: #0052a3;
+}

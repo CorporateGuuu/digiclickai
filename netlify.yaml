@@ -1,0 +1,23 @@
+build:
+  command: npm run build
+  publish: .next
+  environment:
+    NODE_VERSION: 18.17.0
+    NPM_VERSION: 9.6.7
+    NETLIFY_USE_PYTHON: "false"
+    PYTHON_VERSION: "3.9"
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    PIP_NO_PYTHON_VERSION_WARNING: "1"
+    PIP_NO_WARN_SCRIPT_LOCATION: "0"
+    PIP_NO_CACHE_DIR: "off"
+    PIP_NO_DEPS: "1"
+    PIP_NO_INSTALL: "1"
+    PIP_NO_COMPILE: "1"
+
+plugins:
+  - package: "@netlify/plugin-nextjs"
+
+redirects:
+  - from: "/*"
+    to: "/index.html"
+    status: 200

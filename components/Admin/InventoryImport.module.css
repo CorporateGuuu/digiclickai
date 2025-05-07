@@ -1,0 +1,466 @@
+.importContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.importHeader {
+  margin-bottom: 24px;
+}
+
+.importHeader h2 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.importHeader p {
+  margin: 0;
+  color: #666;
+}
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.step.active .stepNumber {
+  background-color: #0066cc;
+  color: white;
+}
+
+.stepLabel {
+  font-size: 0.875rem;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.step.active .stepLabel {
+  color: #0066cc;
+  font-weight: 500;
+}
+
+.stepConnector {
+  flex: 1;
+  height: 2px;
+  background-color: #f0f0f0;
+  margin: 0 16px;
+  position: relative;
+  top: -12px;
+}
+
+.importContent {
+  margin-bottom: 24px;
+  min-height: 300px;
+}
+
+.uploadStep, .mappingStep, .confirmationStep {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sourceSelector {
+  margin-bottom: 24px;
+}
+
+.sourceSelector h3 {
+  margin: 0 0 16px;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.sourceOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.sourceOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sourceOption:hover {
+  border-color: #0066cc;
+  background-color: #f9f9f9;
+}
+
+.sourceOption.selected {
+  border-color: #0066cc;
+  background-color: #f0f7ff;
+}
+
+.sourceOption input {
+  position: absolute;
+  opacity: 0;
+}
+
+.sourceIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.sourceOption.selected .sourceIcon {
+  background-color: #0066cc;
+  color: white;
+}
+
+.sourceInfo h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.sourceInfo p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.fileUpload {
+  margin-bottom: 24px;
+}
+
+.fileUpload h3 {
+  margin: 0 0 16px;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.uploadArea {
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.uploadArea:hover {
+  border-color: #0066cc;
+  background-color: #f9f9f9;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.fileLabel svg {
+  color: #0066cc;
+  width: 48px;
+  height: 48px;
+}
+
+.fileLabel span {
+  font-size: 1rem;
+  color: #333;
+}
+
+.fileHint {
+  margin: 16px 0 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.filePreview {
+  margin-top: 24px;
+  animation: fadeIn 0.3s ease;
+}
+
+.filePreview h3 {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.filePreview p {
+  margin: 0 0 16px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.previewTable {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.previewHeader {
+  display: flex;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.previewRow {
+  display: flex;
+}
+
+.previewCell {
+  flex: 1;
+  padding: 12px;
+  border-right: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previewCell:last-child {
+  border-right: none;
+}
+
+.mappingTable {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mappingHeader {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+}
+
+.mappingRow {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mappingRow:last-child {
+  border-bottom: none;
+}
+
+.mappingField, .mappingSource, .mappingPreview {
+  padding: 12px;
+  font-size: 0.875rem;
+}
+
+.mappingField {
+  font-weight: 500;
+}
+
+.mappingSource select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.mappingPreview {
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.confirmationStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.uploadProgress {
+  width: 100%;
+  max-width: 400px;
+}
+
+.progressBar {
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #0066cc;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.uploadResult {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 500px;
+}
+
+.uploadResult.success {
+  background-color: #f0f7ff;
+  color: #0066cc;
+}
+
+.uploadResult.error {
+  background-color: #fff0f0;
+  color: #cc0000;
+}
+
+.resultIcon {
+  margin-bottom: 16px;
+}
+
+.uploadResult h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.uploadResult p {
+  margin: 0 0 16px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.importStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.statItem {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.importActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.backButton, .nextButton {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
+
+.nextButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+}
+
+.nextButton:hover {
+  background-color: #0052a3;
+}
+
+.backButton:disabled, .nextButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .sourceOptions {
+    grid-template-columns: 1fr;
+  }
+  
+  .mappingHeader, .mappingRow {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .mappingPreview {
+    display: none;
+  }
+  
+  .importStats {
+    grid-template-columns: 1fr;
+  }
+}

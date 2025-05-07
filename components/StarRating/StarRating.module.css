@@ -1,0 +1,56 @@
+.starRating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  color: #d1d5db;
+}
+
+.star.interactive {
+  cursor: pointer;
+}
+
+.star.small {
+  width: 16px;
+  height: 16px;
+}
+
+.star.medium {
+  width: 20px;
+  height: 20px;
+}
+
+.star.large {
+  width: 24px;
+  height: 24px;
+}
+
+.emptyStar {
+  width: 100%;
+  height: 100%;
+}
+
+.fillContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  color: #fbbf24;
+}
+
+.filledStar {
+  width: 100%;
+  height: 100%;
+}
+
+.ratingText {
+  margin-left: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f0f0f0"/>
+  <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" dominant-baseline="middle" fill="#666">
+    Soldering Kit
+  </text>
+  <rect x="300" y="250" width="200" height="30" fill="#ddd" stroke="#999" stroke-width="2"/>
+  <path d="M350,250 L300,200 L300,180" fill="none" stroke="#999" stroke-width="5"/>
+  <circle cx="300" cy="170" r="10" fill="#ddd" stroke="#999" stroke-width="2"/>
+  <rect x="350" y="300" width="100" height="100" fill="#ddd" stroke="#999" stroke-width="2"/>
+  <circle cx="400" cy="350" r="30" fill="#ccc" stroke="#999" stroke-width="2"/>
+</svg>

@@ -1,0 +1,236 @@
+.landingNav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 20px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Search Bar Styles */
+.searchBar {
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchBar form {
+  display: flex;
+  position: relative;
+}
+
+.searchBar input {
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  border: none;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 14px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.searchBar input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.searchBar input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.searchBar button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navLinks {
+  display: flex;
+  gap: 30px;
+  flex-shrink: 0;
+}
+
+.navLinks a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.navLinks a:hover {
+  opacity: 0.8;
+}
+
+.signInLink {
+  padding: 8px 16px;
+  border: 2px solid white;
+  border-radius: 4px;
+}
+
+.signInLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 24px;
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.mobileMenuButton span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: white;
+  margin: 5px 0;
+  transition: transform 0.3s ease;
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100vh;
+  background-color: white;
+  z-index: 100;
+  transition: right 0.3s ease;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  padding: 60px 30px 30px;
+}
+
+.mobileMenu.open {
+  right: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+.mobileSearchBar {
+  margin-bottom: 20px;
+}
+
+.mobileSearchBar form {
+  display: flex;
+  position: relative;
+}
+
+.mobileSearchBar input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: 1px solid #eee;
+  border-radius: 30px;
+  font-size: 14px;
+}
+
+.mobileSearchBar input:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.mobileSearchBar button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileMenuLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobileMenuLinks a {
+  color: #333;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+@media (max-width: 1024px) {
+  .searchBar {
+    max-width: 300px;
+  }
+
+  .navLinks {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+
+  .searchBar {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .container {
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,263 @@
+import asyncio
+import aiohttp
+from bs4 import BeautifulSoup
+import pandas as pd
+from urllib.parse import urljoin
+import re
+import logging
+from typing import Dict, List
+import platform
+from woocommerce import API as WooCommerceAPI
+import shopify
+import random
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class MobileSentrixScraper:
+    def __init__(self):
+        self.base_url = "https://www.mobilesentrix.com/"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+        }
+        self.products_data = []
+        self.max_pages_per_category = 2  # Limited for demo
+        self.rate_limit_delay = 1.0
+
+    async def fetch_page(self, session: aiohttp.ClientSession, url: str) -> str:
+        try:
+            async with session.get(url, headers=self.headers) as response:
+                if response.status == 200:
+                    return await response.text()
+                logger.error(f"Failed to fetch {url}: Status {response.status}")
+                return None
+        except Exception as e:
+            logger.error(f"Error fetching {url}: {e}")
+            return None
+
+    async def get_category_links(self, session: aiohttp.ClientSession) -> List[str]:
+        homepage = await self.fetch_page(session, self.base_url)
+        if not homepage:
+            return []
+        soup = BeautifulSoup(homepage, 'html.parser')
+        category_links = []
+        nav_menu = soup.select("ul.nav-menu li.nav-item a")
+        for link in nav_menu:
+            href = link.get('href', '')
+            if href and not href.startswith('#') and 'category' in href.lower():
+                category_links.append(urljoin(self.base_url, href))
+        logger.info(f"Found {len(category_links)} category links")
+        return list(set(category_links))
+
+    async def scrape_category(self, session: aiohttp.ClientSession, category_url: str):
+        page = 1
+        while page <= self.max_pages_per_category:
+            page_url = f"{category_url}?page={page}" if page > 1 else category_url
+            html = await self.fetch_page(session, page_url)
+            if not html:
+                break
+            soup = BeautifulSoup(html, 'html.parser')
+            products = soup.select("div.product-card")
+            if not products:
+                break
+            for product in products:
+                product_data = await self.parse_product(product, session)
+                if product_data:
+                    self.products_data.append(product_data)
+            page += 1
+            await asyncio.sleep(self.rate_limit_delay)
+
+    async def parse_product(self, product: BeautifulSoup, session: aiohttp.ClientSession) -> Dict:
+        try:
+            name_elem = product.select_one("h2.product-title a")
+            name = name_elem.get_text(strip=True) if name_elem else "N/A"
+            product_url = urljoin(self.base_url, name_elem['href']) if name_elem else None
+            price_elem = product.select_one("span.price--main")
+            price = price_elem.get_text(strip=True) if price_elem else "N/A"
+            price = float(re.sub(r'[^\d.]', '', price)) if price != "N/A" else None
+            img_elem = product.select_one("img.product-img")
+            img_url = urljoin(self.base_url, img_elem['src']) if img_elem else None
+            specs = "N/A"
+            if product_url:
+                product_html = await self.fetch_page(session, product_url)
+                if product_html:
+                    product_soup = BeautifulSoup(product_html, 'html.parser')
+                    specs_elem = product_soup.select_one("div.product-description")
+                    specs = specs_elem.get_text(strip=True) if specs_elem else "N/A"
+            return {
+                "name": name,
+                "price": price,
+                "image_url": img_url,
+                "specifications": specs,
+                "product_url": product_url,
+                "category": "Screens"  # Simplified; infer from URL in production
+            }
+        except Exception as e:
+            logger.error(f"Error parsing product: {e}")
+            return None
+
+    def add_variants(self, product: Dict) -> List[Dict]:
+        # Simulate variants (e.g., colors). In production, parse from product page
+        colors = ["Black", "White"]
+        variant_products = []
+        for color in colors:
+            variant = product.copy()
+            variant["variant_attribute"] = "Color"
+            variant["variant_value"] = color
+            variant["sku"] = f"MS-{''.join(word[0].upper() for word in product['name'].split()[:3])}-{color[:2].upper()}"
+            variant["price"] = product["price"] + (2.0 if color == "White" else 0.0)  # Example: White costs more
+            variant["stock"] = random.randint(20, 100)
+            variant["weight"] = 0.2
+            variant_products.append(variant)
+        return variant_products
+
+    async def prepare_csv(self, filename: str = "mobilesentrix_products.csv"):
+        if not self.products_data:
+            # Generate sample data if no scraped data
+            self.products_data = [
+                {
+                    "name": "iPhone 14 LCD Screen Replacement",
+                    "price": 79.99,
+                    "image_url": "https://mobilesentrix.com/images/iphone14.jpg",
+                    "specifications": "OLED display, fits iPhone 14",
+                    "product_url": "https://mobilesentrix.com/iphone14-screen",
+                    "category": "Screens"
+                },
+                {
+                    "name": "Samsung Galaxy S22 Battery Replacement",
+                    "price": 24.95,
+                    "image_url": "https://mobilesentrix.com/images/s22battery.jpg",
+                    "specifications": "4000mAh Li-Ion battery",
+                    "product_url": "https://mobilesentrix.com/s22-battery",
+                    "category": "Batteries"
+                }
+            ]
+        # Add variants and format for WooCommerce/Shopify
+        variant_data = []
+        for product in self.products_data:
+            variants = self.add_variants(product)
+            for variant in variants:
+                variant_data.append({
+                    "SKU": variant["sku"],
+                    "Title": product["name"],
+                    "Price": variant["price"],
+                    "Description": variant["specifications"],
+                    "Image_URL": variant["image_url"],
+                    "Category": product["category"],
+                    "Brand": "Apple" if "iPhone" in product["name"] else "Samsung",
+                    "Compatibility": product["name"].split()[0],  # e.g., iPhone
+                    "Stock": variant["stock"],
+                    "Weight": variant["weight"],
+                    "Type": "variable" if len(variants) > 1 else "simple",
+                    "Published": "1",
+                    "Handle": product["name"].lower().replace(" ", "-"),
+                    "Variant_Attribute": variant["variant_attribute"],
+                    "Variant_Value": variant["variant_value"]
+                })
+        df = pd.DataFrame(variant_data)
+        df.to_csv(filename, index=False, encoding="utf-8")
+        logger.info(f"Saved {len(df)} products to {filename}")
+        return filename
+
+    async def upload_to_woocommerce(self, csv_file: str):
+        try:
+            wcapi = WooCommerceAPI(
+                url="https://your-site.com",  # Replace with your site URL
+                consumer_key="ck_xxxxxxxxxxxxxxxx",  # Replace
+                consumer_secret="cs_xxxxxxxxxxxxxxxx",  # Replace
+                version="wc/v3"
+            )
+            df = pd.read_csv(csv_file)
+            grouped = df.groupby("Title")
+            for title, group in grouped:
+                product = {
+                    "name": title,
+                    "type": group["Type"].iloc[0],
+                    "regular_price": str(group["Price"].iloc[0]),
+                    "description": group["Description"].iloc[0],
+                    "categories": [{"name": group["Category"].iloc[0]}],
+                    "images": [{"src": group["Image_URL"].iloc[0]}] if group["Image_URL"].iloc[0] else [],
+                    "status": "publish",
+                    "attributes": [
+                        {
+                            "name": "Color",
+                            "options": list(group["Variant_Value"].unique()),
+                            "visible": True,
+                            "variation": True
+                        }
+                    ]
+                }
+                # Create variable product
+                response = wcapi.post("products", product)
+                if response.status_code == 201:
+                    product_id = response.json()["id"]
+                    logger.info(f"Created product: {title}")
+                    # Add variants
+                    for _, row in group.iterrows():
+                        variant = {
+                            "regular_price": str(row["Price"]),
+                            "sku": row["SKU"],
+                            "stock_quantity": int(row["Stock"]),
+                            "weight": str(row["Weight"]),
+                            "attributes": [{"name": "Color", "option": row["Variant_Value"]}]
+                        }
+                        wcapi.post(f"products/{product_id}/variations", variant)
+                        logger.info(f"Added variant: {row['Variant_Value']} for {title}")
+                else:
+                    logger.error(f"Failed to upload {title}: {response.json()}")
+        except Exception as e:
+            logger.error(f"WooCommerce upload error: {e}")
+
+    async def upload_to_shopify(self, csv_file: str):
+        try:
+            shopify.ShopifyResource.set_site("https://your-api-key:your-password@your-store.myshopify.com/admin")
+            df = pd.read_csv(csv_file)
+            grouped = df.groupby("Title")
+            for title, group in grouped:
+                product = shopify.Product()
+                product.title = title
+                product.body_html = group["Description"].iloc[0]
+                product.vendor = group["Brand"].iloc[0]
+                product.product_type = group["Category"].iloc[0]
+                product.tags = f"{group['Category'].iloc[0]},{group['Compatibility'].iloc[0]}"
+                product.published = True
+                product.variants = []
+                product.options = [{"name": "Color"}]
+                product.images = [{"src": group["Image_URL"].iloc[0]}] if group["Image_URL"].iloc[0] else []
+                for _, row in group.iterrows():
+                    variant = shopify.Variant()
+                    variant.price = row["Price"]
+                    variant.sku = row["SKU"]
+                    variant.inventory_quantity = int(row["Stock"])
+                    variant.weight = row["Weight"]
+                    variant.option1 = row["Variant_Value"]
+                    variant.inventory_policy = "deny"
+                    product.variants.append(variant)
+                success = product.save()
+                if success:
+                    logger.info(f"Uploaded product: {title}")
+                else:
+                    logger.error(f"Failed to upload {title}: {product.errors.full_messages()}")
+        except Exception as e:
+            logger.error(f"Shopify upload error: {e}")
+
+    async def run(self):
+        async with aiohttp.ClientSession() as session:
+            category_links = await self.get_category_links(session)
+            for category_url in category_links:
+                await self.scrape_category(session, category_url)
+                await asyncio.sleep(self.rate_limit_delay)
+        csv_file = await self.prepare_csv()
+        await self.upload_to_woocommerce(csv_file)
+        await self.upload_to_shopify(csv_file)
+
+async def main():
+    scraper = MobileSentrixScraper()
+    await scraper.run()
+
+if platform.system() == "Emscripten":
+    asyncio.ensure_future(main())
+else:
+    if __name__ == "__main__":
+        asyncio.run(main())

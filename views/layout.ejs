@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | Phone Electronics Store' : 'Phone Electronics Store - Shop the Latest Phones and Electronics' %></title>
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Shop the latest phones, tablets, and electronics at Phone Electronics Store. Find great deals on smartphones, accessories, and more.' %>">
+  <meta name="keywords" content="<%= typeof metaKeywords !== 'undefined' ? metaKeywords : 'phones, smartphones, electronics, tablets, accessories, tech' %>">
+  <meta name="robots" content="<%= typeof metaRobots !== 'undefined' ? metaRobots : 'index, follow' %>">
+  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title + ' | Phone Electronics Store' : 'Phone Electronics Store - Shop the Latest Phones and Electronics' %>">
+  <meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Shop the latest phones, tablets, and electronics at Phone Electronics Store. Find great deals on smartphones, accessories, and more.' %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : 'http://localhost:3000' %>">
+  <meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : 'http://localhost:3000/images/logo.png' %>">
+  <link rel="canonical" href="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : 'http://localhost:3000' %>">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MEASUREMENT_ID');
+
+    // Custom event tracking helper
+    function trackEvent(category, action, label, value) {
+      gtag('event', action, {
+        'event_category': category,
+        'event_label': label,
+        'value': value
+      });
+    }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">Phone Electronics Store</a>
+
+      <div class="search-form">
+        <form action="/search" method="get">
+          <input type="text" name="q" placeholder="Search products..." value="<%= typeof query !== 'undefined' ? query : '' %>">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+
+      <button class="mobile-menu-button" id="mobile-menu-button">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <nav class="nav-links" id="nav-links">
+        <a href="/products">Products</a>
+        <a href="/categories">Categories</a>
+        <% if (isAuthenticated) { %>
+          <a href="/cart">Cart</a>
+          <a href="/user/wishlist">Wishlist</a>
+          <a href="/user/profile">My Account</a>
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/cart">Cart</a>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <%- body %>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      &copy; <%= new Date().getFullYear() %> Phone Electronics Store. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const navLinks = document.getElementById('nav-links');
+
+      if (mobileMenuButton && navLinks) {
+        mobileMenuButton.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
