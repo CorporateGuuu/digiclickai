@@ -41,5 +41,17 @@
   to = "/api/:splat"
   status = 200
 
+# Handle 404 errors with custom 404 page
+[[redirects]]
+  from = "/*"
+  to = "/404"
+  status = 404
+
+# SPA fallback - this should be the last redirect
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
