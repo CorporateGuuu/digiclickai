@@ -2,6 +2,7 @@
   base = "/"
   command = "./netlify.sh"
   publish = ".next"
+  ignore = "git diff --quiet HEAD^ HEAD -- . ':!node_modules'"
 
 [build.environment]
   NODE_VERSION = "18.17.0"
@@ -9,9 +10,15 @@
   NETLIFY_USE_PYTHON = "true"
   PYTHON_VERSION = "3.9"
   SITE_NAME = "Digiclick Website"
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_SHARP_PATH = "/tmp/node_modules/sharp"
 
 [build.packages]
-  apt = ["postgresql-client", "postgresql-dev", "libpq-dev"]
+  apt = ["postgresql-client", "libpq-dev", "build-essential"]
+
+[functions]
+  node_bundler = "esbuild"
 
 # These redirects are crucial for a Next.js application
 [[redirects]]
