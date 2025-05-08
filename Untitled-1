@@ -1,7 +1,0 @@
-
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install aiohttp beautifulsoup4 pandas woocommerce shopify_api
-
-pip install aiohttp beautifulsoup4 pandas woocommerce shopify_api
-

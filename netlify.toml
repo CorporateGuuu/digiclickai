@@ -5,8 +5,12 @@
 [build.environment]
   NODE_VERSION = "18.17.0"
   NPM_VERSION = "9.6.7"
-  NETLIFY_USE_PYTHON = "false"
+  NETLIFY_USE_PYTHON = "true"
+  PYTHON_VERSION = "3.9"
   SITE_NAME = "Digiclick Website"
+
+[build.packages]
+  apt = ["postgresql-client", "postgresql-dev", "libpq-dev"]
 
 # These redirects are crucial for a Next.js application
 [[redirects]]

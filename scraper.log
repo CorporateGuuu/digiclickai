@@ -1,9 +1,0 @@
-2025-04-29 18:43:03,214 - database_scraper - INFO - Starting database scraper...
-2025-04-29 18:43:05,660 - database_scraper - INFO - Fetching categories from https://www.mobilesentrix.com
-2025-04-29 18:43:05,677 - database_scraper - ERROR - Error getting category links: Cannot connect to host www.mobilesentrix.com:443 ssl:default [nodename nor servname provided, or not known]
-2025-04-29 18:43:05,677 - database_scraper - ERROR - No category links found. Exiting.
-2025-04-29 18:43:05,677 - database_scraper - ERROR - Scraping failed
-2025-04-29 18:50:33,628 - database_scraper - INFO - Starting database scraper...
-2025-04-29 18:50:33,644 - database_scraper - INFO - Fetching categories from https://www.mobilesentrix.com
-2025-04-29 18:50:38,537 - database_scraper - ERROR - No category links found. Exiting.
-2025-04-29 18:50:38,538 - database_scraper - ERROR - Scraping failed

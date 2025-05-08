@@ -1,9 +1,0 @@
-name,slug,sku,price,discount_percentage,stock_quantity,is_featured,is_new,brand,category,display,processor,memory,storage
-"Quantum Pro X","quantum-pro-x","QTM-PRO-X-001",1299.99,5,50,true,true,"TechX","Smartphones","6.7"" AMOLED, 120Hz","Octa-core 3.0GHz","12GB RAM","256GB"
-"Elite Wireless Earbuds","elite-wireless-earbuds","ELT-WL-EB-002",249.99,0,100,true,false,"SoundMaster","Audio","LED indicators","Custom audio chip","N/A","N/A"
-"PowerMax Charging Dock","powermax-charging-dock","PWR-MAX-CD-003",89.99,10,200,true,false,"PowerTech","Accessories","N/A","N/A","N/A","N/A"
-"Titanium Phone Case","titanium-phone-case","TTN-PH-CS-004",59.99,0,150,true,true,"ArmorTech","Accessories","N/A","N/A","N/A","N/A"
-"SmartWatch Pro","smartwatch-pro","SMT-WCH-PR-005",349.99,15,75,false,true,"FitTech","Wearables","1.4"" AMOLED, Always-on","Dual-core 1.2GHz","1GB RAM","16GB"
-"Ultra HD Camera Phone","ultra-hd-camera-phone","UHD-CAM-PH-006",1099.99,0,30,false,true,"PixelMaster","Smartphones","6.5"" AMOLED, 120Hz","Octa-core 2.8GHz","8GB RAM","128GB"
-"Noise-Cancelling Headphones","noise-cancelling-headphones","NC-HDPH-007",299.99,10,120,false,false,"SoundMaster","Audio","N/A","N/A","N/A","N/A"
-"Fast Wireless Charger","fast-wireless-charger","FST-WL-CHG-008",49.99,0,200,false,false,"PowerTech","Accessories","N/A","N/A","N/A","N/A"

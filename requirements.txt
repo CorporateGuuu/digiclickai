@@ -1,6 +1,8 @@
 aiohttp==3.8.5
 beautifulsoup4==4.12.2
-psycopg2-binary==2.9.7
+# Try to install psycopg2-binary, but fall back to psycopg2cffi if it fails
+psycopg2-binary==2.9.7; platform_python_implementation != 'PyPy'
+psycopg2cffi==2.9.0; platform_python_implementation == 'PyPy'
 python-dotenv==1.0.0
 SQLAlchemy==2.0.20
 pandas==2.1.0
