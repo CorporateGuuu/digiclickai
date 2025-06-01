@@ -164,6 +164,7 @@
 }
 
 .contactForm input,
+.contactForm select,
 .contactForm textarea {
   width: 100%;
   padding: 1rem;
@@ -177,10 +178,16 @@
 }
 
 .contactForm input:focus,
+.contactForm select:focus,
 .contactForm textarea:focus {
   outline: none;
   border-color: #7b2cbf;
   box-shadow: 0 0 15px rgba(123, 44, 191, 0.5);
+}
+
+.serviceSelect option {
+  background: #2c2c2c;
+  color: #e0e0e0;
 }
 
 .contactForm button {

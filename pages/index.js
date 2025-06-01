@@ -6,10 +6,12 @@ export default function HomePage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    serviceInterest: ''
   });
   const [formStatus, setFormStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [services, setServices] = useState([]);
 
   const particlesRef = useRef(null);
   const heroRef = useRef(null);
@@ -140,6 +142,39 @@ export default function HomePage() {
     loadGSAP();
   }, []);
 
+  // Fetch services from backend
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const response = await fetch(`${apiUrl}/api/services`);
+        if (response.ok) {
+          const servicesData = await response.json();
+          setServices(servicesData);
+        } else {
+          // Fallback to default services if API fails
+          setServices([
+            { title: 'AI-Crafted Websites', description: 'Design visionary websites with AI-driven aesthetics that captivate and convert.' },
+            { title: 'Predictive Marketing', description: 'Harness AI to anticipate trends and optimize campaigns for unparalleled results.' },
+            { title: 'Intelligent SEO', description: 'Elevate your search rankings with AI-powered strategies and dynamic content.' },
+            { title: 'Automation Ecosystems', description: 'Streamline operations with bespoke AI automation for seamless efficiency.' }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        // Fallback to default services
+        setServices([
+          { title: 'AI-Crafted Websites', description: 'Design visionary websites with AI-driven aesthetics that captivate and convert.' },
+          { title: 'Predictive Marketing', description: 'Harness AI to anticipate trends and optimize campaigns for unparalleled results.' },
+          { title: 'Intelligent SEO', description: 'Elevate your search rankings with AI-powered strategies and dynamic content.' },
+          { title: 'Automation Ecosystems', description: 'Streamline operations with bespoke AI automation for seamless efficiency.' }
+        ]);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -180,7 +215,7 @@ export default function HomePage() {
           name: formData.name,
           email: formData.email,
           message: formData.message,
-          serviceInterest: 'General Inquiry'
+          serviceInterest: formData.serviceInterest || 'General Inquiry'
         }),
       });
 
@@ -188,7 +223,7 @@ export default function HomePage() {
 
       if (response.ok) {
         alert(`Your vision is received, ${formData.name}! We'll connect soon.`);
-        setFormData({ name: '', email: '', message: '' });
+        setFormData({ name: '', email: '', message: '', serviceInterest: '' });
         setFormStatus('');
       } else {
         throw new Error(data.error || 'Failed to send message');
@@ -270,27 +305,17 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* Services Section - matching original */}
+      {/* Services Section - dynamic from backend */}
       <section className={`${styles.services} services`} id="services">
-        <div className={`${styles.service} service`}>
-          <h2>AI-Crafted Websites</h2>
-          <p>Design visionary websites with AI-driven aesthetics that captivate and convert.</p>
-        </div>
-        <div className={`${styles.service} service`}>
-          <h2>Predictive Marketing</h2>
-          <p>Harness AI to anticipate trends and optimize campaigns for unparalleled results.</p>
-        </div>
-        <div className={`${styles.service} service`}>
-          <h2>Intelligent SEO</h2>
-          <p>Elevate your search rankings with AI-powered strategies and dynamic content.</p>
-        </div>
-        <div className={`${styles.service} service`}>
-          <h2>Automation Ecosystems</h2>
-          <p>Streamline operations with bespoke AI automation for seamless efficiency.</p>
-        </div>
+        {services.map((service, index) => (
+          <div key={index} className={`${styles.service} service`}>
+            <h2>{service.title}</h2>
+            <p>{service.description}</p>
+          </div>
+        ))}
       </section>
 
-      {/* Contact Section - matching original */}
+      {/* Contact Section - matching original with service dropdown */}
       <section className={`${styles.contactForm} contact-form`} id="contact">
         <h2>Connect with the Future</h2>
         <form id="contactForm" onSubmit={handleSubmit}>
@@ -312,6 +337,20 @@ export default function HomePage() {
             onChange={handleInputChange}
             required
           />
+          <select
+            id="serviceInterest"
+            name="serviceInterest"
+            value={formData.serviceInterest}
+            onChange={handleInputChange}
+            className={styles.serviceSelect}
+          >
+            <option value="">Select Service</option>
+            {services.map((service, index) => (
+              <option key={index} value={service.title}>
+                {service.title}
+              </option>
+            ))}
+          </select>
           <textarea
             id="message"
             name="message"
