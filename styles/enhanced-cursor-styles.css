@@ -1,0 +1,329 @@
+/* Enhanced DigiClick AI Cursor Integration Styles */
+/* Based on your original clean CSS structure */
+
+/* ===== ENHANCED HERO SECTION ===== */
+.hero {
+  text-align: center;
+  padding: 5rem 2rem;
+  
+  /* Cursor integration enhancements */
+  cursor: none; /* Let custom cursor take over */
+  position: relative;
+  
+  /* Optional: Add subtle background interaction */
+  transition: background-color 0.3s ease;
+}
+
+.hero:hover {
+  /* Subtle background shift when cursor enters hero area */
+  background-color: rgba(0, 212, 255, 0.02);
+}
+
+/* ===== ENHANCED CTA BUTTON ===== */
+.cta {
+  /* Your original styles preserved */
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  
+  /* Enhanced cursor integration */
+  cursor: none; /* Let custom cursor handle interactions */
+  border: none; /* For button elements */
+  
+  /* Enhanced animations */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Enhanced visual effects */
+  box-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.3),
+    0 4px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Text enhancements */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  
+  /* Prepare for advanced effects */
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Enhanced hover state */
+.cta:hover {
+  /* Your original transform enhanced */
+  transform: scale(1.05) translateY(-2px);
+  
+  /* Enhanced glow effects */
+  box-shadow: 
+    0 0 25px rgba(123, 44, 191, 0.5),
+    0 8px 25px rgba(0, 0, 0, 0.2);
+  
+  /* Animated gradient background */
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf, #00d4ff);
+  background-size: 200% 200%;
+  animation: gradientFlow 2s ease infinite;
+}
+
+/* Active/click state */
+.cta:active {
+  transform: scale(0.98) translateY(0);
+  transition: transform 0.1s ease;
+}
+
+/* Gradient animation */
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== CURSOR-AWARE ENHANCEMENTS ===== */
+
+/* Shimmer effect for CTA button */
+.cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: -1;
+}
+
+.cta:hover::before {
+  left: 100%;
+}
+
+/* ===== ADDITIONAL CURSOR INTEGRATION CLASSES ===== */
+
+/* Glow text effect - for headings */
+.glow-text {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  font-family: 'Orbitron', sans-serif;
+  cursor: none;
+  transition: all 0.3s ease;
+}
+
+.glow-text:hover {
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Navigation links */
+.nav-link {
+  color: #00d4ff;
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: none;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover {
+  color: #7b2cbf;
+  text-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Pulse animation for special elements */
+.pulse-box {
+  animation: pulseGlow 2s ease-in-out infinite;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  cursor: none;
+  transition: all 0.3s ease;
+  padding: 1rem;
+}
+
+.pulse-box:hover {
+  animation-duration: 1s;
+  border-color: rgba(123, 44, 191, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    transform: scale(1.01);
+  }
+}
+
+/* Glow trigger zones */
+.glow-trigger {
+  cursor: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.glow-trigger:hover {
+  filter: brightness(1.05);
+}
+
+/* Secondary CTA style */
+.cta-secondary {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: transparent;
+  color: #00d4ff;
+  text-decoration: none;
+  border: 2px solid #00d4ff;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.cta-secondary:hover {
+  color: white;
+  border-color: #7b2cbf;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+}
+
+.cta-secondary:hover::before {
+  left: 0;
+}
+
+/* ===== FORM ENHANCEMENTS ===== */
+.form-input {
+  cursor: none;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.1);
+  color: #e0e0e0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-input:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .hero {
+    padding: 3rem 1rem;
+  }
+  
+  .cta {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .nav-link {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .nav-link,
+  .pulse-box,
+  .glow-text {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .cta:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .cta {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+  }
+  
+  .glow-text {
+    color: #ffffff;
+    text-shadow: none;
+  }
+}
+
+/* ===== USAGE EXAMPLES IN COMMENTS ===== */
+
+/*
+BASIC USAGE:
+<section className="hero glow-trigger">
+  <h1 className="glow-text">Welcome to DigiClick AI</h1>
+  <p>Experience the future of AI automation</p>
+  <a href="/demo" className="cta pulse-box">Get Started</a>
+  <a href="/learn" className="cta-secondary">Learn More</a>
+</section>
+
+NAVIGATION:
+<nav>
+  <a href="/" className="nav-link">Home</a>
+  <a href="/about" className="nav-link">About</a>
+  <a href="/services" className="nav-link">Services</a>
+</nav>
+
+FORM ELEMENTS:
+<input type="text" className="form-input" placeholder="Your name" />
+<button type="submit" className="cta">Submit</button>
+*/

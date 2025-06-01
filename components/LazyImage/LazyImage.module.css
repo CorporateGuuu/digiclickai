@@ -1,12 +1,43 @@
 .lazyImageContainer {
   position: relative;
   overflow: hidden;
-  background-color: #f3f4f6;
+  background: linear-gradient(45deg, rgba(0, 212, 255, 0.05), rgba(123, 44, 191, 0.05));
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
+  transition: all 0.3s ease;
+}
+
+.lazyImageContainer:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.lazyImageContainer.error {
+  border-color: rgba(255, 77, 77, 0.3);
+  background: linear-gradient(45deg, rgba(255, 77, 77, 0.05), rgba(204, 0, 0, 0.05));
+}
+
+.loadingProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
 }
 
 .placeholder {
@@ -16,13 +47,19 @@
   width: 100%;
   height: 100%;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
   z-index: 1;
+  filter: blur(2px);
 }
 
 .placeholder>div {
   width: 100%;
   height: 100%;
+}
+
+.placeholder.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .actualImage {
@@ -32,13 +69,73 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
   z-index: 2;
 }
 
 .actualImage>div {
   width: 100%;
   height: 100%;
+}
+
+.actualImage.visible {
+  opacity: 1;
+}
+
+.errorState {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, rgba(255, 77, 77, 0.1), rgba(204, 0, 0, 0.1));
+  color: #ff4d4d;
+  font-family: 'Orbitron', sans-serif;
+  z-index: 5;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.errorText {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.retryButton {
+  background: linear-gradient(45deg, #ff4d4d, #cc0000);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
+
+.progressiveImage {
+  transition: filter 0.5s ease;
+}
+
+.progressiveImage.lowQuality {
+  filter: blur(1px) brightness(0.9);
+}
+
+.progressiveImage.highQuality {
+  filter: none;
 }
 
 .hidden {
@@ -49,4 +146,52 @@
 .visible {
   opacity: 1;
   z-index: 3;
+}
+
+/* Animation for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 212, 255, 0.1),
+    transparent
+  );
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lazyImageContainer {
+    border-radius: 8px;
+  }
+
+  .errorIcon {
+    font-size: 1.5rem;
+  }
+
+  .errorText {
+    font-size: 0.8rem;
+  }
+
+  .retryButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+  }
 }

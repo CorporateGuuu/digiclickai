@@ -3,8 +3,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { getServices, submitContactForm } from '../utils/api';
+import { DigiClickLayout } from '../components/Layout';
 import AuthModal from '../components/AuthModal';
 import Portfolio from '../components/Portfolio';
+import Chatbot from '../components/Chatbot/Chatbot';
 import styles from '../styles/Home.module.css';
 
 export default function HomePage() {
@@ -286,33 +288,30 @@ export default function HomePage() {
   };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Digiclick AI - Premium AI Web Design & Automation</title>
-        <meta name="description" content="Digiclick AI crafts exquisite, AI-powered websites and automations that redefine digital excellence." />
-        <meta name="keywords" content="AI, web design, automation, digital marketing, premium websites" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" />
+    <DigiClickLayout
+      title="Premium AI Web Design & Automation"
+      description="Digiclick AI crafts exquisite, AI-powered websites and automations that redefine digital excellence."
+      showCursor={true}
+      showParticles={true}
+      showChatbot={false} // We'll use the existing Chatbot component
+      cursorTheme="default"
+      className={styles.container}
+    >
+      {/* Particles Background - Enhanced for cursor interaction */}
+      <div id="particles-js" ref={particlesRef} className={`${styles.particlesContainer} cursor-interactive`}></div>
 
-        {/* Google Fonts - matching original */}
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet" />
-      </Head>
-
-      {/* Particles Background */}
-      <div id="particles-js" ref={particlesRef} className={styles.particlesContainer}></div>
-
-      {/* Header - matching original structure */}
-      <header className={styles.header}>
-        <h1 className={styles.headerTitle}>Digiclick AI</h1>
+      {/* Header - Enhanced with cursor interactions */}
+      <header className={`${styles.header} glow-trigger`}>
+        <h1 className={`${styles.headerTitle} glow-text`}>Digiclick AI</h1>
       </header>
 
-      {/* Navigation */}
+      {/* Navigation - Enhanced with cursor interactions */}
       <nav className={styles.nav}>
         <div className={styles.navLeft}>
-          <a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
-          <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
-          <a href="#portfolio" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Portfolio</a>
-          <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+          <a href="#home" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
+          <a href="#services" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
+          <a href="#portfolio" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Portfolio</a>
+          <a href="#contact" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
         </div>
         <div className={styles.navRight}>
           {isAuthenticated() ? (
@@ -320,7 +319,7 @@ export default function HomePage() {
               <span className={styles.welcomeText}>Welcome, {user?.name}</span>
               <button
                 onClick={goToDashboard}
-                className={styles.dashboardButton}
+                className={`${styles.dashboardButton} cta-button pulse-box`}
               >
                 Dashboard
               </button>
@@ -329,13 +328,13 @@ export default function HomePage() {
             <>
               <button
                 onClick={() => openAuthModal('login')}
-                className={styles.loginButton}
+                className={`${styles.loginButton} cta-button`}
               >
                 Login
               </button>
               <button
                 onClick={() => openAuthModal('register')}
-                className={styles.registerButton}
+                className={`${styles.registerButton} cta-button`}
               >
                 Sign Up
               </button>
@@ -344,20 +343,20 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section - matching original */}
-      <section className={`${styles.hero} hero`} id="home">
-        <h1>Elevate Your Digital Future</h1>
+      {/* Hero Section - Enhanced with cursor interactions */}
+      <section className={`${styles.hero} hero glow-trigger`} id="home">
+        <h1 className="glow-text">Elevate Your Digital Future</h1>
         <p>Digiclick AI crafts exquisite, AI-powered websites and automations that redefine digital excellence.</p>
-        <a href="#contact" className={`${styles.ctaButton} cta-button`} onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>
+        <a href="#contact" className={`${styles.ctaButton} cta-button pulse-box`} onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>
           Unlock Your Vision
         </a>
       </section>
 
-      {/* Services Section - dynamic from backend */}
+      {/* Services Section - Enhanced with cursor interactions */}
       <section className={`${styles.services} services`} id="services">
         {services.map((service, index) => (
-          <div key={index} className={`${styles.service} service`}>
-            <h2>{service.title}</h2>
+          <div key={index} className={`${styles.service} service pulse-box glow-trigger`}>
+            <h2 className="glow-text">{service.title}</h2>
             <p>{service.description}</p>
           </div>
         ))}
@@ -411,15 +410,43 @@ export default function HomePage() {
             onChange={handleInputChange}
             required
           ></textarea>
-          <button type="submit" disabled={isLoading}>
+          <button type="submit" disabled={isLoading} className="cta-button pulse-box">
             {isLoading ? 'Launching...' : 'Launch Your Project'}
           </button>
         </form>
       </section>
 
-      {/* Footer - matching original */}
-      <footer className={styles.footer}>
-        <p>© 2025 Digiclick AI. All rights reserved. | <a href="mailto:info@digiclick.ai">info@digiclick.ai</a> | (123) 456-7890</p>
+      {/* Cursor Demo Section - New interactive section */}
+      <section className={`${styles.demoSection} demo-section`} id="cursor-demo">
+        <div className="container">
+          <h2 className="glow-text">Experience Our Custom Cursor</h2>
+          <p>Move your cursor around to see our futuristic AI-powered interactions!</p>
+
+          <div className="demo-grid">
+            <div className="demo-item glow-trigger">
+              <h3>Hover Effects</h3>
+              <button className="cta-button">Interactive Button</button>
+              <p>Watch the cursor transform with "CLICK" labels</p>
+            </div>
+
+            <div className="demo-item pulse-box">
+              <h3>Glow Zones</h3>
+              <div className="glow-box">Special Interaction Area</div>
+              <p>Enhanced glow effects in designated zones</p>
+            </div>
+
+            <div className="demo-item">
+              <h3 className="interactive-text">Text Interactions</h3>
+              <p className="interactive-text">Hover over text to see cursor changes</p>
+              <p>Different cursor states for different content types</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer - Enhanced with cursor interactions */}
+      <footer className={`${styles.footer} glow-trigger`}>
+        <p>© 2025 Digiclick AI. All rights reserved. | <a href="mailto:info@digiclick.ai" className="nav-link">info@digiclick.ai</a> | <a href="tel:+1234567890" className="nav-link">(123) 456-7890</a></p>
       </footer>
 
       {/* Authentication Modal */}
@@ -428,6 +455,9 @@ export default function HomePage() {
         onClose={closeAuthModal}
         initialMode={authModalMode}
       />
-    </div>
+
+      {/* Chatbot - Keep existing implementation */}
+      <Chatbot />
+    </DigiClickLayout>
   );
 }

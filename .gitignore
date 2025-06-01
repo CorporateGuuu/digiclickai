@@ -38,6 +38,110 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# DigiClick AI Specific Files
+uploads/
+temp/
+tmp/
+*.sqlite
+*.sqlite3
+*.db
+
+# Testing and Coverage
+/coverage
+.nyc_output/
+cypress/videos/
+cypress/screenshots/
+test-results/
+playwright-report/
+.lighthouseci/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# API keys and secrets
+secrets/
+*.key
+*.crt
+.sentryclirc
+
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
+# Generated files
+public/sitemap.xml
+public/robots.txt
+
+# Backup files
+*.backup
+*.bak
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Logs (additional)
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Docker
+.dockerignore
+
+# Monitoring
+monitoring/logs/
+
 # DO NOT IGNORE THESE FILES
 !package.json
 !package-lock.json
@@ -50,3 +154,8 @@ next-env.d.ts
 !runtime.txt
 !.python-version
 !_redirects
+!Dockerfile
+!docker-compose*.yml
+!render.yaml
+!vercel.json
+!.github/

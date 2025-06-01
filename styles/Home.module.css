@@ -124,6 +124,9 @@
   align-items: center;
   text-align: center;
   color: #e0e0e0;
+  padding: 5rem 2rem;
+  /* Enhanced for cursor interactions */
+  cursor: none; /* Let custom cursor take over */
 }
 
 .hero h1 {
@@ -140,23 +143,71 @@
 }
 
 .ctaButton {
+  /* Enhanced CTA Button with cursor interactions */
+  display: inline-block;
+  padding: 1rem 2rem;
   background: linear-gradient(45deg, #00d4ff, #7b2cbf);
   color: white;
-  padding: 1rem 2rem;
   text-decoration: none;
   border-radius: 50px;
   font-family: 'Orbitron', sans-serif;
   font-weight: 600;
-  transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
   border: none;
-  cursor: pointer;
-  display: inline-block;
+  cursor: none; /* Let custom cursor handle this */
+
+  /* Enhanced animations and effects */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow:
+    0 0 15px rgba(0, 212, 255, 0.5),
+    0 4px 15px rgba(0, 0, 0, 0.2);
+
+  /* Text effects */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+
+  /* Glow effect for cursor interaction */
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
 }
 
 .ctaButton:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(123, 44, 191, 0.7);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow:
+    0 0 25px rgba(123, 44, 191, 0.7),
+    0 8px 25px rgba(0, 0, 0, 0.3);
+
+  /* Enhanced glow on hover */
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf, #00d4ff);
+  background-size: 200% 200%;
+  animation: gradientShift 2s ease infinite;
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.ctaButton:active {
+  transform: scale(0.98) translateY(0);
+  transition: transform 0.1s;
+}
+
+/* Gradient animation for enhanced hover effect */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Services Section - matching original */
@@ -323,4 +374,308 @@
   .headerTitle {
     font-size: 2rem;
   }
+
+  /* Demo Section Mobile */
+  .demoSection .demo-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .demoSection h2 {
+    font-size: 2rem;
+  }
+
+  .demoSection .demo-item {
+    padding: 1.5rem;
+  }
+}
+
+/* Cursor Demo Section */
+.demoSection {
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #1a1a1a 100%);
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  text-align: center;
+}
+
+.demoSection h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.demoSection p {
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Demo Grid */
+.demoSection .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demoSection .demo-item {
+  background: linear-gradient(45deg, #2c2c2c, #3a3a3a);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.demoSection .demo-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px rgba(123, 44, 191, 0.5);
+  border-color: rgba(123, 44, 191, 0.5);
+}
+
+.demoSection .demo-item h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00d4ff;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.demoSection .demo-item p {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.demoSection .glow-box {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem 0;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.demoSection .glow-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+}
+
+/* Enhanced Cursor Interaction Classes */
+/* These classes work with the DigiClick AI custom cursor system */
+
+/* Glow Text Effect - for headings and special text */
+.glowText {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  font-family: 'Orbitron', sans-serif;
+  cursor: none; /* Let custom cursor handle this */
+}
+
+/* Interactive Text - for text that should trigger text cursor */
+.interactiveText {
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.interactiveText:hover {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* Navigation Links - enhanced for cursor interactions */
+.navLink {
+  color: #00d4ff;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.3s ease;
+  cursor: none; /* Let custom cursor handle this */
+  position: relative;
+  padding: 0.5rem 1rem;
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navLink:hover {
+  color: #7b2cbf;
+  text-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+  transform: translateY(-2px);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* Pulse Box - for elements that should have pulsing animation */
+.pulseBox {
+  animation: pulseGlow 2s ease-in-out infinite;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+}
+
+.pulseBox:hover {
+  animation-duration: 1s;
+  border-color: rgba(123, 44, 191, 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    transform: scale(1.02);
+  }
+}
+
+/* Glow Trigger - for areas that should trigger enhanced cursor glow */
+.glowTrigger {
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.glowTrigger:hover {
+  filter: brightness(1.1);
+}
+
+.glowTrigger::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf, #00d4ff);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+.glowTrigger:hover::before {
+  opacity: 0.3;
+}
+
+/* Secondary CTA Button Style */
+.ctaSecondary {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: transparent;
+  color: #00d4ff;
+  text-decoration: none;
+  border: 2px solid #00d4ff;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaSecondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.ctaSecondary:hover {
+  color: white;
+  border-color: #7b2cbf;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+}
+
+.ctaSecondary:hover::before {
+  left: 0;
+}
+
+/* Form Enhancement for Cursor Interactions */
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  outline: none;
+}
+
+/* Click Zone - for demonstrating click effects */
+.clickZone {
+  background: rgba(0, 212, 255, 0.1);
+  border: 2px dashed rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 1rem 0;
+  text-align: center;
+  cursor: none; /* Let custom cursor handle this */
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.clickZone:hover {
+  background: rgba(123, 44, 191, 0.1);
+  border-color: rgba(123, 44, 191, 0.3);
+  transform: scale(1.02);
+}
+
+.clickZone span {
+  font-family: 'Orbitron', sans-serif;
+  color: #00d4ff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }

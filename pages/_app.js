@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { AuthProvider } from '../contexts/AuthContext';
+import Layout from '../components/Layout';
 
 // Simple global CSS
 const globalStyles = `
@@ -42,14 +43,15 @@ function AppContent({ Component, pageProps }) {
       <div className="app-wrapper">
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta name="theme-color" content="#0070f3" />
+          <meta name="theme-color" content="#121212" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <style>{globalStyles}</style>
         </Head>
 
-        <main>
+        {/* Enhanced Layout with Custom Cursor */}
+        <Layout showCursor={true} cursorTheme="default">
           <Component {...pageProps} />
-        </main>
+        </Layout>
       </div>
     </AuthProvider>
   );

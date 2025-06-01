@@ -1,0 +1,288 @@
+/* Enhanced DigiClick AI Theme - Luxurious Futuristic Design */
+
+/* Additional Global Enhancements */
+body.digiclick-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Enhanced Typography */
+body.digiclick-theme h1,
+body.digiclick-theme h2,
+body.digiclick-theme h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00d4ff;
+  text-shadow: 0 0 10px #00d4ff;
+}
+
+/* Enhanced Sections */
+body.digiclick-theme .hero,
+body.digiclick-theme .about,
+body.digiclick-theme .pricing,
+body.digiclick-theme .dashboard,
+body.digiclick-theme .login,
+body.digiclick-theme section {
+  padding: 4rem 2rem;
+  background: #1a1a1a;
+  text-align: center;
+}
+
+/* Enhanced Cards and Components */
+body.digiclick-theme .mission-vision,
+body.digiclick-theme .pricing-item,
+body.digiclick-theme .dashboard-table,
+body.digiclick-theme .dashboard-chart,
+body.digiclick-theme .team-item {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 2rem;
+  background: linear-gradient(45deg, #2c2c2c, #3a3a3a);
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+body.digiclick-theme .pricing-item:hover,
+body.digiclick-theme .team-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px rgba(123, 44, 191, 0.5);
+}
+
+/* Enhanced Grids */
+body.digiclick-theme .pricing-grid,
+body.digiclick-theme .team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+/* Enhanced Pricing */
+body.digiclick-theme .pricing-item .price {
+  font-size: 1.8rem;
+  color: #7b2cbf;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px #7b2cbf;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body.digiclick-theme .pricing-item ul {
+  list-style: none;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+body.digiclick-theme .pricing-item ul li {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+body.digiclick-theme .pricing-item ul li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+/* Enhanced Team Items */
+body.digiclick-theme .team-item img {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+/* Enhanced Buttons */
+body.digiclick-theme .cta-button,
+body.digiclick-theme .logout-button,
+body.digiclick-theme button[type="submit"] {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+body.digiclick-theme .cta-button:hover,
+body.digiclick-theme .logout-button:hover,
+body.digiclick-theme button[type="submit"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(123, 44, 191, 0.7);
+}
+
+/* Enhanced Tables */
+body.digiclick-theme .dashboard-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(26, 26, 26, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+body.digiclick-theme .dashboard-table th,
+body.digiclick-theme .dashboard-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #00d4ff;
+  text-align: left;
+}
+
+body.digiclick-theme .dashboard-table th {
+  font-family: 'Orbitron', sans-serif;
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+body.digiclick-theme .dashboard-table tr:hover {
+  background: rgba(123, 44, 191, 0.1);
+}
+
+/* Enhanced Forms */
+body.digiclick-theme input,
+body.digiclick-theme textarea,
+body.digiclick-theme select {
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 2px solid #00d4ff;
+  border-radius: 10px;
+  background: #2c2c2c;
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+body.digiclick-theme input:focus,
+body.digiclick-theme textarea:focus,
+body.digiclick-theme select:focus {
+  outline: none;
+  border-color: #7b2cbf;
+  box-shadow: 0 0 15px rgba(123, 44, 191, 0.5);
+}
+
+body.digiclick-theme input::placeholder,
+body.digiclick-theme textarea::placeholder {
+  color: rgba(224, 224, 224, 0.6);
+}
+
+/* Enhanced Form Messages */
+body.digiclick-theme .form-message {
+  margin-top: 1rem;
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.5s;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+body.digiclick-theme .form-message.show {
+  opacity: 1;
+}
+
+body.digiclick-theme .form-message.error {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  text-shadow: 0 0 10px #ff4d4d;
+}
+
+body.digiclick-theme .form-message.success {
+  color: #4dff4d;
+  background: rgba(77, 255, 77, 0.1);
+  border: 1px solid rgba(77, 255, 77, 0.3);
+  text-shadow: 0 0 10px #4dff4d;
+}
+
+/* Enhanced Animations */
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff;
+  }
+  50% {
+    text-shadow: 0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 40px #00d4ff;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+  }
+}
+
+body.digiclick-theme .glow-text {
+  animation: glow 2s ease-in-out infinite;
+}
+
+body.digiclick-theme .pulse-box {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Enhanced Scrollbar */
+body.digiclick-theme ::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.digiclick-theme ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+body.digiclick-theme ::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  border-radius: 4px;
+}
+
+body.digiclick-theme ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #7b2cbf, #00d4ff);
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+  body.digiclick-theme .pricing-item,
+  body.digiclick-theme .team-item {
+    width: 100%;
+    margin: 1rem 0;
+  }
+  
+  body.digiclick-theme .pricing-grid,
+  body.digiclick-theme .team-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  body.digiclick-theme .hero,
+  body.digiclick-theme .about,
+  body.digiclick-theme .pricing,
+  body.digiclick-theme .dashboard,
+  body.digiclick-theme .login,
+  body.digiclick-theme section {
+    padding: 2rem 1rem;
+  }
+  
+  body.digiclick-theme .mission-vision,
+  body.digiclick-theme .pricing-item,
+  body.digiclick-theme .dashboard-table,
+  body.digiclick-theme .dashboard-chart,
+  body.digiclick-theme .team-item {
+    padding: 1.5rem;
+    margin: 0 auto 1rem;
+  }
+}

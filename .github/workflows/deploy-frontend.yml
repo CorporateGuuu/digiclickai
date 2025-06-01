@@ -1,0 +1,111 @@
+name: Deploy Frontend to Vercel
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'pages/**'
+      - 'components/**'
+      - 'styles/**'
+      - 'public/**'
+      - 'next.config.js'
+      - 'package.json'
+      - '.github/workflows/deploy-frontend.yml'
+  repository_dispatch:
+    types: [backend-deployed]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:ci
+        env:
+          NODE_ENV: test
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Type checking
+        run: npm run type-check
+
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
+
+      - name: Get Vercel Preview URL
+        id: vercel-url
+        run: |
+          echo "VERCEL_URL=$(vercel ls --token ${{ secrets.VERCEL_TOKEN }} | grep ${{ github.sha }} | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Run E2E Tests
+        run: |
+          npm run test:e2e
+        env:
+          BASE_URL: ${{ steps.vercel-url.outputs.VERCEL_URL }}
+          PLAYWRIGHT_BROWSERS_PATH: 0
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            ${{ steps.vercel-url.outputs.VERCEL_URL }}
+            ${{ steps.vercel-url.outputs.VERCEL_URL }}/demo-theme
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Update Sitemap
+        run: |
+          curl -X POST "${{ secrets.NEXT_PUBLIC_API_URL }}/api/sitemap/update" \
+            -H "Content-Type: application/json" \
+            -d '{"domain": "${{ steps.vercel-url.outputs.VERCEL_URL }}"}'
+
+      - name: Notify Deployment Status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#deployments'
+          text: |
+            Frontend deployment to Vercel: ${{ job.status }}
+            URL: ${{ steps.vercel-url.outputs.VERCEL_URL }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
