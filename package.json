@@ -14,7 +14,9 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
-    "generate-sitemap": "node scripts/generate-sitemap.js"
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "api": "node api-server.js",
+    "api:dev": "nodemon api-server.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -31,6 +33,11 @@
     "compression": "^1.8.0",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.0.3",
     "critters": "^0.0.23",
     "csv-parser": "^3.2.0",
     "dotenv": "^16.5.0",
@@ -89,6 +96,7 @@
     "jest-watch-typeahead": "^2.2.2",
     "lint-staged": "^15.2.0",
     "msw": "^2.0.11",
+    "nodemon": "^3.0.2",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "postcss": "^8.5.3",
     "postcss-cli": "^11.0.1",

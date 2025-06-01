@@ -169,12 +169,32 @@ export default function HomePage() {
     }
 
     try {
-      // Simulate form submission - matching original success message
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert(`Your vision is received, ${formData.name}! We'll connect soon.`);
-      setFormData({ name: '', email: '', message: '' });
-      setFormStatus('');
+      // Submit to backend API
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          serviceInterest: 'General Inquiry'
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`Your vision is received, ${formData.name}! We'll connect soon.`);
+        setFormData({ name: '', email: '', message: '' });
+        setFormStatus('');
+      } else {
+        throw new Error(data.error || 'Failed to send message');
+      }
     } catch (error) {
+      console.error('Form submission error:', error);
       alert('Sorry, there was an error sending your message. Please try again.');
     } finally {
       setIsLoading(false);
