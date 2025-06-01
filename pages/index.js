@@ -26,8 +26,11 @@ export default function HomePage() {
   const heroRef = useRef(null);
   const servicesRef = useRef(null);
 
-  // Initialize particles.js
+  // Initialize particles.js and apply theme
   useEffect(() => {
+    // Apply DigiClick AI theme to body
+    document.body.classList.add('digiclick-theme');
+
     const loadParticles = async () => {
       if (typeof window !== 'undefined') {
         try {
@@ -80,6 +83,11 @@ export default function HomePage() {
     };
 
     loadParticles();
+
+    // Cleanup function to remove theme class
+    return () => {
+      document.body.classList.remove('digiclick-theme');
+    };
   }, []);
 
   // Initialize GSAP animations

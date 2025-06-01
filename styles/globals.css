@@ -1,3 +1,6 @@
+/* Global font imports for DigiClick AI */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&display=swap');
+
 /* Import base styles with CSS variables */
 @import './base.css';
 @import './landing.css';
@@ -76,10 +79,12 @@
   /* Red for errors */
 }
 
-/* Mobile optimization */
+/* DigiClick AI Global Styles - Luxurious Futuristic Theme */
 * {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -96,7 +101,17 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Poppins', sans-serif;
 }
+
+/* DigiClick AI Theme Override for Homepage */
+body.digiclick-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Poppins', sans-serif;
+}
+
+
 
 /* Fix for iOS input zoom */
 @media screen and (max-width: 768px) {

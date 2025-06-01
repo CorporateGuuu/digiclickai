@@ -1,10 +1,4 @@
-/* Global Styles - matching original */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+/* DigiClick AI Component Styles */
 .container {
   font-family: 'Poppins', sans-serif;
   background-color: #121212;
