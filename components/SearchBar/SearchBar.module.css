@@ -1,0 +1,131 @@
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchToggle {
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.searchToggle:hover {
+  color: #0066cc;
+}
+
+.searchBar {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 0;
+  overflow: hidden;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  z-index: 1000;
+}
+
+.searchBar.expanded {
+  width: 320px;
+  opacity: 1;
+}
+
+.searchBar form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.85rem 1.25rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.searchButton {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suggestions {
+  background-color: white;
+  border-top: 1px solid #f0f0f0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.suggestionItem:hover {
+  background-color: #f5f5f5;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .searchBar {
+    position: relative;
+    width: 350px;
+    opacity: 1;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+  }
+
+  .searchToggle {
+    display: none;
+  }
+
+  .suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 12px 12px;
+    z-index: 1000;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .searchBar.expanded {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .suggestions {
+    position: fixed;
+    top: calc(60px + 50px);
+    left: 0;
+    right: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}

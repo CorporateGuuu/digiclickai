@@ -1,0 +1,90 @@
+.addToCartContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.addToCartButton,
+.buyNowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.addToCartButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+}
+
+.addToCartButton:hover {
+  background-color: #0055aa;
+}
+
+.buyNowButton {
+  background-color: #ff3e3e;
+  color: white;
+  border: none;
+}
+
+.buyNowButton:hover {
+  background-color: #e62e2e;
+}
+
+.addToCartButton:disabled,
+.buyNowButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage,
+.successMessage {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.errorMessage {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.successMessage {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}

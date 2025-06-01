@@ -1,0 +1,634 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.addButton {
+  background-color: #0066cc;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.addButton:hover {
+  background-color: #0052a3;
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filterGroup label {
+  font-weight: 500;
+  color: #555;
+}
+
+.select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  min-width: 150px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 250px;
+}
+
+.searchButton {
+  background-color: #0066cc;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+  background-color: #0052a3;
+}
+
+.tableContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background-color: #f9f9f9;
+  font-weight: 600;
+  color: #333;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background-color: #f5f5f5;
+}
+
+.sortableColumn {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.sortableColumn:hover {
+  background-color: #f0f0f0;
+}
+
+.activeSortColumn {
+  background-color: #e6f2ff !important;
+}
+
+.sortIcon {
+  margin-left: 5px;
+  display: inline-block;
+  font-size: 0.8rem;
+}
+
+.imageColumn {
+  width: 80px;
+}
+
+.imageCell {
+  width: 80px;
+}
+
+.productImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.stockBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.inStock {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.lowStock {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.outOfStock {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.stockCount {
+  margin-left: 5px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #e0e0e0;
+}
+
+.editButton {
+  background-color: #e6f2ff;
+  color: #0066cc;
+}
+
+.editButton:hover {
+  background-color: #cce5ff;
+}
+
+.deleteButton {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.deleteButton:hover {
+  background-color: #f5c6cb;
+}
+
+.ordersButton {
+  background-color: #e0f7fa;
+  color: #006064;
+}
+
+.ordersButton:hover {
+  background-color: #b2ebf2;
+}
+
+.updateButton {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.updateButton:hover {
+  background-color: #ffeeba;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.statusPending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.statusProcessing {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.statusShipped {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.statusDelivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.statusCancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.statusDropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownContent {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.statusDropdown:hover .dropdownContent {
+  display: block;
+}
+
+.dropdownContent button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdownContent button:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdownContent .activeStatus {
+  background-color: #f0f0f0;
+  font-weight: 500;
+}
+
+.noData {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.paginationButton {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  color: #666;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 102, 204, 0.2);
+  border-radius: 50%;
+  border-top-color: #0066cc;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Settings page styles */
+.settingsContainer {
+  display: flex;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.settingsTabs {
+  width: 200px;
+  background-color: #f9f9f9;
+  padding: 20px 0;
+  border-right: 1px solid #eee;
+}
+
+.tabButton {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.tabButton:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.activeTab {
+  background-color: #e6f2ff;
+  color: #0066cc;
+  font-weight: 500;
+  border-left: 3px solid #0066cc;
+}
+
+.settingsContent {
+  flex: 1;
+  padding: 30px;
+}
+
+.settingsForm {
+  max-width: 800px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  margin-right: 10px;
+}
+
+.helpText {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.formRow {
+  display: flex;
+  gap: 20px;
+}
+
+.formRow .formGroup {
+  flex: 1;
+}
+
+.formActions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  background-color: #0066cc;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: #0052a3;
+}
+
+.saveButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.successMessage, .errorMessage {
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.successMessage {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.errorMessage {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.shippingRate {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.removeButton {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.removeButton:hover {
+  background-color: #f5c6cb;
+}
+
+.addButton {
+  background-color: #e6f2ff;
+  color: #0066cc;
+  border: 1px solid #cce5ff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.addButton:hover {
+  background-color: #cce5ff;
+}
+
+.paymentSection, .securitySection {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+}
+
+.paymentSection h3, .securitySection h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.testButton {
+  background-color: #e6f2ff;
+  color: #0066cc;
+  border: 1px solid #cce5ff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.testButton:hover {
+  background-color: #cce5ff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .settingsContainer {
+    flex-direction: column;
+  }
+  
+  .settingsTabs {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    overflow-x: auto;
+    padding: 0;
+  }
+  
+  .tabButton {
+    padding: 15px;
+    white-space: nowrap;
+  }
+  
+  .activeTab {
+    border-left: none;
+    border-bottom: 3px solid #0066cc;
+  }
+  
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchForm {
+    width: 100%;
+  }
+  
+  .searchInput {
+    flex: 1;
+  }
+}

@@ -1,0 +1,88 @@
+.whatsappContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 90px;
+  /* Position it to the left of the chatbot button */
+  z-index: 999;
+}
+
+.whatsappButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #25D366;
+  /* WhatsApp green */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.whatsappButton:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.whatsappButton svg {
+  width: 30px;
+  height: 30px;
+}
+
+.whatsappTooltip {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.whatsappTooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  right: 25px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .whatsappContainer {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .whatsappButton {
+    width: 50px;
+    height: 50px;
+  }
+
+  .whatsappButton svg {
+    width: 25px;
+    height: 25px;
+  }
+}

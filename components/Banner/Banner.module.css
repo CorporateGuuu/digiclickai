@@ -1,0 +1,63 @@
+.announceBlockHeader {
+  background-color: #003087;
+  color: white;
+  padding: 0;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.announceBlockHeader a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.announceBlockHeader a:hover {
+  background-color: #002266;
+}
+
+.announceBlockHeader p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+}
+
+.announceBlockHeader b {
+  font-weight: 700;
+}
+
+.announceBlockHeader svg {
+  vertical-align: middle;
+}
+
+.announceBlockHeader span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .announceBlockHeader a {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px;
+  }
+  
+  .announceBlockHeader p {
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+  
+  .announceBlockHeader span {
+    align-self: flex-end;
+  }
+}

@@ -1,0 +1,104 @@
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-title">Total Products</div>
+    <div class="stat-value"><%= productCount %></div>
+    <div class="stat-description">Products in the database</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-title">Categories</div>
+    <div class="stat-value"><%= categoryCount %></div>
+    <div class="stat-description">Product categories</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-title">Users</div>
+    <div class="stat-value"><%= userCount %></div>
+    <div class="stat-description">Registered users</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-title">Orders</div>
+    <div class="stat-value"><%= orderCount %></div>
+    <div class="stat-description">Total orders</div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    Recent Orders
+  </div>
+  <div class="card-body">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (recentOrders && recentOrders.length > 0) { %>
+            <% recentOrders.forEach(order => { %>
+              <tr>
+                <td>#<%= order.id %></td>
+                <td>
+                  <% if (order.email) { %>
+                    <%= order.first_name %> <%= order.last_name %><br>
+                    <small><%= order.email %></small>
+                  <% } else { %>
+                    Guest
+                  <% } %>
+                </td>
+                <td>$<%= parseFloat(order.total_amount).toFixed(2) %></td>
+                <td>
+                  <% if (order.status === 'pending') { %>
+                    <span class="badge bg-warning">Pending</span>
+                  <% } else if (order.status === 'processing') { %>
+                    <span class="badge bg-info">Processing</span>
+                  <% } else if (order.status === 'shipped') { %>
+                    <span class="badge bg-primary">Shipped</span>
+                  <% } else if (order.status === 'delivered') { %>
+                    <span class="badge bg-success">Delivered</span>
+                  <% } else if (order.status === 'cancelled') { %>
+                    <span class="badge bg-danger">Cancelled</span>
+                  <% } else { %>
+                    <span class="badge bg-secondary"><%= order.status %></span>
+                  <% } %>
+                </td>
+                <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+                <td>
+                  <a href="/admin/orders/<%= order.id %>" class="btn btn-sm btn-primary">View</a>
+                </td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center">No recent orders</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="/admin/orders" class="btn btn-primary">View All Orders</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    Quick Actions
+  </div>
+  <div class="card-body">
+    <div class="d-flex" style="gap: 1rem; flex-wrap: wrap;">
+      <a href="/admin/products/add" class="btn btn-primary">Add Product</a>
+      <a href="/admin/categories/edit" class="btn btn-primary">Add Category</a>
+      <a href="/admin/products/upload" class="btn btn-primary">Upload CSV</a>
+    </div>
+  </div>
+</div>

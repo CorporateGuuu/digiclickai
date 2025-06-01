@@ -1,0 +1,32 @@
+name = "mdtstech-store"
+type = "javascript"
+account_id = ""  # Add your Cloudflare account ID here
+workers_dev = true
+route = ""  # Add your route here, e.g., "mdtstech.store/*"
+zone_id = ""  # Add your Cloudflare zone ID here
+
+[site]
+bucket = ".next/static"
+entry-point = "workers-site"
+
+[build]
+command = "npm run build"
+upload.format = "service-worker"
+
+[env.production]
+name = "mdtstech-store-prod"
+route = ""  # Add your production route here
+
+[env.staging]
+name = "mdtstech-store-staging"
+route = ""  # Add your staging route here
+
+# Security headers to be added by Cloudflare
+[headers]
+  [headers.security]
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.mdtstech.store; frame-src 'self' https://challenges.cloudflare.com;"

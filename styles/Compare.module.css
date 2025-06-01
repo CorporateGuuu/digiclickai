@@ -1,0 +1,307 @@
+.compareHeader {
+  margin-bottom: 2rem;
+}
+
+.compareHeader h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.compareHeader p {
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+.compareTable {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.compareRow {
+  display: grid;
+  grid-template-columns: 200px repeat(auto-fit, minmax(200px, 1fr));
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.compareRow:last-child {
+  border-bottom: none;
+}
+
+.compareFeature {
+  background-color: #f9fafb;
+  padding: 1rem;
+  font-weight: 600;
+  color: #1a202c;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+}
+
+.compareProduct {
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+}
+
+.compareProduct:last-child {
+  border-right: none;
+}
+
+.removeProduct {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.removeProduct:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.productImage {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1rem;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.productName {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.productName a {
+  color: #1a202c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.productName a:hover {
+  color: #0066cc;
+}
+
+.compareValue {
+  padding: 1rem;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.compareValue:last-child {
+  border-right: none;
+}
+
+.originalPrice {
+  color: #9ca3af;
+  text-decoration: line-through;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+
+.currentPrice {
+  color: #0066cc;
+  font-weight: 600;
+}
+
+.stockStatus {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.inStock {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.outOfStock {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.notAvailable {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.addToCartButton,
+.viewDetailsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.addToCartButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+}
+
+.addToCartButton:hover {
+  background-color: #0055aa;
+}
+
+.viewDetailsButton {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  text-decoration: none;
+}
+
+.viewDetailsButton:hover {
+  background-color: #e5e7eb;
+  color: #1a202c;
+}
+
+.compareActions {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+}
+
+.backToProductsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.backToProductsButton:hover {
+  background-color: #e5e7eb;
+  color: #1a202c;
+}
+
+.emptyCompare {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyCompare svg {
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.emptyCompare h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.emptyCompare p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.browseButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.browseButton:hover {
+  background-color: #0055aa;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .compareRow {
+    grid-template-columns: 120px repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .compareFeature {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .compareProduct,
+  .compareValue {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .productImage {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .productName {
+    font-size: 0.875rem;
+  }
+  
+  .addToCartButton,
+  .viewDetailsButton {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .compareTable {
+    overflow-x: auto;
+  }
+  
+  .compareRow {
+    width: max-content;
+    min-width: 100%;
+  }
+}

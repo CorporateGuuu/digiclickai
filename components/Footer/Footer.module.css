@@ -1,0 +1,389 @@
+/* Footer.module.css */
+.footer {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 40px 20px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.top {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.newsletter {
+  max-width: 400px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.description {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+.button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 0 4px 4px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.subscriptionConfirmation {
+  background-color: rgba(0, 102, 204, 0.1);
+  border: 1px solid rgba(0, 102, 204, 0.3);
+  border-radius: 4px;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.subscriptionConfirmation svg {
+  color: #0066cc;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.subscriptionConfirmation p {
+  margin: 0;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+  border-radius: 50%;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover {
+  background-color: #0066cc;
+  transform: translateY(-3px);
+}
+
+.button:hover {
+  background-color: #0055aa;
+}
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.service {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.service:hover {
+  transform: translateY(-5px);
+  background-color: #333;
+}
+
+.serviceIcon {
+  font-size: 30px;
+  margin-bottom: 15px;
+  color: #0066cc;
+}
+
+.serviceName {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.serviceDescription {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.middle {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.column h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.links li {
+  margin-bottom: 10px;
+}
+
+.links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: #0066cc;
+}
+
+.contactButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 5px;
+}
+
+.contactButton:hover {
+  background-color: #0055aa;
+}
+
+.contactButton svg {
+  transition: transform 0.3s;
+}
+
+.contactButton:hover svg {
+  transform: translateX(3px);
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.copyright {
+  color: #ccc;
+}
+
+.certificateSection {
+  margin-top: 1rem;
+}
+
+.certificateList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.certificateList li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.certificateList li:hover {
+  transform: translateY(-2px);
+}
+
+.certificateList img {
+  max-width: 100%;
+  height: auto;
+}
+
+.preferences {
+  padding: 1.5rem 0;
+  border-top: 1px solid #333;
+  margin-bottom: 1rem;
+}
+
+.preferencesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 100%;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .preferencesContainer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+  }
+}
+
+.preferenceItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preferenceItem label {
+  color: #a0aec0;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.preferenceSelect {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+.preferenceSelect:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.preferenceSelect option {
+  background-color: #1a202c;
+  color: white;
+}
+
+.acceptedPayments {
+  text-align: center;
+}
+
+.paymentMethods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.paymentMethod {
+  width: 40px;
+  height: 25px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.paymentMethod img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.paymentIcon {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paymentIcon:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 20px 15px 10px;
+  }
+
+  .top {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .middle {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 25px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .description {
+    margin-bottom: 10px;
+  }
+
+  .column h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .links li {
+    margin-bottom: 5px;
+  }
+
+  .bottom {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 15px;
+    gap: 15px;
+  }
+
+  .copyright {
+    font-size: 0.8rem;
+  }
+}
