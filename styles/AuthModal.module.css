@@ -1,0 +1,270 @@
+/* Auth Modal Styles - Matching DigiClick AI Theme */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+  background: linear-gradient(145deg, #1a1a1a, #2c2c2c);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #00d4ff;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  color: #7b2cbf;
+  background: rgba(123, 44, 191, 0.1);
+}
+
+.modalHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.modalHeader h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00d4ff;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.modalHeader p {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 1rem;
+  background: #2c2c2c;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  background: #333333;
+}
+
+.formGroup input.error {
+  border-color: #ff4d4d;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+}
+
+.formGroup input::placeholder {
+  color: #888;
+}
+
+.errorText {
+  color: #ff4d4d;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  text-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+.submitButton {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  margin-top: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(123, 44, 191, 0.5);
+  background: linear-gradient(45deg, #0099cc, #6a1b9a);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message.success {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.message.error {
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: #ff4d4d;
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+}
+
+.switchMode {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.switchMode p {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.switchButton {
+  background: none;
+  border: none;
+  color: #00d4ff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.switchButton:hover:not(:disabled) {
+  color: #7b2cbf;
+  text-shadow: 0 0 5px rgba(123, 44, 191, 0.5);
+}
+
+.switchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 2rem;
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  .modalHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .modalHeader p {
+    font-size: 0.85rem;
+  }
+
+  .formGroup input {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .submitButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 1.5rem;
+  }
+
+  .closeButton {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+
+  .modalHeader {
+    margin-bottom: 1.5rem;
+  }
+
+  .authForm {
+    gap: 1.25rem;
+  }
+}

@@ -42,26 +42,79 @@
   margin: 0;
 }
 
-/* Navigation - matching original */
+/* Navigation - Enhanced with Authentication */
 .nav {
   background: rgba(0, 0, 0, 0.8);
-  padding: 1rem;
-  text-align: center;
+  padding: 1rem 2rem;
   margin-top: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
 }
 
-.nav a {
+.navLeft {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLeft a {
   color: #00d4ff;
-  margin: 0 1.5rem;
   text-decoration: none;
   font-weight: 600;
   font-family: 'Orbitron', sans-serif;
   transition: color 0.3s, text-shadow 0.3s;
 }
 
-.nav a:hover {
+.navLeft a:hover {
   color: #7b2cbf;
   text-shadow: 0 0 10px #7b2cbf;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.welcomeText {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
+.loginButton,
+.registerButton,
+.dashboardButton {
+  background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.loginButton {
+  background: rgba(0, 212, 255, 0.2);
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+}
+
+.loginButton:hover {
+  background: rgba(0, 212, 255, 0.3);
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
+
+.registerButton:hover,
+.dashboardButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(123, 44, 191, 0.5);
 }
 
 /* Hero Section - matching original */
@@ -230,7 +283,7 @@
   text-shadow: 0 0 10px #7b2cbf;
 }
 
-/* Responsive Design - matching original */
+/* Responsive Design - Enhanced */
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 2.5rem;
@@ -240,9 +293,37 @@
     width: 100%;
   }
 
-  .nav a {
-    margin: 0 0.5rem;
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .navLeft {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navLeft a {
     font-size: 0.9rem;
+  }
+
+  .navRight {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .welcomeText {
+    font-size: 0.8rem;
+  }
+
+  .loginButton,
+  .registerButton,
+  .dashboardButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 
   .headerTitle {

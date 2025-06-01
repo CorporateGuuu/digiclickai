@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import { AuthProvider } from '../contexts/AuthContext';
 
 // Simple global CSS
 const globalStyles = `
@@ -37,18 +38,20 @@ try {
 
 function AppContent({ Component, pageProps }) {
   return (
-    <div className="app-wrapper">
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#0070f3" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <style>{globalStyles}</style>
-      </Head>
+    <AuthProvider>
+      <div className="app-wrapper">
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta name="theme-color" content="#0070f3" />
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <style>{globalStyles}</style>
+        </Head>
 
-      <main>
-        <Component {...pageProps} />
-      </main>
-    </div>
+        <main>
+          <Component {...pageProps} />
+        </main>
+      </div>
+    </AuthProvider>
   );
 }
 

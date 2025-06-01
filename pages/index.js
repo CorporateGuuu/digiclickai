@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useAuth } from '../contexts/AuthContext';
+import { getServices, submitContactForm } from '../utils/api';
+import AuthModal from '../components/AuthModal';
+import Portfolio from '../components/Portfolio';
 import styles from '../styles/Home.module.css';
 
 export default function HomePage() {
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,6 +19,8 @@ export default function HomePage() {
   const [formStatus, setFormStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [services, setServices] = useState([]);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('login');
 
   const particlesRef = useRef(null);
   const heroRef = useRef(null);
@@ -142,15 +151,13 @@ export default function HomePage() {
     loadGSAP();
   }, []);
 
-  // Fetch services from backend
+  // Fetch services from backend using API utility
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${apiUrl}/api/services`);
-        if (response.ok) {
-          const servicesData = await response.json();
-          setServices(servicesData);
+        const response = await getServices();
+        if (response.success) {
+          setServices(response.data.data || response.data || []);
         } else {
           // Fallback to default services if API fails
           setServices([
@@ -204,29 +211,20 @@ export default function HomePage() {
     }
 
     try {
-      // Submit to backend API
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          serviceInterest: formData.serviceInterest || 'General Inquiry'
-        }),
+      // Submit using API utility
+      const response = await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        serviceInterest: formData.serviceInterest || 'General Inquiry'
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.success) {
         alert(`Your vision is received, ${formData.name}! We'll connect soon.`);
         setFormData({ name: '', email: '', message: '', serviceInterest: '' });
         setFormStatus('');
       } else {
-        throw new Error(data.error || 'Failed to send message');
+        throw new Error(response.error || 'Failed to send message');
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -265,6 +263,20 @@ export default function HomePage() {
     }
   };
 
+  // Authentication handlers
+  const openAuthModal = (mode = 'login') => {
+    setAuthModalMode(mode);
+    setAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setAuthModalOpen(false);
+  };
+
+  const goToDashboard = () => {
+    router.push('/dashboard');
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -288,12 +300,40 @@ export default function HomePage() {
 
       {/* Navigation */}
       <nav className={styles.nav}>
-        <a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
-        <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a>
-        <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
-        <a href="#portfolio" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Portfolio</a>
-        <a href="#demo" onClick={(e) => { e.preventDefault(); scrollToSection('demo'); }}>Automation Demo</a>
-        <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+        <div className={styles.navLeft}>
+          <a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
+          <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
+          <a href="#portfolio" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Portfolio</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+        </div>
+        <div className={styles.navRight}>
+          {isAuthenticated() ? (
+            <>
+              <span className={styles.welcomeText}>Welcome, {user?.name}</span>
+              <button
+                onClick={goToDashboard}
+                className={styles.dashboardButton}
+              >
+                Dashboard
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => openAuthModal('login')}
+                className={styles.loginButton}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => openAuthModal('register')}
+                className={styles.registerButton}
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
       </nav>
 
       {/* Hero Section - matching original */}
@@ -314,6 +354,9 @@ export default function HomePage() {
           </div>
         ))}
       </section>
+
+      {/* Portfolio Section */}
+      <Portfolio />
 
       {/* Contact Section - matching original with service dropdown */}
       <section className={`${styles.contactForm} contact-form`} id="contact">
@@ -370,6 +413,13 @@ export default function HomePage() {
       <footer className={styles.footer}>
         <p>© 2025 Digiclick AI. All rights reserved. | <a href="mailto:info@digiclick.ai">info@digiclick.ai</a> | (123) 456-7890</p>
       </footer>
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={closeAuthModal}
+        initialMode={authModalMode}
+      />
     </div>
   );
 }
