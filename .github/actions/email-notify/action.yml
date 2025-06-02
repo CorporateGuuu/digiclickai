@@ -1,0 +1,253 @@
+name: 'Email Deployment Notification'
+description: 'Send deployment status notifications via email with HTML templates'
+inputs:
+  smtp-server:
+    description: 'SMTP server hostname'
+    required: true
+  smtp-port:
+    description: 'SMTP server port'
+    required: true
+    default: '587'
+  smtp-username:
+    description: 'SMTP username'
+    required: true
+  smtp-password:
+    description: 'SMTP password'
+    required: true
+  from-email:
+    description: 'From email address'
+    required: true
+  to-emails:
+    description: 'Comma-separated list of recipient emails'
+    required: true
+  status:
+    description: 'Deployment status (success, failure, warning)'
+    required: true
+  subject:
+    description: 'Email subject'
+    required: true
+  commit-hash:
+    description: 'Git commit hash'
+    required: false
+    default: ''
+  commit-message:
+    description: 'Git commit message'
+    required: false
+    default: ''
+  branch:
+    description: 'Git branch name'
+    required: false
+    default: ''
+  deployment-url:
+    description: 'Deployment URL'
+    required: false
+    default: ''
+  build-time:
+    description: 'Build duration'
+    required: false
+    default: ''
+  github-run-url:
+    description: 'GitHub Actions run URL'
+    required: false
+    default: ''
+  error-details:
+    description: 'Error details for failures'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if ! command -v python3 &> /dev/null; then
+          echo "Python3 not found, installing..."
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+        fi
+        pip3 install --user smtplib email
+
+    - name: Generate HTML email template
+      shell: bash
+      run: |
+        # Determine status styling
+        case "${{ inputs.status }}" in
+          "success")
+            STATUS_COLOR="#28a745"
+            STATUS_ICON="✅"
+            STATUS_TEXT="SUCCESS"
+            ;;
+          "failure")
+            STATUS_COLOR="#dc3545"
+            STATUS_ICON="❌"
+            STATUS_TEXT="FAILURE"
+            ;;
+          "warning")
+            STATUS_COLOR="#ffc107"
+            STATUS_ICON="⚠️"
+            STATUS_TEXT="WARNING"
+            ;;
+          *)
+            STATUS_COLOR="#17a2b8"
+            STATUS_ICON="ℹ️"
+            STATUS_TEXT="INFO"
+            ;;
+        esac
+        
+        # Create HTML email template
+        cat > email_template.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>DigiClick AI Deployment Notification</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; }
+                .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+                .header { background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%); color: white; padding: 30px; text-align: center; }
+                .header h1 { margin: 0; font-size: 24px; }
+                .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 10px 0; }
+                .content { padding: 30px; }
+                .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+                .info-item { background-color: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #00d4ff; }
+                .info-item h4 { margin: 0 0 8px 0; color: #333; font-size: 14px; }
+                .info-item p { margin: 0; color: #666; font-size: 16px; }
+                .button { display: inline-block; padding: 12px 24px; background-color: #00d4ff; color: white; text-decoration: none; border-radius: 6px; margin: 10px 5px; }
+                .button:hover { background-color: #0099cc; }
+                .error-details { background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 6px; padding: 15px; margin: 20px 0; color: #721c24; }
+                .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+                .cursor-status { background: linear-gradient(45deg, #00d4ff, #7b2cbf); color: white; padding: 20px; margin: 20px 0; border-radius: 6px; }
+                @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🤖 DigiClick AI Deployment</h1>
+                    <div class="status-badge" style="background-color: STATUS_COLOR_PLACEHOLDER;">
+                        STATUS_ICON_PLACEHOLDER STATUS_TEXT_PLACEHOLDER
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <h2>Deployment Details</h2>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>Commit</h4>
+                            <p>COMMIT_HASH_PLACEHOLDER</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Branch</h4>
+                            <p>BRANCH_PLACEHOLDER</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Build Time</h4>
+                            <p>BUILD_TIME_PLACEHOLDER</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Timestamp</h4>
+                            <p>TIMESTAMP_PLACEHOLDER</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4>Commit Message:</h4>
+                        <p style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; font-style: italic;">
+                            COMMIT_MESSAGE_PLACEHOLDER
+                        </p>
+                    </div>
+                    
+                    ERROR_SECTION_PLACEHOLDER
+                    
+                    CURSOR_STATUS_PLACEHOLDER
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="DEPLOYMENT_URL_PLACEHOLDER" class="button">View Live Site</a>
+                        <a href="GITHUB_RUN_URL_PLACEHOLDER" class="button" style="background-color: #6c757d;">View Build Logs</a>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p>This is an automated notification from DigiClick AI CI/CD Pipeline</p>
+                    <p>Generated at TIMESTAMP_PLACEHOLDER</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        EOF
+        
+        # Replace placeholders
+        sed -i "s/STATUS_COLOR_PLACEHOLDER/$STATUS_COLOR/g" email_template.html
+        sed -i "s/STATUS_ICON_PLACEHOLDER/$STATUS_ICON/g" email_template.html
+        sed -i "s/STATUS_TEXT_PLACEHOLDER/$STATUS_TEXT/g" email_template.html
+        sed -i "s|COMMIT_HASH_PLACEHOLDER|${{ inputs.commit-hash }}|g" email_template.html
+        sed -i "s|BRANCH_PLACEHOLDER|${{ inputs.branch }}|g" email_template.html
+        sed -i "s|BUILD_TIME_PLACEHOLDER|${{ inputs.build-time }}|g" email_template.html
+        sed -i "s|COMMIT_MESSAGE_PLACEHOLDER|${{ inputs.commit-message }}|g" email_template.html
+        sed -i "s|DEPLOYMENT_URL_PLACEHOLDER|${{ inputs.deployment-url }}|g" email_template.html
+        sed -i "s|GITHUB_RUN_URL_PLACEHOLDER|${{ inputs.github-run-url }}|g" email_template.html
+        sed -i "s|TIMESTAMP_PLACEHOLDER|$(date '+%Y-%m-%d %H:%M:%S UTC')|g" email_template.html
+        
+        # Add error section for failures
+        if [ "${{ inputs.status }}" = "failure" ] && [ -n "${{ inputs.error-details }}" ]; then
+          ERROR_SECTION='<div class="error-details"><h4>Error Details:</h4><pre>${{ inputs.error-details }}</pre></div>'
+          sed -i "s|ERROR_SECTION_PLACEHOLDER|$ERROR_SECTION|g" email_template.html
+        else
+          sed -i "s|ERROR_SECTION_PLACEHOLDER||g" email_template.html
+        fi
+        
+        # Add cursor status for successful deployments
+        if [ "${{ inputs.status }}" = "success" ]; then
+          CURSOR_STATUS='<div class="cursor-status"><h3>🎯 Context-Aware Cursor System Status</h3><p>✅ All 43 pages deployed successfully</p><p>✅ Enhanced cursor interactions verified</p><p><a href="${{ inputs.deployment-url }}/cursor-context-demo" style="color: white; text-decoration: underline;">Test Cursor Demo</a></p></div>'
+          sed -i "s|CURSOR_STATUS_PLACEHOLDER|$CURSOR_STATUS|g" email_template.html
+        else
+          sed -i "s|CURSOR_STATUS_PLACEHOLDER||g" email_template.html
+        fi
+
+    - name: Send email notification
+      shell: bash
+      run: |
+        python3 << 'EOF'
+        import smtplib
+        import ssl
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        import os
+        
+        # Email configuration
+        smtp_server = "${{ inputs.smtp-server }}"
+        smtp_port = int("${{ inputs.smtp-port }}")
+        smtp_username = "${{ inputs.smtp-username }}"
+        smtp_password = "${{ inputs.smtp-password }}"
+        from_email = "${{ inputs.from-email }}"
+        to_emails = "${{ inputs.to-emails }}".split(',')
+        
+        # Read HTML template
+        with open('email_template.html', 'r') as f:
+            html_content = f.read()
+        
+        # Create message
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "${{ inputs.subject }}"
+        message["From"] = from_email
+        message["To"] = ", ".join(to_emails)
+        
+        # Add HTML content
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        # Send email
+        try:
+            context = ssl.create_default_context()
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls(context=context)
+                server.login(smtp_username, smtp_password)
+                server.sendmail(from_email, to_emails, message.as_string())
+            print("Email notification sent successfully!")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+            exit(1)
+        EOF

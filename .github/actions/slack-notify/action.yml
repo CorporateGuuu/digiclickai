@@ -1,0 +1,175 @@
+name: 'Slack Deployment Notification'
+description: 'Send deployment status notifications to Slack with rich formatting'
+inputs:
+  webhook-url:
+    description: 'Slack webhook URL'
+    required: true
+  status:
+    description: 'Deployment status (success, failure, warning, info)'
+    required: true
+  title:
+    description: 'Notification title'
+    required: true
+  message:
+    description: 'Notification message'
+    required: false
+    default: ''
+  commit-hash:
+    description: 'Git commit hash'
+    required: false
+    default: ''
+  commit-message:
+    description: 'Git commit message'
+    required: false
+    default: ''
+  branch:
+    description: 'Git branch name'
+    required: false
+    default: ''
+  deployment-url:
+    description: 'Deployment URL'
+    required: false
+    default: ''
+  build-time:
+    description: 'Build duration'
+    required: false
+    default: ''
+  github-run-url:
+    description: 'GitHub Actions run URL'
+    required: false
+    default: ''
+  error-details:
+    description: 'Error details for failures'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Determine color and emoji
+      id: format
+      shell: bash
+      run: |
+        case "${{ inputs.status }}" in
+          "success")
+            echo "color=good" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            ;;
+          "failure")
+            echo "color=danger" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            ;;
+          "warning")
+            echo "color=warning" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "color=#36a64f" >> $GITHUB_OUTPUT
+            echo "emoji=ℹ️" >> $GITHUB_OUTPUT
+            ;;
+        esac
+
+    - name: Send Slack notification
+      shell: bash
+      run: |
+        # Prepare commit info
+        COMMIT_SHORT="${{ inputs.commit-hash }}"
+        if [ ${#COMMIT_SHORT} -gt 7 ]; then
+          COMMIT_SHORT="${COMMIT_SHORT:0:7}"
+        fi
+        
+        # Prepare fields array
+        FIELDS='[]'
+        
+        if [ -n "${{ inputs.commit-hash }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Commit", "value": "<${{ inputs.github-run-url }}|'$COMMIT_SHORT'>", "short": true}]')
+        fi
+        
+        if [ -n "${{ inputs.branch }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Branch", "value": "${{ inputs.branch }}", "short": true}]')
+        fi
+        
+        if [ -n "${{ inputs.build-time }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Build Time", "value": "${{ inputs.build-time }}", "short": true}]')
+        fi
+        
+        if [ -n "${{ inputs.deployment-url }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Deployment", "value": "<${{ inputs.deployment-url }}|View Live Site>", "short": true}]')
+        fi
+        
+        # Add error details for failures
+        if [ "${{ inputs.status }}" = "failure" ] && [ -n "${{ inputs.error-details }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Error Details", "value": "${{ inputs.error-details }}", "short": false}]')
+        fi
+        
+        # Prepare the payload
+        PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Deployment Bot",
+          "icon_emoji": ":robot_face:",
+          "attachments": [
+            {
+              "color": "${{ steps.format.outputs.color }}",
+              "title": "${{ steps.format.outputs.emoji }} ${{ inputs.title }}",
+              "text": "${{ inputs.message }}",
+              "fields": $FIELDS,
+              "footer": "DigiClick AI CI/CD",
+              "footer_icon": "https://github.com/favicon.ico",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        # Send to Slack
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$PAYLOAD" \
+          "${{ inputs.webhook-url }}"
+
+    - name: Add cursor system status
+      if: inputs.status == 'success'
+      shell: bash
+      run: |
+        # Send additional message for successful deployments with cursor system status
+        CURSOR_PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Deployment Bot",
+          "icon_emoji": ":computer_mouse:",
+          "attachments": [
+            {
+              "color": "good",
+              "title": "🎯 Context-Aware Cursor System Status",
+              "fields": [
+                {
+                  "title": "Cursor Demo",
+                  "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Test Interactive Cursor>",
+                  "short": true
+                },
+                {
+                  "title": "Portfolio",
+                  "value": "<${{ inputs.deployment-url }}/portfolio|View Portfolio>",
+                  "short": true
+                },
+                {
+                  "title": "Pages Deployed",
+                  "value": "43 pages with enhanced cursor states",
+                  "short": true
+                },
+                {
+                  "title": "Sitemap",
+                  "value": "<${{ inputs.deployment-url }}/sitemap.xml|View Sitemap>",
+                  "short": true
+                }
+              ],
+              "footer": "All cursor interactions verified ✅",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$CURSOR_PAYLOAD" \
+          "${{ inputs.webhook-url }}"

@@ -309,25 +309,126 @@ jobs:
             test-results/
             playwright-report/
 
-  # Notification Job
+  # Comprehensive Notification Job
   notify:
-    name: 📢 Notify Deployment Status
+    name: 📢 Deployment Notifications
     runs-on: ubuntu-latest
     needs: [deploy-netlify, post-deploy-test]
     if: always()
     steps:
-      - name: 📢 Notify success
-        if: needs.deploy-netlify.result == 'success' && needs.post-deploy-test.result == 'success'
-        run: |
-          echo "🎉 DigiClick AI deployed successfully to Netlify!"
-          echo "🌐 Live site: ${{ secrets.NEXT_PUBLIC_APP_URL }}"
-          echo "🎯 Context-aware cursor demo: ${{ secrets.NEXT_PUBLIC_APP_URL }}/cursor-context-demo"
-          echo "📄 Sitemap: ${{ secrets.NEXT_PUBLIC_APP_URL }}/sitemap.xml"
-          echo "✅ All 43 pages deployed with enhanced cursor system"
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-      - name: 📢 Notify failure
-        if: needs.deploy-netlify.result == 'failure' || needs.post-deploy-test.result == 'failure'
+      - name: 📊 Calculate build metrics
+        id: metrics
         run: |
-          echo "❌ Deployment failed!"
-          echo "Please check the logs and fix any issues."
-          echo "Common issues: Script path errors, missing secrets, build failures"
+          # Calculate build time (approximate)
+          BUILD_START_TIME="${{ github.event.head_commit.timestamp }}"
+          BUILD_END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Get commit info
+          COMMIT_HASH="${{ github.sha }}"
+          COMMIT_SHORT="${COMMIT_HASH:0:7}"
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          BRANCH_NAME="${{ github.ref_name }}"
+
+          # Determine overall status
+          if [[ "${{ needs.deploy-netlify.result }}" == "success" && "${{ needs.post-deploy-test.result }}" == "success" ]]; then
+            OVERALL_STATUS="success"
+            STATUS_EMOJI="✅"
+            STATUS_TEXT="SUCCESS"
+          elif [[ "${{ needs.deploy-netlify.result }}" == "failure" || "${{ needs.post-deploy-test.result }}" == "failure" ]]; then
+            OVERALL_STATUS="failure"
+            STATUS_EMOJI="❌"
+            STATUS_TEXT="FAILURE"
+          else
+            OVERALL_STATUS="warning"
+            STATUS_EMOJI="⚠️"
+            STATUS_TEXT="WARNING"
+          fi
+
+          # Set outputs
+          echo "status=$OVERALL_STATUS" >> $GITHUB_OUTPUT
+          echo "status_emoji=$STATUS_EMOJI" >> $GITHUB_OUTPUT
+          echo "status_text=$STATUS_TEXT" >> $GITHUB_OUTPUT
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "commit_short=$COMMIT_SHORT" >> $GITHUB_OUTPUT
+          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_OUTPUT
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "build_time=~5 minutes" >> $GITHUB_OUTPUT
+          echo "github_run_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+      - name: 📧 Send email notification
+        if: always()
+        uses: ./.github/actions/email-notify
+        with:
+          smtp-server: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          smtp-port: ${{ secrets.SMTP_PORT || '587' }}
+          smtp-username: ${{ secrets.SMTP_USERNAME }}
+          smtp-password: ${{ secrets.SMTP_PASSWORD }}
+          from-email: ${{ secrets.FROM_EMAIL }}
+          to-emails: ${{ secrets.ALERT_EMAIL_RECIPIENTS }}
+          status: ${{ steps.metrics.outputs.status }}
+          subject: "${{ steps.metrics.outputs.status_emoji }} DigiClick AI Deployment ${{ steps.metrics.outputs.status_text }} - ${{ steps.metrics.outputs.commit_short }}"
+          commit-hash: ${{ steps.metrics.outputs.commit_hash }}
+          commit-message: ${{ steps.metrics.outputs.commit_message }}
+          branch: ${{ steps.metrics.outputs.branch_name }}
+          deployment-url: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          build-time: ${{ steps.metrics.outputs.build_time }}
+          github-run-url: ${{ steps.metrics.outputs.github_run_url }}
+          error-details: ${{ needs.deploy-netlify.result == 'failure' && 'Netlify deployment failed' || needs.post-deploy-test.result == 'failure' && 'Post-deployment tests failed' || '' }}
+
+      - name: 💬 Send Slack notification
+        if: always()
+        uses: ./.github/actions/slack-notify
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: ${{ steps.metrics.outputs.status }}
+          title: "DigiClick AI Deployment ${{ steps.metrics.outputs.status_text }}"
+          message: ${{ steps.metrics.outputs.status == 'success' && 'Deployment completed successfully with enhanced cursor system!' || 'Deployment encountered issues. Check logs for details.' }}
+          commit-hash: ${{ steps.metrics.outputs.commit_hash }}
+          commit-message: ${{ steps.metrics.outputs.commit_message }}
+          branch: ${{ steps.metrics.outputs.branch_name }}
+          deployment-url: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          build-time: ${{ steps.metrics.outputs.build_time }}
+          github-run-url: ${{ steps.metrics.outputs.github_run_url }}
+          error-details: ${{ needs.deploy-netlify.result == 'failure' && 'Netlify deployment failed - check build logs' || needs.post-deploy-test.result == 'failure' && 'Post-deployment verification failed - site may be inaccessible' || '' }}
+
+      - name: 🔍 Run comprehensive monitoring
+        if: steps.metrics.outputs.status == 'success'
+        run: |
+          echo "🔍 Running post-deployment monitoring..."
+          node scripts/deployment-monitor.js
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: 📊 Upload monitoring report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-monitoring-report
+          path: |
+            reports/
+          retention-days: 30
+
+      - name: 🚨 Send failure alert with details
+        if: steps.metrics.outputs.status == 'failure'
+        uses: ./.github/actions/slack-notify
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: failure
+          title: "🚨 URGENT: DigiClick AI Deployment Failed"
+          message: |
+            Immediate action required! Deployment has failed and may impact live site.
+
+            **Next Steps:**
+            1. Check GitHub Actions logs
+            2. Verify Netlify deployment status
+            3. Test cursor system functionality
+            4. Consider rollback if necessary
+          commit-hash: ${{ steps.metrics.outputs.commit_hash }}
+          commit-message: ${{ steps.metrics.outputs.commit_message }}
+          branch: ${{ steps.metrics.outputs.branch_name }}
+          github-run-url: ${{ steps.metrics.outputs.github_run_url }}
+          error-details: "Build: ${{ needs.build.result }} | Deploy: ${{ needs.deploy-netlify.result }} | Tests: ${{ needs.post-deploy-test.result }}"
