@@ -1,11 +1,23 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useCursorABTest } from '../../contexts/ABTestContext';
-import EnhancedCustomCursor from './EnhancedCustomCursor'; // Current cursor
-import EnhancedCursor from './variants/EnhancedCursor';
-import MinimalCursor from './variants/MinimalCursor';
-import GamingCursor from './variants/GamingCursor';
+import { detectDevice, preloadGSAPIfNeeded, loadGSAPForVariant } from '../../lib/gsap-loader';
+import { capturePerformanceIssue } from '../../lib/sentry-config';
+import EnhancedCustomCursor from './EnhancedCustomCursor'; // Fallback cursor
+
+// Dynamic imports for cursor variants with chunk splitting
+const EnhancedCursor = lazy(() =>
+  import('./variants/EnhancedCursor').then(module => ({ default: module.default }))
+);
+
+const MinimalCursor = lazy(() =>
+  import('./variants/MinimalCursor').then(module => ({ default: module.default }))
+);
+
+const GamingCursor = lazy(() =>
+  import('./variants/GamingCursor').then(module => ({ default: module.default }))
+);
 
 interface ABTestCursorManagerProps {
   children?: React.ReactNode;
@@ -15,18 +27,42 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
   const { variant, config, trackCursorEvent, isVariant } = useCursorABTest();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
-    // Detect touch devices
-    const checkTouchDevice = () => {
-      const hasTouch = 'ontouchstart' in window || 
-                      navigator.maxTouchPoints > 0 || 
-                      (navigator as any).msMaxTouchPoints > 0;
-      setIsTouchDevice(hasTouch);
-      setIsVisible(!hasTouch);
-    };
+    // Use optimized device detection
+    const device = detectDevice();
+    setIsTouchDevice(device.isTouch);
+    setIsVisible(!device.isTouch);
 
-    checkTouchDevice();
+    // Preload GSAP if needed for the variant
+    if (!device.isTouch) {
+      preloadGSAPIfNeeded();
+
+      // Load GSAP for current variant
+      loadGSAPForVariant(variant)
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error('Failed to load GSAP for variant:', variant, error);
+          setLoadError(true);
+          setIsLoading(false);
+
+          capturePerformanceIssue(
+            'cursor_variant_load_failed',
+            0,
+            1,
+            {
+              tags: { variant, component: 'cursor_manager' },
+              extra: { error: error.message }
+            }
+          );
+        });
+    } else {
+      setIsLoading(false);
+    }
     
     // Track cursor variant assignment
     trackCursorEvent('variant_assigned', undefined, {
@@ -123,9 +159,14 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
     return () => window.removeEventListener('error', handleError);
   }, [variant, trackCursorEvent]);
 
-  // Fallback to control variant on error
-  if (hasError) {
-    return <EnhancedCustomCursor isVisible={isVisible} />;
+  // Fallback to control variant on error or loading failure
+  if (hasError || loadError) {
+    return (
+      <>
+        <EnhancedCustomCursor isVisible={isVisible} />
+        {children}
+      </>
+    );
   }
 
   // Don't render cursor on touch devices
@@ -133,18 +174,44 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
     return <>{children}</>;
   }
 
-  // Render appropriate cursor variant
+  // Show loading state while GSAP loads
+  if (isLoading) {
+    return (
+      <>
+        <EnhancedCustomCursor isVisible={isVisible} />
+        {children}
+      </>
+    );
+  }
+
+  // Render appropriate cursor variant with Suspense
   const renderCursorVariant = () => {
+    const CursorFallback = () => (
+      <EnhancedCustomCursor isVisible={isVisible} />
+    );
+
     switch (variant) {
       case 'enhanced':
-        return <EnhancedCursor isVisible={isVisible} />;
-      
+        return (
+          <Suspense fallback={<CursorFallback />}>
+            <EnhancedCursor isVisible={isVisible} />
+          </Suspense>
+        );
+
       case 'minimal':
-        return <MinimalCursor isVisible={isVisible} />;
-      
+        return (
+          <Suspense fallback={<CursorFallback />}>
+            <MinimalCursor isVisible={isVisible} />
+          </Suspense>
+        );
+
       case 'gaming':
-        return <GamingCursor isVisible={isVisible} />;
-      
+        return (
+          <Suspense fallback={<CursorFallback />}>
+            <GamingCursor isVisible={isVisible} />
+          </Suspense>
+        );
+
       case 'control':
       default:
         return <EnhancedCustomCursor isVisible={isVisible} />;

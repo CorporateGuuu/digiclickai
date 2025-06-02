@@ -56,7 +56,15 @@
     "sitemap:generate": "node Scripts/generate-sitemap.js",
     "performance:test": "echo 'Performance testing temporarily disabled for deployment'",
     "cursor:demo": "echo 'Visit http://localhost:3000/cursor-demo to test cursor functionality'",
-    "postbuild": "npm run sitemap:generate"
+    "postbuild": "npm run sitemap:generate",
+    "optimize": "node scripts/performance-optimizer.js",
+    "bundle-analyze": "node scripts/bundle-analyzer.js",
+    "perf-audit": "lighthouse http://localhost:3000 --output=json --output-path=./reports/lighthouse-audit.json",
+    "perf-test": "npm run build && npm run perf-audit",
+    "optimize-images": "node scripts/optimize-images.js",
+    "test:performance:full": "npm run build && npm run optimize && npm run perf-audit",
+    "analyze:bundle": "ANALYZE=true npm run build",
+    "monitor:performance": "node scripts/continuous-monitoring.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -148,6 +156,15 @@
     "stylelint-config-recommended": "^14.0.0",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "^6.0.4",
-    "supertest": "^7.1.0"
+    "supertest": "^7.1.0",
+    "webpack-bundle-analyzer": "^4.10.1",
+    "lighthouse": "^11.4.0",
+    "@sentry/nextjs": "^7.99.0",
+    "web-vitals": "^3.5.2",
+    "babel-plugin-transform-imports": "^2.0.0",
+    "imagemin": "^8.0.1",
+    "imagemin-webp": "^8.0.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^10.0.0"
   }
 }
