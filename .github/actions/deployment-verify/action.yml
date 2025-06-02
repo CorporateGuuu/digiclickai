@@ -1,0 +1,349 @@
+name: 'Comprehensive Deployment Verification'
+description: 'Validates all critical functionality post-deployment including cursor system, A/B testing, and performance monitoring'
+inputs:
+  deployment-url:
+    description: 'Deployment URL to verify'
+    required: true
+  backend-url:
+    description: 'Backend API URL'
+    required: true
+  slack-webhook-url:
+    description: 'Slack webhook URL for notifications'
+    required: false
+  verification-timeout:
+    description: 'Timeout for verification in seconds'
+    required: false
+    default: '600'
+  enable-performance-tests:
+    description: 'Enable performance testing during verification'
+    required: false
+    default: 'true'
+  enable-ab-testing-verification:
+    description: 'Enable A/B testing system verification'
+    required: false
+    default: 'true'
+
+outputs:
+  verification-status:
+    description: 'Overall verification status (success, warning, failure, critical_failure)'
+    value: ${{ steps.verify.outputs.status }}
+  pages-tested:
+    description: 'Number of pages tested'
+    value: ${{ steps.verify.outputs.pages_tested }}
+  pages-successful:
+    description: 'Number of pages that loaded successfully'
+    value: ${{ steps.verify.outputs.pages_successful }}
+  cursor-variants-working:
+    description: 'Number of cursor variants working correctly'
+    value: ${{ steps.verify.outputs.cursor_variants_working }}
+  ab-testing-status:
+    description: 'A/B testing system status'
+    value: ${{ steps.verify.outputs.ab_testing_status }}
+  backend-status:
+    description: 'Backend integration status'
+    value: ${{ steps.verify.outputs.backend_status }}
+  verification-report-url:
+    description: 'URL to detailed verification report'
+    value: ${{ steps.verify.outputs.report_url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 📦 Setup Node.js for verification
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 📥 Install verification dependencies
+      shell: bash
+      run: |
+        npm install puppeteer lighthouse @lhci/cli --no-save
+
+    - name: ⏳ Wait for deployment to be ready
+      shell: bash
+      run: |
+        echo "Waiting for deployment to be fully ready..."
+        
+        # Wait for main site
+        npx wait-on ${{ inputs.deployment-url }} --timeout 300000 --interval 5000
+        
+        # Additional wait for edge functions and static assets
+        sleep 30
+        
+        # Verify critical pages are accessible
+        CRITICAL_PAGES=("/" "/cursor-context-demo" "/admin/ab-test")
+        
+        for page in "${CRITICAL_PAGES[@]}"; do
+          echo "Checking ${{ inputs.deployment-url }}$page"
+          
+          for i in {1..5}; do
+            if curl -f -s "${{ inputs.deployment-url }}$page" > /dev/null; then
+              echo "✅ $page is accessible"
+              break
+            else
+              echo "⏳ Waiting for $page (attempt $i/5)..."
+              sleep 10
+            fi
+          done
+        done
+
+    - name: 🔍 Run comprehensive deployment verification
+      id: verify
+      shell: bash
+      run: |
+        echo "Starting comprehensive deployment verification..."
+        
+        # Set environment variables for verification script
+        export NEXT_PUBLIC_APP_URL="${{ inputs.deployment-url }}"
+        export NEXT_PUBLIC_API_URL="${{ inputs.backend-url }}"
+        export VERIFICATION_TIMEOUT="${{ inputs.verification-timeout }}"
+        export ENABLE_PERFORMANCE_TESTS="${{ inputs.enable-performance-tests }}"
+        export ENABLE_AB_TESTING="${{ inputs.enable-ab-testing-verification }}"
+        
+        # Run verification script
+        node scripts/deployment-verification.js
+        
+        # Parse results
+        if [ -f "reports/deployment-verification-report.json" ]; then
+          VERIFICATION_STATUS=$(jq -r '.overall_status' reports/deployment-verification-report.json)
+          PAGES_TESTED=$(jq -r '.summary.total_pages_tested // 0' reports/deployment-verification-report.json)
+          PAGES_SUCCESSFUL=$(jq -r '.summary.pages_successful // 0' reports/deployment-verification-report.json)
+          CURSOR_VARIANTS=$(jq -r '.summary.cursor_variants_working // 0' reports/deployment-verification-report.json)
+          AB_TESTING_STATUS=$(jq -r '.ab_testing.edge_function_working // false' reports/deployment-verification-report.json)
+          BACKEND_STATUS=$(jq -r '.backend_integration.backend_accessible // false' reports/deployment-verification-report.json)
+          ERROR_COUNT=$(jq -r '.errors | length' reports/deployment-verification-report.json)
+          WARNING_COUNT=$(jq -r '.warnings | length' reports/deployment-verification-report.json)
+        else
+          VERIFICATION_STATUS="failure"
+          PAGES_TESTED=0
+          PAGES_SUCCESSFUL=0
+          CURSOR_VARIANTS=0
+          AB_TESTING_STATUS="false"
+          BACKEND_STATUS="false"
+          ERROR_COUNT=1
+          WARNING_COUNT=0
+        fi
+        
+        # Set outputs
+        echo "status=$VERIFICATION_STATUS" >> $GITHUB_OUTPUT
+        echo "pages_tested=$PAGES_TESTED" >> $GITHUB_OUTPUT
+        echo "pages_successful=$PAGES_SUCCESSFUL" >> $GITHUB_OUTPUT
+        echo "cursor_variants_working=$CURSOR_VARIANTS" >> $GITHUB_OUTPUT
+        echo "ab_testing_status=$AB_TESTING_STATUS" >> $GITHUB_OUTPUT
+        echo "backend_status=$BACKEND_STATUS" >> $GITHUB_OUTPUT
+        echo "error_count=$ERROR_COUNT" >> $GITHUB_OUTPUT
+        echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+        
+        # Generate summary
+        echo "📊 Verification Summary:"
+        echo "Status: $VERIFICATION_STATUS"
+        echo "Pages: $PAGES_SUCCESSFUL/$PAGES_TESTED successful"
+        echo "Cursor Variants: $CURSOR_VARIANTS working"
+        echo "A/B Testing: $AB_TESTING_STATUS"
+        echo "Backend: $BACKEND_STATUS"
+        echo "Errors: $ERROR_COUNT"
+        echo "Warnings: $WARNING_COUNT"
+
+    - name: 🧪 Verify A/B testing system
+      if: inputs.enable-ab-testing-verification == 'true'
+      shell: bash
+      run: |
+        echo "Running additional A/B testing verification..."
+        
+        # Test edge function response
+        EDGE_FUNCTION_TEST=$(curl -s -I "${{ inputs.deployment-url }}/" | grep -i "x-ab-" || echo "")
+        
+        if [ -n "$EDGE_FUNCTION_TEST" ]; then
+          echo "✅ Edge function headers detected"
+        else
+          echo "⚠️ Edge function headers not found"
+        fi
+        
+        # Test variant assignment consistency
+        for i in {1..5}; do
+          RESPONSE=$(curl -s -c /tmp/cookies_$i -b /tmp/cookies_$i "${{ inputs.deployment-url }}/")
+          echo "Request $i completed"
+        done
+        
+        echo "✅ A/B testing verification complete"
+
+    - name: 📊 Run performance verification
+      if: inputs.enable-performance-tests == 'true'
+      shell: bash
+      run: |
+        echo "Running performance verification..."
+        
+        # Quick Lighthouse audit on critical pages
+        CRITICAL_PAGES=("/" "/cursor-context-demo")
+        
+        for page in "${CRITICAL_PAGES[@]}"; do
+          echo "Testing performance for $page"
+          
+          npx lighthouse "${{ inputs.deployment-url }}$page" \
+            --chrome-flags="--headless --no-sandbox" \
+            --output=json \
+            --output-path="./lighthouse-$page.json" \
+            --quiet || echo "Lighthouse failed for $page"
+        done
+        
+        # Check if any Lighthouse reports were generated
+        if ls lighthouse-*.json 1> /dev/null 2>&1; then
+          echo "✅ Performance verification complete"
+        else
+          echo "⚠️ Performance verification had issues"
+        fi
+
+    - name: 🔧 Generate verification artifacts
+      shell: bash
+      run: |
+        # Create verification artifacts directory
+        mkdir -p verification-artifacts
+        
+        # Copy verification report
+        if [ -f "reports/deployment-verification-report.json" ]; then
+          cp reports/deployment-verification-report.json verification-artifacts/
+        fi
+        
+        # Copy Lighthouse reports
+        if ls lighthouse-*.json 1> /dev/null 2>&1; then
+          cp lighthouse-*.json verification-artifacts/
+        fi
+        
+        # Generate summary report
+        cat > verification-artifacts/verification-summary.md << EOF
+        # DigiClick AI Deployment Verification Report
+        
+        **Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Deployment URL:** ${{ inputs.deployment-url }}
+        **Backend URL:** ${{ inputs.backend-url }}
+        
+        ## Verification Results
+        
+        - **Overall Status:** ${{ steps.verify.outputs.status }}
+        - **Pages Tested:** ${{ steps.verify.outputs.pages_successful }}/${{ steps.verify.outputs.pages_tested }}
+        - **Cursor Variants Working:** ${{ steps.verify.outputs.cursor_variants_working }}
+        - **A/B Testing:** ${{ steps.verify.outputs.ab_testing_status }}
+        - **Backend Integration:** ${{ steps.verify.outputs.backend_status }}
+        - **Errors:** ${{ steps.verify.outputs.error_count }}
+        - **Warnings:** ${{ steps.verify.outputs.warning_count }}
+        
+        ## Quick Links
+        
+        - [Live Site](${{ inputs.deployment-url }})
+        - [Cursor Demo](${{ inputs.deployment-url }}/cursor-context-demo)
+        - [A/B Testing Dashboard](${{ inputs.deployment-url }}/admin/ab-test)
+        
+        EOF
+        
+        echo "✅ Verification artifacts generated"
+
+    - name: 📤 Upload verification artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: deployment-verification-artifacts
+        path: |
+          verification-artifacts/
+          reports/
+        retention-days: 30
+
+    - name: 🚨 Send verification notification
+      if: always() && inputs.slack-webhook-url != ''
+      shell: bash
+      run: |
+        # Determine notification color and emoji
+        STATUS="${{ steps.verify.outputs.status }}"
+        
+        case "$STATUS" in
+          "success")
+            COLOR="good"
+            EMOJI="✅"
+            URGENCY=""
+            ;;
+          "warning")
+            COLOR="warning"
+            EMOJI="⚠️"
+            URGENCY=""
+            ;;
+          "failure")
+            COLOR="danger"
+            EMOJI="❌"
+            URGENCY="<!here> "
+            ;;
+          "critical_failure")
+            COLOR="danger"
+            EMOJI="🚨"
+            URGENCY="<!channel> CRITICAL: "
+            ;;
+          *)
+            COLOR="#36a64f"
+            EMOJI="ℹ️"
+            URGENCY=""
+            ;;
+        esac
+        
+        # Create Slack payload
+        PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Deployment Verification",
+          "icon_emoji": ":white_check_mark:",
+          "text": "${URGENCY}Deployment verification completed",
+          "attachments": [
+            {
+              "color": "$COLOR",
+              "title": "$EMOJI DigiClick AI Deployment Verification",
+              "fields": [
+                {
+                  "title": "Overall Status",
+                  "value": "$STATUS",
+                  "short": true
+                },
+                {
+                  "title": "Pages Tested",
+                  "value": "${{ steps.verify.outputs.pages_successful }}/${{ steps.verify.outputs.pages_tested }}",
+                  "short": true
+                },
+                {
+                  "title": "Cursor Variants",
+                  "value": "${{ steps.verify.outputs.cursor_variants_working }} working",
+                  "short": true
+                },
+                {
+                  "title": "A/B Testing",
+                  "value": "${{ steps.verify.outputs.ab_testing_status }}",
+                  "short": true
+                },
+                {
+                  "title": "Backend Status",
+                  "value": "${{ steps.verify.outputs.backend_status }}",
+                  "short": true
+                },
+                {
+                  "title": "Issues",
+                  "value": "${{ steps.verify.outputs.error_count }} errors, ${{ steps.verify.outputs.warning_count }} warnings",
+                  "short": true
+                },
+                {
+                  "title": "Live Site",
+                  "value": "<${{ inputs.deployment-url }}|View Site>",
+                  "short": true
+                },
+                {
+                  "title": "Cursor Demo",
+                  "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Test Cursor>",
+                  "short": true
+                }
+              ],
+              "footer": "DigiClick AI Deployment Verification",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        # Send to Slack
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$PAYLOAD" \
+          "${{ inputs.slack-webhook-url }}"

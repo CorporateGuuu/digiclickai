@@ -578,3 +578,77 @@ jobs:
           branch: ${{ steps.metrics.outputs.branch_name }}
           github-run-url: ${{ steps.metrics.outputs.github_run_url }}
           error-details: "Build: ${{ needs.build.result }} | Deploy: ${{ needs.deploy-netlify.result }} | Tests: ${{ needs.post-deploy-test.result }}"
+
+  # Comprehensive Deployment Verification
+  deployment-verification:
+    name: 🔍 Comprehensive Deployment Verification
+    runs-on: ubuntu-latest
+    needs: [deploy-netlify, performance-audit]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Run comprehensive deployment verification
+        id: verification
+        uses: ./.github/actions/deployment-verify
+        with:
+          deployment-url: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          backend-url: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          verification-timeout: '600'
+          enable-performance-tests: 'true'
+          enable-ab-testing-verification: 'true'
+
+      - name: 📊 Analyze verification results
+        id: analysis
+        run: |
+          VERIFICATION_STATUS="${{ steps.verification.outputs.verification-status }}"
+          PAGES_SUCCESS_RATE=$(echo "scale=2; ${{ steps.verification.outputs.pages-successful }} * 100 / ${{ steps.verification.outputs.pages-tested }}" | bc -l 2>/dev/null || echo "0")
+
+          echo "verification_status=$VERIFICATION_STATUS" >> $GITHUB_OUTPUT
+          echo "pages_success_rate=$PAGES_SUCCESS_RATE" >> $GITHUB_OUTPUT
+
+          # Determine if deployment should be considered successful
+          if [ "$VERIFICATION_STATUS" = "success" ]; then
+            echo "deployment_success=true" >> $GITHUB_OUTPUT
+          elif [ "$VERIFICATION_STATUS" = "warning" ] && [ "$(echo "$PAGES_SUCCESS_RATE >= 90" | bc -l)" = "1" ]; then
+            echo "deployment_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "deployment_success=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "📊 Verification Analysis:"
+          echo "Status: $VERIFICATION_STATUS"
+          echo "Page Success Rate: $PAGES_SUCCESS_RATE%"
+          echo "Cursor Variants Working: ${{ steps.verification.outputs.cursor-variants-working }}"
+          echo "A/B Testing: ${{ steps.verification.outputs.ab-testing-status }}"
+          echo "Backend: ${{ steps.verification.outputs.backend-status }}"
+
+      - name: 🚨 Handle critical verification failures
+        if: steps.verification.outputs.verification-status == 'critical_failure'
+        run: |
+          echo "🚨 CRITICAL FAILURE: Deployment verification failed critically"
+          echo "This indicates major issues that require immediate attention"
+          echo "Consider emergency rollback procedures"
+
+          # Set job status to failure for critical issues
+          exit 1
+
+      - name: ⚠️ Handle verification warnings
+        if: steps.verification.outputs.verification-status == 'warning'
+        run: |
+          echo "⚠️ WARNING: Deployment verification completed with warnings"
+          echo "Monitor the deployment closely and address issues promptly"
+          echo "Pages tested: ${{ steps.verification.outputs.pages-successful }}/${{ steps.verification.outputs.pages-tested }}"
+          echo "Cursor variants: ${{ steps.verification.outputs.cursor-variants-working }}"
+
+      - name: ✅ Confirm successful verification
+        if: steps.verification.outputs.verification-status == 'success'
+        run: |
+          echo "✅ SUCCESS: Deployment verification completed successfully"
+          echo "All systems are functioning correctly"
+          echo "Pages: ${{ steps.verification.outputs.pages-successful }}/${{ steps.verification.outputs.pages-tested }}"
+          echo "Cursor system: ${{ steps.verification.outputs.cursor-variants-working }} variants working"
+          echo "A/B testing: ${{ steps.verification.outputs.ab-testing-status }}"
+          echo "Backend: ${{ steps.verification.outputs.backend-status }}"
