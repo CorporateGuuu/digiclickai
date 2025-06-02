@@ -17,10 +17,16 @@ try {
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // Enable static export for Netlify
+  output: 'export',
+  trailingSlash: true,
+  distDir: 'out',
+
   images: {
     domains: ['localhost', 'mdtstech.store', 'images.unsplash.com', '*'],
     formats: ['image/avif', 'image/webp'],
-    unoptimized: true, // This helps with Netlify deployment
+    unoptimized: true, // Required for static export
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -31,6 +37,15 @@ const nextConfig = {
   staticPageGenerationTimeout: 300, // Increased timeout for Netlify
   swcMinify: true, // Use SWC for minification
   productionBrowserSourceMaps: false, // Disable source maps in production
+
+  // Enhanced cursor system environment variables
+  env: {
+    NEXT_PUBLIC_CURSOR_PERFORMANCE_MODE: process.env.NEXT_PUBLIC_CURSOR_PERFORMANCE_MODE || 'high',
+    NEXT_PUBLIC_ENABLE_PARTICLE_TRAILS: process.env.NEXT_PUBLIC_ENABLE_PARTICLE_TRAILS || 'true',
+    NEXT_PUBLIC_ENABLE_CLICK_EFFECTS: process.env.NEXT_PUBLIC_ENABLE_CLICK_EFFECTS || 'true',
+    NEXT_PUBLIC_ENABLE_GLOW_EFFECTS: process.env.NEXT_PUBLIC_ENABLE_GLOW_EFFECTS || 'true',
+  },
+
   experimental: {
     forceSwcTransforms: true,
     optimizeCss: true,

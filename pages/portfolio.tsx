@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Layout from '../components/Layout/Layout';
+import { DigiClickLayout } from '../components/Layout';
 import styles from '../styles/Portfolio.module.css';
 
 interface CaseStudy {
@@ -169,7 +169,7 @@ const Portfolio: React.FC = () => {
   ];
 
   return (
-    <Layout>
+    <DigiClickLayout showCursor={true} cursorTheme="default">
       <Head>
         <title>AI Automation Portfolio | DigiClick AI</title>
         <meta name="description" content="Explore our AI automation portfolio featuring interactive demos, case studies, and success stories from real clients." />
@@ -393,7 +393,7 @@ const Portfolio: React.FC = () => {
           </div>
         </section>
       </div>
-    </Layout>
+    </DigiClickLayout>
   );
 };
 

@@ -156,10 +156,34 @@ EOL
 
   # Verify build output
   echo "✅ Build completed! Verifying output..."
-  if [ -d ".next" ]; then
-    echo "📁 .next directory created successfully"
+  if [ -d "out" ]; then
+    echo "📁 Static export directory created successfully"
     echo "📊 Build size:"
-    du -sh .next
+    du -sh out
+
+    # List key files to verify structure
+    echo "📋 Key files in build:"
+    ls -la out/ | head -10
+
+    # Check for cursor demo page
+    if [ -f "out/cursor-demo.html" ] || [ -f "out/cursor-demo/index.html" ]; then
+      echo "✅ Cursor demo page found in build"
+    else
+      echo "⚠️ Cursor demo page not found in build"
+    fi
+
+    # Check for other critical pages
+    for page in "portfolio" "contact" "about"; do
+      if [ -f "out/${page}.html" ] || [ -f "out/${page}/index.html" ]; then
+        echo "✅ ${page} page found in build"
+      else
+        echo "⚠️ ${page} page not found in build"
+      fi
+    done
+  else
+    echo "❌ Static export directory not found"
+    echo "🔍 Available directories:"
+    ls -la
   fi
 
   # Check for cursor system in build

@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Head from 'next/head';
-import DigiClickLayout from '../components/DigiClickLayout';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import { DigiClickLayout } from '../components/Layout';
 import styles from '../styles/About.module.css';
 
 interface TeamMember {
@@ -121,8 +119,6 @@ const About: React.FC = () => {
       showChatbot={true}
       cursorTheme="default"
     >
-      <Header />
-
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.container}>
@@ -242,8 +238,6 @@ const About: React.FC = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </DigiClickLayout>
   );
 };

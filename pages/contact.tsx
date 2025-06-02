@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import DigiClickLayout from '../components/DigiClickLayout';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import { DigiClickLayout } from '../components/Layout';
 import styles from '../styles/Contact.module.css';
 
 interface ContactFormData {
@@ -124,8 +122,6 @@ const Contact: React.FC = () => {
       showChatbot={true}
       cursorTheme="default"
     >
-      <Header />
-
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.container}>
@@ -319,8 +315,6 @@ const Contact: React.FC = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </DigiClickLayout>
   );
 };

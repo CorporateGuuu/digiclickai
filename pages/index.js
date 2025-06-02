@@ -289,14 +289,111 @@ export default function HomePage() {
 
   return (
     <DigiClickLayout
-      title="Premium AI Web Design & Automation"
-      description="Digiclick AI crafts exquisite, AI-powered websites and automations that redefine digital excellence."
+      title="DigiClick AI - Premium AI Web Design & Automation Solutions"
+      description="Transform your business with DigiClick AI's cutting-edge automation solutions. Experience our enhanced cursor system, AI-powered websites, and intelligent business automation."
+      keywords="DigiClick AI, AI automation, enhanced cursor system, AI web design, business automation, artificial intelligence, GSAP animations, cursor demo"
       showCursor={true}
       showParticles={true}
       showChatbot={false} // We'll use the existing Chatbot component
       cursorTheme="default"
       className={styles.container}
     >
+      <Head>
+        {/* Enhanced SEO Meta Tags */}
+        <title>DigiClick AI - Premium AI Web Design & Automation Solutions</title>
+        <meta name="description" content="Transform your business with DigiClick AI's cutting-edge automation solutions. Experience our enhanced cursor system, AI-powered websites, and intelligent business automation." />
+        <meta name="keywords" content="DigiClick AI, AI automation, enhanced cursor system, AI web design, business automation, artificial intelligence, GSAP animations, cursor demo" />
+        <meta name="author" content="DigiClick AI" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://digiclickai.netlify.app/" />
+
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="DigiClick AI - Premium AI Web Design & Automation Solutions" />
+        <meta property="og:description" content="Transform your business with DigiClick AI's cutting-edge automation solutions. Experience our enhanced cursor system, AI-powered websites, and intelligent business automation." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://digiclickai.netlify.app/" />
+        <meta property="og:image" content="https://digiclickai.netlify.app/images/og-image.jpg" />
+        <meta property="og:site_name" content="DigiClick AI" />
+        <meta property="og:locale" content="en_US" />
+
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="DigiClick AI - Premium AI Web Design & Automation Solutions" />
+        <meta name="twitter:description" content="Transform your business with DigiClick AI's cutting-edge automation solutions. Experience our enhanced cursor system, AI-powered websites, and intelligent business automation." />
+        <meta name="twitter:image" content="https://digiclickai.netlify.app/images/twitter-card.jpg" />
+        <meta name="twitter:creator" content="@DigiClickAI" />
+
+        {/* Structured Data - Organization */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "DigiClick AI",
+            "description": "Premium AI web design and automation solutions with enhanced cursor system",
+            "url": "https://digiclickai.netlify.app",
+            "logo": "https://digiclickai.netlify.app/images/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+1-555-123-4567",
+              "contactType": "customer service",
+              "email": "hello@digiclick.ai"
+            },
+            "sameAs": [
+              "https://twitter.com/DigiClickAI",
+              "https://linkedin.com/company/digiclick-ai"
+            ],
+            "foundingDate": "2024",
+            "founders": [
+              {
+                "@type": "Person",
+                "name": "DigiClick AI Team"
+              }
+            ],
+            "knowsAbout": [
+              "AI Automation",
+              "Enhanced Cursor Systems",
+              "GSAP Animations",
+              "Web Design",
+              "Business Automation",
+              "Artificial Intelligence"
+            ]
+          })}
+        </script>
+
+        {/* Structured Data - WebSite */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "DigiClick AI",
+            "url": "https://digiclickai.netlify.app",
+            "description": "Premium AI web design and automation solutions with enhanced cursor system",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://digiclickai.netlify.app/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
+
+        {/* Additional Meta Tags */}
+        <meta name="theme-color" content="#121212" />
+        <meta name="msapplication-TileColor" content="#121212" />
+        <meta name="application-name" content="DigiClick AI" />
+        <meta name="apple-mobile-web-app-title" content="DigiClick AI" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        {/* Favicon and Icons */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </Head>
       {/* Particles Background - Enhanced for cursor interaction */}
       <div id="particles-js" ref={particlesRef} className={`${styles.particlesContainer} cursor-interactive`}></div>
 
