@@ -1,0 +1,155 @@
+{
+  "timestamp": "2025-06-02T19:40:49.223Z",
+  "baseUrl": "https://digiclickai.netlify.app",
+  "overallSuccessRate": 41.66666666666667,
+  "totalTests": 24,
+  "passedTests": 10,
+  "results": {
+    "accessibility": [],
+    "performance": [
+      {
+        "test": "page-load-time",
+        "value": 135,
+        "threshold": 3000,
+        "unit": "ms",
+        "success": false
+      },
+      {
+        "test": "response-status",
+        "value": 200,
+        "threshold": 200,
+        "unit": "",
+        "success": true
+      },
+      {
+        "test": "content-length",
+        "value": 16730,
+        "threshold": 1000,
+        "unit": "chars",
+        "success": true
+      }
+    ],
+    "functionality": [
+      {
+        "test": "page-accessibility",
+        "page": "Homepage",
+        "path": "/",
+        "status": 200,
+        "success": true
+      },
+      {
+        "test": "cursor-system-presence",
+        "page": "Homepage",
+        "success": false
+      },
+      {
+        "test": "page-accessibility",
+        "page": "Portfolio",
+        "path": "/portfolio",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "page-accessibility",
+        "page": "Cursor Demo",
+        "path": "/cursor-demo",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "page-accessibility",
+        "page": "Contact",
+        "path": "/contact",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "page-accessibility",
+        "page": "About",
+        "path": "/about",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "asset-availability",
+        "asset": "/_next/static/chunks/pages/_app.js",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "asset-availability",
+        "asset": "/_next/static/chunks/main.js",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "asset-availability",
+        "asset": "/sitemap.xml",
+        "status": 404,
+        "success": false
+      },
+      {
+        "test": "api-endpoint",
+        "endpoint": "Contact Form",
+        "path": "/api/contact",
+        "method": "POST",
+        "status": 404,
+        "success": true
+      },
+      {
+        "test": "api-endpoint",
+        "endpoint": "Recommendations",
+        "path": "/api/recommendations",
+        "method": "GET",
+        "status": 404,
+        "success": true
+      },
+      {
+        "test": "api-endpoint",
+        "endpoint": "Team Data",
+        "path": "/api/team",
+        "method": "GET",
+        "status": 404,
+        "success": true
+      }
+    ],
+    "seo": [
+      {
+        "test": "title-tag",
+        "success": true
+      },
+      {
+        "test": "meta-description",
+        "success": true
+      },
+      {
+        "test": "meta-viewport",
+        "success": true
+      },
+      {
+        "test": "canonical-url",
+        "success": false
+      },
+      {
+        "test": "open-graph-title",
+        "success": false
+      },
+      {
+        "test": "structured-data",
+        "success": false
+      },
+      {
+        "test": "digiclick-ai-branding",
+        "success": true
+      },
+      {
+        "test": "cursor-demo-mention",
+        "success": false
+      },
+      {
+        "test": "ai-automation-content",
+        "success": false
+      }
+    ]
+  }
+}

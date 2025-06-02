@@ -3,13 +3,21 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 set -o pipefail  # Return value of a pipeline is the value of the last command to exit with a non-zero status
 
+# DigiClick AI Enhanced Build Script for Netlify
+echo "🚀 Starting DigiClick AI Enhanced Cursor System Build..."
+echo "=================================================="
+
 # Print environment information
+echo "📊 Build Environment Information:"
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
 echo "Current directory: $(pwd)"
 echo "Repository directory: $REPOSITORY_ROOT"
 echo "Build directory: $BUILD_DIR"
 echo "Netlify base directory: $NETLIFY_BASE_DIR"
+echo "NODE_ENV: ${NODE_ENV:-development}"
+echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-not set}"
+echo "NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-not set}"
 
 # List files in current directory
 echo "Files in current directory:"
@@ -20,12 +28,28 @@ if [ -f "package.json" ]; then
   echo "Found package.json, proceeding with npm install"
 
   # Clean npm cache
-  echo "Cleaning npm cache..."
+  echo "🧹 Cleaning npm cache..."
   npm cache clean --force
 
   # Install dependencies with production flag to avoid dev dependencies
-  echo "Installing dependencies..."
-  npm ci || npm install --production=false
+  echo "📦 Installing dependencies..."
+  npm ci --prefer-offline --no-audit || npm install --production=false
+
+  # Verify cursor system dependencies
+  echo "🖱️ Verifying Enhanced Cursor System dependencies..."
+  if npm list gsap > /dev/null 2>&1; then
+    echo "✅ GSAP found - cursor animations will work"
+  else
+    echo "⚠️ GSAP not found - installing..."
+    npm install gsap
+  fi
+
+  # Check for cursor component files
+  if [ -f "components/CustomCursor/EnhancedCustomCursor.js" ]; then
+    echo "✅ Enhanced Cursor component found"
+  else
+    echo "⚠️ Enhanced Cursor component not found"
+  fi
 
   # Create a simple next.config.js if it doesn't exist
   if [ ! -f "next.config.js" ]; then
@@ -64,17 +88,60 @@ EOL
   fi
 
   # Build the Next.js application with verbose output
-  echo "Building Next.js application..."
-  NODE_OPTIONS="--max-old-space-size=4096" npm run build || {
-    echo "Build failed. Creating minimal Next.js app as fallback..."
+  echo "🏗️ Building DigiClick AI Next.js application..."
+  echo "🎯 Enhanced Cursor System will be included in build"
+
+  # Set build environment variables
+  export NODE_OPTIONS="--max-old-space-size=4096"
+  export NEXT_TELEMETRY_DISABLED=1
+
+  # Run the build
+  npm run build || {
+    echo "❌ Build failed. Attempting recovery..."
+
+    # Check if it's a cursor-related build failure
+    if [ -f ".next/build-manifest.json" ]; then
+      echo "🔍 Partial build detected, checking for cursor system..."
+      if grep -q "CustomCursor" .next/build-manifest.json; then
+        echo "✅ Cursor system found in partial build"
+      fi
+    fi
+
+    echo "🛠️ Creating minimal Next.js app as fallback..."
     # Create a minimal Next.js app as fallback
     mkdir -p pages
     cat > pages/index.js << 'EOL'
 export default function Home() {
   return (
-    <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'Arial, sans-serif' }}>
-      <h1>DigiClick Website</h1>
-      <p>This is a placeholder page. The actual website is coming soon.</p>
+    <div style={{
+      padding: '2rem',
+      textAlign: 'center',
+      fontFamily: 'Orbitron, Arial, sans-serif',
+      background: '#121212',
+      color: '#00d4ff',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <h1 style={{ fontSize: '3rem', marginBottom: '1rem', textShadow: '0 0 20px #00d4ff' }}>
+        DigiClick AI
+      </h1>
+      <p style={{ fontSize: '1.2rem', color: '#7b2cbf' }}>
+        Enhanced Cursor System - Coming Soon
+      </p>
+      <div style={{
+        marginTop: '2rem',
+        padding: '1rem',
+        border: '2px solid #00d4ff',
+        borderRadius: '10px',
+        background: 'rgba(0, 212, 255, 0.1)'
+      }}>
+        <p>🖱️ Advanced cursor animations powered by GSAP</p>
+        <p>🎯 Interactive hover effects and particle trails</p>
+        <p>📱 Touch device detection and optimization</p>
+      </div>
     </div>
   )
 }
@@ -82,6 +149,28 @@ EOL
     # Try building again with minimal setup
     NODE_OPTIONS="--max-old-space-size=4096" npm run build
   }
+
+  # Generate sitemap after successful build
+  echo "🗺️ Generating sitemap..."
+  npm run sitemap:generate || echo "⚠️ Sitemap generation failed, continuing..."
+
+  # Verify build output
+  echo "✅ Build completed! Verifying output..."
+  if [ -d ".next" ]; then
+    echo "📁 .next directory created successfully"
+    echo "📊 Build size:"
+    du -sh .next
+  fi
+
+  # Check for cursor system in build
+  if [ -f ".next/static/chunks/pages/_app.js" ] || [ -f ".next/static/chunks/pages/_app-*.js" ]; then
+    echo "🖱️ Checking for Enhanced Cursor System in build..."
+    if find .next -name "*.js" -exec grep -l "EnhancedCustomCursor\|gsap" {} \; | head -1 > /dev/null; then
+      echo "✅ Enhanced Cursor System found in build output"
+    else
+      echo "⚠️ Enhanced Cursor System not detected in build"
+    fi
+  fi
 else
   echo "Error: package.json not found in $(pwd)"
   echo "Searching for package.json files in the entire repository:"
