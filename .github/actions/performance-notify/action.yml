@@ -1,0 +1,309 @@
+name: 'Performance Regression Notification'
+description: 'Send performance budget violation alerts with detailed metrics and recommendations'
+inputs:
+  webhook-url:
+    description: 'Slack webhook URL'
+    required: true
+  email-config:
+    description: 'Email configuration JSON'
+    required: false
+  performance-status:
+    description: 'Performance audit status (success, warning, failure)'
+    required: true
+  lighthouse-score:
+    description: 'Lighthouse performance score'
+    required: false
+    default: '0'
+  violations:
+    description: 'JSON array of performance violations'
+    required: false
+    default: '[]'
+  warnings:
+    description: 'JSON array of performance warnings'
+    required: false
+    default: '[]'
+  lighthouse-report-url:
+    description: 'URL to Lighthouse report'
+    required: false
+  pagespeed-url:
+    description: 'PageSpeed Insights URL'
+    required: false
+  deployment-url:
+    description: 'Deployment URL'
+    required: true
+  commit-hash:
+    description: 'Git commit hash'
+    required: false
+  github-run-url:
+    description: 'GitHub Actions run URL'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Determine alert severity
+      id: severity
+      shell: bash
+      run: |
+        case "${{ inputs.performance-status }}" in
+          "success")
+            echo "color=good" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "priority=low" >> $GITHUB_OUTPUT
+            echo "title=Performance Budget Compliance" >> $GITHUB_OUTPUT
+            ;;
+          "warning")
+            echo "color=warning" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+            echo "priority=medium" >> $GITHUB_OUTPUT
+            echo "title=Performance Budget Warnings" >> $GITHUB_OUTPUT
+            ;;
+          "failure")
+            echo "color=danger" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "priority=high" >> $GITHUB_OUTPUT
+            echo "title=Performance Budget Violations" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "color=#36a64f" >> $GITHUB_OUTPUT
+            echo "emoji=ℹ️" >> $GITHUB_OUTPUT
+            echo "priority=low" >> $GITHUB_OUTPUT
+            echo "title=Performance Audit Complete" >> $GITHUB_OUTPUT
+            ;;
+        esac
+
+    - name: Parse performance data
+      id: parse
+      shell: bash
+      run: |
+        # Parse violations and warnings
+        VIOLATIONS='${{ inputs.violations }}'
+        WARNINGS='${{ inputs.warnings }}'
+        
+        # Count issues
+        VIOLATION_COUNT=$(echo "$VIOLATIONS" | jq '. | length' 2>/dev/null || echo "0")
+        WARNING_COUNT=$(echo "$WARNINGS" | jq '. | length' 2>/dev/null || echo "0")
+        
+        echo "violation_count=$VIOLATION_COUNT" >> $GITHUB_OUTPUT
+        echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+        
+        # Generate summary
+        if [ "$VIOLATION_COUNT" -gt 0 ]; then
+          SUMMARY="🚨 $VIOLATION_COUNT performance budget violations detected"
+        elif [ "$WARNING_COUNT" -gt 0 ]; then
+          SUMMARY="⚠️ $WARNING_COUNT performance warnings detected"
+        else
+          SUMMARY="✅ All performance budgets within acceptable limits"
+        fi
+        
+        echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
+
+    - name: Generate performance recommendations
+      id: recommendations
+      shell: bash
+      run: |
+        RECOMMENDATIONS=""
+        
+        # Check for common performance issues
+        VIOLATIONS='${{ inputs.violations }}'
+        
+        if echo "$VIOLATIONS" | grep -q "FCP\|LCP"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize images and use next-gen formats (WebP, AVIF)"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Implement critical CSS inlining"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Use resource hints (preload, prefetch)"
+        fi
+        
+        if echo "$VIOLATIONS" | grep -q "CLS"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Add size attributes to images and videos"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Reserve space for dynamic content"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Use CSS aspect-ratio for responsive elements"
+        fi
+        
+        if echo "$VIOLATIONS" | grep -q "CURSOR"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize GSAP animations for 60fps"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Reduce cursor system memory usage"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Implement animation frame throttling"
+        fi
+        
+        if echo "$VIOLATIONS" | grep -q "BUNDLE"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Enable code splitting and lazy loading"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Remove unused CSS and JavaScript"
+          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize third-party libraries"
+        fi
+        
+        if [ -z "$RECOMMENDATIONS" ]; then
+          RECOMMENDATIONS="• Continue monitoring performance metrics\n• Consider implementing performance budgets for new features"
+        fi
+        
+        echo "recommendations<<EOF" >> $GITHUB_OUTPUT
+        echo -e "$RECOMMENDATIONS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Send Slack performance alert
+      shell: bash
+      run: |
+        # Create performance-specific Slack payload
+        LIGHTHOUSE_SCORE="${{ inputs.lighthouse-score }}"
+        SCORE_COLOR="danger"
+        
+        if [ "$LIGHTHOUSE_SCORE" -ge 90 ]; then
+          SCORE_COLOR="good"
+        elif [ "$LIGHTHOUSE_SCORE" -ge 75 ]; then
+          SCORE_COLOR="warning"
+        fi
+        
+        # Build fields array
+        FIELDS='[
+          {
+            "title": "Performance Score",
+            "value": "'$LIGHTHOUSE_SCORE'/100",
+            "short": true
+          },
+          {
+            "title": "Violations",
+            "value": "${{ steps.parse.outputs.violation_count }}",
+            "short": true
+          },
+          {
+            "title": "Warnings", 
+            "value": "${{ steps.parse.outputs.warning_count }}",
+            "short": true
+          },
+          {
+            "title": "Status",
+            "value": "${{ inputs.performance-status }}",
+            "short": true
+          }
+        ]'
+        
+        # Add links if available
+        if [ -n "${{ inputs.lighthouse-report-url }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Lighthouse Report", "value": "<${{ inputs.lighthouse-report-url }}|View Report>", "short": true}]')
+        fi
+        
+        if [ -n "${{ inputs.pagespeed-url }}" ]; then
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "PageSpeed Insights", "value": "<${{ inputs.pagespeed-url }}|View Analysis>", "short": true}]')
+        fi
+        
+        # Create main payload
+        PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Performance Monitor",
+          "icon_emoji": ":chart_with_upwards_trend:",
+          "attachments": [
+            {
+              "color": "${{ steps.severity.outputs.color }}",
+              "title": "${{ steps.severity.outputs.emoji }} ${{ steps.severity.outputs.title }}",
+              "text": "${{ steps.parse.outputs.summary }}",
+              "fields": $FIELDS,
+              "footer": "Performance Budget Monitoring",
+              "footer_icon": "https://developers.google.com/web/tools/lighthouse/images/lighthouse-icon-128.png",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        # Send to Slack
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$PAYLOAD" \
+          "${{ inputs.webhook-url }}"
+
+    - name: Send detailed performance alert for violations
+      if: inputs.performance-status == 'failure'
+      shell: bash
+      run: |
+        # Send detailed violation alert
+        VIOLATIONS='${{ inputs.violations }}'
+        VIOLATION_TEXT=""
+        
+        # Format violations for Slack
+        if [ "${{ steps.parse.outputs.violation_count }}" -gt 0 ]; then
+          VIOLATION_TEXT=$(echo "$VIOLATIONS" | jq -r '.[] | "• " + .type + ": " + .message' | head -10)
+        fi
+        
+        DETAILED_PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Performance Monitor",
+          "icon_emoji": ":rotating_light:",
+          "attachments": [
+            {
+              "color": "danger",
+              "title": "🚨 URGENT: Performance Budget Violations Detected",
+              "text": "Immediate optimization required to maintain user experience and SEO rankings.",
+              "fields": [
+                {
+                  "title": "Critical Issues",
+                  "value": "$VIOLATION_TEXT",
+                  "short": false
+                },
+                {
+                  "title": "Recommendations",
+                  "value": "${{ steps.recommendations.outputs.recommendations }}",
+                  "short": false
+                },
+                {
+                  "title": "Test Cursor System",
+                  "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Verify Cursor Performance>",
+                  "short": true
+                },
+                {
+                  "title": "GitHub Actions",
+                  "value": "<${{ inputs.github-run-url }}|View Build Logs>",
+                  "short": true
+                }
+              ],
+              "footer": "Performance regression detected in commit ${{ inputs.commit-hash }}",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$DETAILED_PAYLOAD" \
+          "${{ inputs.webhook-url }}"
+
+    - name: Send cursor system specific alert
+      if: contains(inputs.violations, 'CURSOR')
+      shell: bash
+      run: |
+        CURSOR_PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Performance Monitor",
+          "icon_emoji": ":computer_mouse:",
+          "attachments": [
+            {
+              "color": "warning",
+              "title": "🖱️ Cursor System Performance Alert",
+              "text": "Context-aware cursor system performance has degraded beyond acceptable thresholds.",
+              "fields": [
+                {
+                  "title": "Cursor Demo Page",
+                  "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Test Cursor Interactions>",
+                  "short": true
+                },
+                {
+                  "title": "Expected Performance",
+                  "value": "60fps animations, <16ms response time",
+                  "short": true
+                },
+                {
+                  "title": "Optimization Guide",
+                  "value": "• Check GSAP animation efficiency\n• Verify memory leak prevention\n• Test across different devices",
+                  "short": false
+                }
+              ],
+              "footer": "Cursor system is critical for DigiClick AI user experience",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+        
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$CURSOR_PAYLOAD" \
+          "${{ inputs.webhook-url }}"

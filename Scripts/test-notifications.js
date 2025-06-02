@@ -19,21 +19,23 @@ class NotificationTester {
     this.results = {
       slack: { tested: false, success: false, error: null },
       email: { tested: false, success: false, error: null },
-      monitoring: { tested: false, success: false, error: null }
+      monitoring: { tested: false, success: false, error: null },
+      performance: { tested: false, success: false, error: null }
     };
   }
 
   async runAllTests() {
     console.log('🧪 Testing DigiClick AI Notification System...');
     console.log('=' .repeat(60));
-    
+
     try {
       await this.testSlackNotification();
       await this.testEmailNotification();
       await this.testMonitoringEndpoints();
-      
+      await this.testPerformanceMonitoring();
+
       this.generateTestReport();
-      
+
     } catch (error) {
       console.error('💥 Test suite failed:', error);
       process.exit(1);
@@ -301,6 +303,119 @@ class NotificationTester {
     });
   }
 
+  async testPerformanceMonitoring() {
+    console.log('🚀 Testing performance monitoring...');
+
+    try {
+      // Check if performance monitoring files exist
+      const fs = require('fs');
+      const path = require('path');
+
+      const requiredFiles = [
+        'lighthouserc.json',
+        'lighthouse-budget.json',
+        'scripts/performance-monitor.js'
+      ];
+
+      let missingFiles = [];
+
+      for (const file of requiredFiles) {
+        if (!fs.existsSync(path.join(process.cwd(), file))) {
+          missingFiles.push(file);
+        }
+      }
+
+      if (missingFiles.length > 0) {
+        this.results.performance = {
+          tested: true,
+          success: false,
+          error: `Missing performance monitoring files: ${missingFiles.join(', ')}`
+        };
+        console.log('❌ Performance monitoring test failed - missing files');
+        return;
+      }
+
+      // Test Lighthouse CI configuration
+      const lighthouseConfig = JSON.parse(fs.readFileSync('lighthouserc.json', 'utf8'));
+      const hasValidConfig = lighthouseConfig.ci &&
+                           lighthouseConfig.ci.collect &&
+                           lighthouseConfig.ci.assert;
+
+      if (!hasValidConfig) {
+        this.results.performance = {
+          tested: true,
+          success: false,
+          error: 'Invalid Lighthouse CI configuration'
+        };
+        console.log('❌ Performance monitoring test failed - invalid config');
+        return;
+      }
+
+      // Test performance budget configuration
+      const budgetConfig = JSON.parse(fs.readFileSync('lighthouse-budget.json', 'utf8'));
+      const hasBudgets = Array.isArray(budgetConfig) && budgetConfig.length > 0;
+
+      if (!hasBudgets) {
+        this.results.performance = {
+          tested: true,
+          success: false,
+          error: 'Invalid performance budget configuration'
+        };
+        console.log('❌ Performance monitoring test failed - invalid budget config');
+        return;
+      }
+
+      // Test performance monitor script
+      try {
+        const PerformanceMonitor = require('./performance-monitor.js');
+        const monitor = new PerformanceMonitor();
+
+        // Verify the monitor has required methods
+        const hasRequiredMethods = typeof monitor.runPerformanceAudit === 'function' &&
+                                  typeof monitor.measurePagePerformance === 'function' &&
+                                  typeof monitor.measureCursorPerformance === 'function';
+
+        if (!hasRequiredMethods) {
+          throw new Error('Performance monitor missing required methods');
+        }
+
+      } catch (error) {
+        this.results.performance = {
+          tested: true,
+          success: false,
+          error: `Performance monitor script error: ${error.message}`
+        };
+        console.log('❌ Performance monitoring test failed - script error');
+        return;
+      }
+
+      this.results.performance = {
+        tested: true,
+        success: true,
+        error: null,
+        details: {
+          lighthouseConfig: 'Valid',
+          budgetConfig: 'Valid',
+          monitorScript: 'Functional',
+          configuredPages: lighthouseConfig.ci.collect.url.length,
+          budgetRules: budgetConfig.length
+        }
+      };
+
+      console.log('✅ Performance monitoring test passed');
+      console.log(`   📊 Configured pages: ${lighthouseConfig.ci.collect.url.length}`);
+      console.log(`   📋 Budget rules: ${budgetConfig.length}`);
+
+    } catch (error) {
+      this.results.performance = {
+        tested: true,
+        success: false,
+        error: error.message
+      };
+      console.log('❌ Performance monitoring test error:', error.message);
+    }
+  }
+
   generateTestReport() {
     console.log('\n📊 Notification System Test Report');
     console.log('=' .repeat(60));
@@ -344,6 +459,12 @@ class NotificationTester {
     if (!this.results.monitoring.success) {
       console.log('   🔧 Check application deployment and accessibility');
       console.log('   🌐 Verify NEXT_PUBLIC_APP_URL is correct and site is live');
+    }
+
+    if (!this.results.performance.success) {
+      console.log('   🔧 Configure performance monitoring files (lighthouserc.json, lighthouse-budget.json)');
+      console.log('   📊 Install required dependencies: npm install puppeteer @lhci/cli --save-dev');
+      console.log('   📖 See docs/PERFORMANCE_MONITORING_SETUP.md for detailed setup');
     }
     
     if (overallSuccess) {

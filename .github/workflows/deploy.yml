@@ -313,7 +313,7 @@ jobs:
   notify:
     name: 📢 Deployment Notifications
     runs-on: ubuntu-latest
-    needs: [deploy-netlify, post-deploy-test]
+    needs: [deploy-netlify, post-deploy-test, performance-audit]
     if: always()
     steps:
       - name: 📥 Checkout code
@@ -332,12 +332,17 @@ jobs:
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           BRANCH_NAME="${{ github.ref_name }}"
 
-          # Determine overall status
-          if [[ "${{ needs.deploy-netlify.result }}" == "success" && "${{ needs.post-deploy-test.result }}" == "success" ]]; then
+          # Get performance audit results
+          PERFORMANCE_RESULT="${{ needs.performance-audit.result }}"
+          LIGHTHOUSE_SCORE="${{ needs.performance-audit.outputs.lighthouse_score || '0' }}"
+          PERFORMANCE_STATUS="${{ needs.performance-audit.outputs.overall_status || 'unknown' }}"
+
+          # Determine overall status including performance
+          if [[ "${{ needs.deploy-netlify.result }}" == "success" && "${{ needs.post-deploy-test.result }}" == "success" && "$PERFORMANCE_STATUS" == "success" ]]; then
             OVERALL_STATUS="success"
             STATUS_EMOJI="✅"
             STATUS_TEXT="SUCCESS"
-          elif [[ "${{ needs.deploy-netlify.result }}" == "failure" || "${{ needs.post-deploy-test.result }}" == "failure" ]]; then
+          elif [[ "${{ needs.deploy-netlify.result }}" == "failure" || "${{ needs.post-deploy-test.result }}" == "failure" || "$PERFORMANCE_STATUS" == "failure" ]]; then
             OVERALL_STATUS="failure"
             STATUS_EMOJI="❌"
             STATUS_TEXT="FAILURE"
@@ -357,6 +362,8 @@ jobs:
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "build_time=~5 minutes" >> $GITHUB_OUTPUT
           echo "github_run_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+          echo "lighthouse_score=$LIGHTHOUSE_SCORE" >> $GITHUB_OUTPUT
+          echo "performance_status=$PERFORMANCE_STATUS" >> $GITHUB_OUTPUT
 
       - name: 📧 Send email notification
         if: always()
@@ -385,7 +392,7 @@ jobs:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           status: ${{ steps.metrics.outputs.status }}
           title: "DigiClick AI Deployment ${{ steps.metrics.outputs.status_text }}"
-          message: ${{ steps.metrics.outputs.status == 'success' && 'Deployment completed successfully with enhanced cursor system!' || 'Deployment encountered issues. Check logs for details.' }}
+          message: ${{ steps.metrics.outputs.status == 'success' && format('Deployment completed successfully! Lighthouse Score: {0}/100, Performance: {1}', steps.metrics.outputs.lighthouse_score, steps.metrics.outputs.performance_status) || 'Deployment encountered issues. Check logs for details.' }}
           commit-hash: ${{ steps.metrics.outputs.commit_hash }}
           commit-message: ${{ steps.metrics.outputs.commit_message }}
           branch: ${{ steps.metrics.outputs.branch_name }}
@@ -411,6 +418,111 @@ jobs:
           path: |
             reports/
           retention-days: 30
+
+  # Performance Budget Monitoring
+  performance-audit:
+    name: 🚀 Performance Budget Audit
+    runs-on: ubuntu-latest
+    needs: [deploy-netlify]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: |
+          npm ci
+          npm install -g @lhci/cli puppeteer
+
+      - name: ⏳ Wait for deployment to be ready
+        run: |
+          echo "Waiting for deployment to be fully ready..."
+          npx wait-on ${{ secrets.NEXT_PUBLIC_APP_URL }} --timeout 300000
+          sleep 60
+
+      - name: 🔍 Run Lighthouse CI audit
+        run: |
+          echo "Running Lighthouse CI performance audit..."
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+          LHCI_BUILD_CONTEXT__COMMIT_TIME: ${{ github.event.head_commit.timestamp }}
+
+      - name: 🖱️ Run cursor system performance audit
+        run: |
+          echo "Running cursor system performance audit..."
+          node scripts/performance-monitor.js
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+
+      - name: 📊 Parse performance results
+        id: performance
+        run: |
+          # Parse Lighthouse results
+          if [ -f ".lighthouseci/assertion-results.json" ]; then
+            LIGHTHOUSE_SCORE=$(cat .lighthouseci/assertion-results.json | jq -r '.[] | select(.auditProperty == "categories.performance") | .actual * 100' | head -1)
+            LIGHTHOUSE_PASSED=$(cat .lighthouseci/assertion-results.json | jq -r 'map(select(.level == "error")) | length == 0')
+          else
+            LIGHTHOUSE_SCORE="0"
+            LIGHTHOUSE_PASSED="false"
+          fi
+
+          # Parse custom performance audit
+          if [ -f "reports/performance-audit-report.json" ]; then
+            PERFORMANCE_STATUS=$(cat reports/performance-audit-report.json | jq -r '.overall')
+            VIOLATIONS=$(cat reports/performance-audit-report.json | jq -c '.violations')
+            WARNINGS=$(cat reports/performance-audit-report.json | jq -c '.warnings')
+          else
+            PERFORMANCE_STATUS="unknown"
+            VIOLATIONS="[]"
+            WARNINGS="[]"
+          fi
+
+          # Determine overall performance status
+          if [ "$LIGHTHOUSE_PASSED" = "false" ] || [ "$PERFORMANCE_STATUS" = "failure" ]; then
+            OVERALL_STATUS="failure"
+          elif [ "$PERFORMANCE_STATUS" = "warning" ] || [ "$LIGHTHOUSE_SCORE" -lt 90 ]; then
+            OVERALL_STATUS="warning"
+          else
+            OVERALL_STATUS="success"
+          fi
+
+          echo "lighthouse_score=$LIGHTHOUSE_SCORE" >> $GITHUB_OUTPUT
+          echo "lighthouse_passed=$LIGHTHOUSE_PASSED" >> $GITHUB_OUTPUT
+          echo "performance_status=$PERFORMANCE_STATUS" >> $GITHUB_OUTPUT
+          echo "overall_status=$OVERALL_STATUS" >> $GITHUB_OUTPUT
+          echo "violations=$VIOLATIONS" >> $GITHUB_OUTPUT
+          echo "warnings=$WARNINGS" >> $GITHUB_OUTPUT
+
+      - name: 📊 Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-reports
+          path: |
+            .lighthouseci/
+            reports/
+          retention-days: 30
+
+      - name: 🚨 Send performance alerts
+        if: always()
+        uses: ./.github/actions/performance-notify
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          performance-status: ${{ steps.performance.outputs.overall_status }}
+          lighthouse-score: ${{ steps.performance.outputs.lighthouse_score }}
+          violations: ${{ steps.performance.outputs.violations }}
+          warnings: ${{ steps.performance.outputs.warnings }}
+          deployment-url: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          commit-hash: ${{ github.sha }}
+          github-run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: 🚨 Send failure alert with details
         if: steps.metrics.outputs.status == 'failure'
