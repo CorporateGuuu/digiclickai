@@ -35,7 +35,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   staticPageGenerationTimeout: 300, // Increased timeout for Netlify
-  swcMinify: true, // Use SWC for minification
+ // Use SWC for minification
   productionBrowserSourceMaps: false, // Disable source maps in production
 
   // Enhanced cursor system environment variables

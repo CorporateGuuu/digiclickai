@@ -13,6 +13,9 @@
   NODE_OPTIONS = "--max-old-space-size=4096"
   NEXT_TELEMETRY_DISABLED = "1"
   NEXT_SHARP_PATH = "/tmp/node_modules/sharp"
+  NEXT_PUBLIC_API_URL = "https://digiclick-ai-backend.onrender.com"
+  NEXT_PUBLIC_APP_URL = "https://digiclickai.netlify.app"
+  NODE_ENV = "production"
 
 [build.packages]
   apt = ["postgresql-client", "libpq-dev", "build-essential"]
