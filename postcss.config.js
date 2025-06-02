@@ -1,20 +1,21 @@
 
 module.exports = {
-  plugins: {
-    'postcss-import': {},
-    'autoprefixer': {},
-    'postcss-flexbugs-fixes': {},
-    'postcss-preset-env': {
-      autoprefixer: {
-        flexbox: 'no-2009',
+  plugins: [
+    'postcss-import',
+    'postcss-flexbugs-fixes',
+    [
+      'postcss-preset-env',
+      {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+        stage: 3,
+        features: {
+          'custom-properties': false,
+        },
       },
-      stage: 3,
-      features: {
-        'custom-properties': false,
-      },
-    },
-    'cssnano': {
-      preset: 'default',
-    },
-  },
+    ],
+    'autoprefixer',
+    ...(process.env.NODE_ENV === 'production' ? ['cssnano'] : []),
+  ],
 };

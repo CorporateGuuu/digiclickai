@@ -45,6 +45,29 @@ if [ -f "package.json" ]; then
   echo "📦 Installing dependencies..."
   npm install --force --prefer-offline --no-audit || npm install --legacy-peer-deps --production=false
 
+  # Verify PostCSS dependencies are available
+  echo "🎨 Verifying PostCSS dependencies..."
+  if ! npm list postcss-import > /dev/null 2>&1; then
+    echo "⚠️ postcss-import not found, installing explicitly..."
+    npm install postcss-import --save
+  else
+    echo "✅ postcss-import found"
+  fi
+
+  if ! npm list autoprefixer > /dev/null 2>&1; then
+    echo "⚠️ autoprefixer not found, installing explicitly..."
+    npm install autoprefixer --save
+  else
+    echo "✅ autoprefixer found"
+  fi
+
+  if ! npm list cssnano > /dev/null 2>&1; then
+    echo "⚠️ cssnano not found, installing explicitly..."
+    npm install cssnano --save
+  else
+    echo "✅ cssnano found"
+  fi
+
   # Verify cursor system dependencies
   echo "🖱️ Verifying Enhanced Cursor System dependencies..."
   if npm list gsap > /dev/null 2>&1; then

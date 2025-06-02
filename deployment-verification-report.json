@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-06-02T21:30:21.318Z",
+  "timestamp": "2025-06-02T21:38:53.183Z",
   "baseUrl": "https://digiclickai.netlify.app",
   "overallSuccessRate": 41.66666666666667,
   "totalTests": 24,
@@ -9,7 +9,7 @@
     "performance": [
       {
         "test": "page-load-time",
-        "value": 391,
+        "value": 124,
         "threshold": 3000,
         "unit": "ms",
         "success": false
