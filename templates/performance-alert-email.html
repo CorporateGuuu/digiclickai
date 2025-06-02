@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiClick AI Performance Alert</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #121212, #1a1a1a);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header.warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+        .header.critical {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        .header.emergency {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .alert-title {
+            font-size: 28px;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 30px;
+        }
+        .alert-summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #00d4ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .alert-summary.warning {
+            border-left-color: #ff9800;
+            background-color: #fff3e0;
+        }
+        .alert-summary.critical {
+            border-left-color: #f44336;
+            background-color: #ffebee;
+        }
+        .alert-summary.emergency {
+            border-left-color: #d32f2f;
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        .metric-value.warning {
+            color: #ff9800;
+        }
+        .metric-value.critical {
+            color: #f44336;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .recommendations {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .recommendations h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .recommendations ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .recommendations li {
+            margin: 8px 0;
+        }
+        .immediate-actions {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .immediate-actions h3 {
+            color: #d32f2f;
+            margin-top: 0;
+        }
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+        .violation-list {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .violation-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #ffeaa7;
+        }
+        .violation-item:last-child {
+            border-bottom: none;
+        }
+        .violation-type {
+            font-weight: bold;
+            color: #856404;
+        }
+        .trend-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .trend-degrading {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .trend-improving {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        .trend-stable {
+            background-color: #f3f4f6;
+            color: #666;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header {{alert_level}}">
+            <div class="logo">DigiClick AI</div>
+            <h1 class="alert-title">{{alert_emoji}} {{alert_title}}</h1>
+            <p>Performance Monitoring Alert • {{timestamp}}</p>
+        </div>
+
+        <div class="content">
+            <div class="alert-summary {{alert_level}}">
+                <h2>Alert Summary</h2>
+                <p><strong>{{alert_summary}}</strong></p>
+                <p>
+                    <span class="trend-indicator trend-{{trend_direction}}">
+                        {{trend_direction}} {{trend_change}}%
+                    </span>
+                </p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value {{lighthouse_class}}">{{lighthouse_score}}</div>
+                    <div class="metric-label">Lighthouse Score</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value {{critical_class}}">{{critical_count}}</div>
+                    <div class="metric-label">Critical Issues</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value {{warning_class}}">{{warning_count}}</div>
+                    <div class="metric-label">Warnings</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">{{alert_level}}</div>
+                    <div class="metric-label">Alert Level</div>
+                </div>
+            </div>
+
+            {{#if immediate_actions}}
+            <div class="immediate-actions">
+                <h3>🚨 Immediate Actions Required</h3>
+                <div>{{{immediate_actions}}}</div>
+            </div>
+            {{/if}}
+
+            {{#if violations}}
+            <div class="violation-list">
+                <h3>📋 Performance Violations Detected</h3>
+                {{#each violations}}
+                <div class="violation-item">
+                    <span class="violation-type">{{type}}:</span> {{message}}
+                </div>
+                {{/each}}
+            </div>
+            {{/if}}
+
+            <div class="recommendations">
+                <h3>🔧 Optimization Recommendations</h3>
+                <div>{{{recommendations}}}</div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{deployment_url}}" class="btn btn-primary">🌐 View Live Site</a>
+                <a href="{{deployment_url}}/cursor-context-demo" class="btn btn-secondary">🖱️ Test Cursor</a>
+                <a href="{{deployment_url}}/admin/ab-test" class="btn btn-secondary">🧪 A/B Dashboard</a>
+                {{#if lighthouse_report_url}}
+                <a href="{{lighthouse_report_url}}" class="btn btn-secondary">📊 Lighthouse Report</a>
+                {{/if}}
+                {{#if github_run_url}}
+                <a href="{{github_run_url}}" class="btn btn-secondary">🔧 Build Logs</a>
+                {{/if}}
+                {{#if alert_level_emergency}}
+                <a href="https://app.netlify.com" class="btn btn-danger">🚨 Emergency Rollback</a>
+                {{/if}}
+            </div>
+
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📞 Emergency Contacts</h4>
+                <p><strong>Lead Developer:</strong> lead-dev@digiclickai.com</p>
+                <p><strong>DevOps Engineer:</strong> devops@digiclickai.com</p>
+                <p><strong>On-call Engineer:</strong> Check PagerDuty or Slack</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>DigiClick AI Performance Monitoring System</p>
+            <p>Commit: {{commit_hash}} • Build: {{build_id}}</p>
+            <p>This alert was generated automatically. Do not reply to this email.</p>
+            <p>For support, contact: support@digiclickai.com</p>
+        </div>
+    </div>
+</body>
+</html>

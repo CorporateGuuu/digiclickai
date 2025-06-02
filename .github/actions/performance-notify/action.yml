@@ -41,36 +41,51 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Determine alert severity
+    - name: Determine alert severity and escalation level
       id: severity
       shell: bash
       run: |
-        case "${{ inputs.performance-status }}" in
-          "success")
-            echo "color=good" >> $GITHUB_OUTPUT
-            echo "emoji=✅" >> $GITHUB_OUTPUT
-            echo "priority=low" >> $GITHUB_OUTPUT
-            echo "title=Performance Budget Compliance" >> $GITHUB_OUTPUT
-            ;;
-          "warning")
-            echo "color=warning" >> $GITHUB_OUTPUT
-            echo "emoji=⚠️" >> $GITHUB_OUTPUT
-            echo "priority=medium" >> $GITHUB_OUTPUT
-            echo "title=Performance Budget Warnings" >> $GITHUB_OUTPUT
-            ;;
-          "failure")
-            echo "color=danger" >> $GITHUB_OUTPUT
-            echo "emoji=❌" >> $GITHUB_OUTPUT
-            echo "priority=high" >> $GITHUB_OUTPUT
-            echo "title=Performance Budget Violations" >> $GITHUB_OUTPUT
-            ;;
-          *)
-            echo "color=#36a64f" >> $GITHUB_OUTPUT
-            echo "emoji=ℹ️" >> $GITHUB_OUTPUT
-            echo "priority=low" >> $GITHUB_OUTPUT
-            echo "title=Performance Audit Complete" >> $GITHUB_OUTPUT
-            ;;
-        esac
+        LIGHTHOUSE_SCORE="${{ inputs.lighthouse-score }}"
+        VIOLATIONS='${{ inputs.violations }}'
+
+        # Count violations by type
+        CRITICAL_COUNT=$(echo "$VIOLATIONS" | jq '[.[] | select(.severity == "critical")] | length' 2>/dev/null || echo "0")
+        WARNING_COUNT=$(echo "$VIOLATIONS" | jq '[.[] | select(.severity == "warning")] | length' 2>/dev/null || echo "0")
+
+        # Determine alert level based on comprehensive criteria
+        if [ "$LIGHTHOUSE_SCORE" -lt 85 ] || [ "$CRITICAL_COUNT" -ge 3 ]; then
+          ALERT_LEVEL="emergency"
+          echo "color=danger" >> $GITHUB_OUTPUT
+          echo "emoji=🚨" >> $GITHUB_OUTPUT
+          echo "priority=urgent" >> $GITHUB_OUTPUT
+          echo "title=URGENT: System-wide Performance Failure" >> $GITHUB_OUTPUT
+          echo "escalation=true" >> $GITHUB_OUTPUT
+        elif [ "$LIGHTHOUSE_SCORE" -lt 85 ] || [ "$CRITICAL_COUNT" -gt 0 ]; then
+          ALERT_LEVEL="critical"
+          echo "color=danger" >> $GITHUB_OUTPUT
+          echo "emoji=❌" >> $GITHUB_OUTPUT
+          echo "priority=high" >> $GITHUB_OUTPUT
+          echo "title=Critical Performance Alert" >> $GITHUB_OUTPUT
+          echo "escalation=false" >> $GITHUB_OUTPUT
+        elif [ "$LIGHTHOUSE_SCORE" -lt 90 ] || [ "$WARNING_COUNT" -gt 0 ]; then
+          ALERT_LEVEL="warning"
+          echo "color=warning" >> $GITHUB_OUTPUT
+          echo "emoji=⚠️" >> $GITHUB_OUTPUT
+          echo "priority=medium" >> $GITHUB_OUTPUT
+          echo "title=Performance Degradation Warning" >> $GITHUB_OUTPUT
+          echo "escalation=false" >> $GITHUB_OUTPUT
+        else
+          ALERT_LEVEL="success"
+          echo "color=good" >> $GITHUB_OUTPUT
+          echo "emoji=✅" >> $GITHUB_OUTPUT
+          echo "priority=low" >> $GITHUB_OUTPUT
+          echo "title=Performance Budget Compliance" >> $GITHUB_OUTPUT
+          echo "escalation=false" >> $GITHUB_OUTPUT
+        fi
+
+        echo "alert_level=$ALERT_LEVEL" >> $GITHUB_OUTPUT
+        echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+        echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
 
     - name: Parse performance data
       id: parse
@@ -98,105 +113,225 @@ runs:
         
         echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
 
-    - name: Generate performance recommendations
+    - name: Generate enhanced performance recommendations
       id: recommendations
       shell: bash
       run: |
         RECOMMENDATIONS=""
-        
-        # Check for common performance issues
+        IMMEDIATE_ACTIONS=""
+        LIGHTHOUSE_SCORE="${{ inputs.lighthouse-score }}"
         VIOLATIONS='${{ inputs.violations }}'
-        
+        ALERT_LEVEL="${{ steps.severity.outputs.alert_level }}"
+
+        # Generate recommendations based on alert level and specific violations
+        case "$ALERT_LEVEL" in
+          "emergency")
+            IMMEDIATE_ACTIONS="🚨 IMMEDIATE ACTIONS REQUIRED:\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Check system status dashboard immediately\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Verify cursor demo functionality: ${{ inputs.deployment-url }}/cursor-context-demo\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Consider emergency rollback to previous version\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Contact on-call engineer for immediate assistance\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Monitor user impact and error rates\n\n"
+            ;;
+          "critical")
+            IMMEDIATE_ACTIONS="❌ URGENT ACTIONS NEEDED:\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Review and address critical performance issues within 1 hour\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Test cursor functionality across all variants\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Monitor Core Web Vitals impact on SEO\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Prepare rollback plan if issues persist\n\n"
+            ;;
+          "warning")
+            IMMEDIATE_ACTIONS="⚠️ RECOMMENDED ACTIONS:\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Schedule performance optimization within 24 hours\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Review recent changes for performance impact\n"
+            IMMEDIATE_ACTIONS="$IMMEDIATE_ACTIONS• Monitor trends to prevent escalation\n\n"
+            ;;
+        esac
+
+        # Lighthouse score specific recommendations
+        if [ "$LIGHTHOUSE_SCORE" -lt 85 ]; then
+          RECOMMENDATIONS="$RECOMMENDATIONS🎯 LIGHTHOUSE OPTIMIZATION (Score: $LIGHTHOUSE_SCORE):\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize images using WebP/AVIF formats\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Implement critical CSS inlining\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Enable code splitting and lazy loading\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Reduce unused JavaScript and CSS\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize third-party scripts\n\n"
+        elif [ "$LIGHTHOUSE_SCORE" -lt 90 ]; then
+          RECOMMENDATIONS="$RECOMMENDATIONS🔧 LIGHTHOUSE FINE-TUNING (Score: $LIGHTHOUSE_SCORE):\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Fine-tune image optimization\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Review font loading strategies\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Consider service worker caching\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize animation performance\n\n"
+        fi
+
+        # Core Web Vitals recommendations
         if echo "$VIOLATIONS" | grep -q "FCP\|LCP"; then
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize images and use next-gen formats (WebP, AVIF)"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Implement critical CSS inlining"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Use resource hints (preload, prefetch)"
+          RECOMMENDATIONS="$RECOMMENDATIONS⚡ LOADING PERFORMANCE:\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize server response times\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Implement resource hints (preload, prefetch)\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Minimize render-blocking resources\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize critical rendering path\n\n"
         fi
-        
+
         if echo "$VIOLATIONS" | grep -q "CLS"; then
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Add size attributes to images and videos"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Reserve space for dynamic content"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Use CSS aspect-ratio for responsive elements"
+          RECOMMENDATIONS="$RECOMMENDATIONS📐 LAYOUT STABILITY:\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Add size attributes to images and videos\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Reserve space for dynamic content\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Use CSS aspect-ratio for responsive elements\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Avoid inserting content above existing content\n\n"
         fi
-        
-        if echo "$VIOLATIONS" | grep -q "CURSOR"; then
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize GSAP animations for 60fps"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Reduce cursor system memory usage"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Implement animation frame throttling"
+
+        # Cursor system specific recommendations
+        if echo "$VIOLATIONS" | grep -q "CURSOR\|cursor"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS🖱️ CURSOR SYSTEM OPTIMIZATION:\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize GSAP animations for hardware acceleration\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Reduce particle count in enhanced/gaming variants\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Implement animation frame throttling\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Use transform3d for GPU acceleration\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Clean up event listeners on component unmount\n\n"
         fi
-        
-        if echo "$VIOLATIONS" | grep -q "BUNDLE"; then
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Enable code splitting and lazy loading"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Remove unused CSS and JavaScript"
-          RECOMMENDATIONS="$RECOMMENDATIONS\n• Optimize third-party libraries"
+
+        # Bundle size recommendations
+        if echo "$VIOLATIONS" | grep -q "BUNDLE\|bundle"; then
+          RECOMMENDATIONS="$RECOMMENDATIONS📦 BUNDLE OPTIMIZATION:\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Enable code splitting with dynamic imports\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Remove unused dependencies\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Optimize third-party library usage\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Implement tree shaking\n"
+          RECOMMENDATIONS="$RECOMMENDATIONS• Use CSS modules for component-specific styles\n\n"
         fi
-        
-        if [ -z "$RECOMMENDATIONS" ]; then
-          RECOMMENDATIONS="• Continue monitoring performance metrics\n• Consider implementing performance budgets for new features"
-        fi
-        
+
+        # A/B testing variant specific recommendations
+        RECOMMENDATIONS="$RECOMMENDATIONS🧪 A/B TESTING CONSIDERATIONS:\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Test performance across all cursor variants (Control, Enhanced, Minimal, Gaming)\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Monitor variant-specific performance metrics\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Consider disabling problematic variants temporarily\n\n"
+
+        # Monitoring and prevention
+        RECOMMENDATIONS="$RECOMMENDATIONS📊 MONITORING & PREVENTION:\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Set up performance alerts for early detection\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Implement performance budgets in CI/CD\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Regular performance audits and optimization\n"
+        RECOMMENDATIONS="$RECOMMENDATIONS• Monitor real user metrics (RUM)\n"
+
+        echo "immediate_actions<<EOF" >> $GITHUB_OUTPUT
+        echo -e "$IMMEDIATE_ACTIONS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
         echo "recommendations<<EOF" >> $GITHUB_OUTPUT
         echo -e "$RECOMMENDATIONS" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Send Slack performance alert
+    - name: Send enhanced Slack performance alert
       shell: bash
       run: |
-        # Create performance-specific Slack payload
+        # Create performance-specific Slack payload with escalation levels
         LIGHTHOUSE_SCORE="${{ inputs.lighthouse-score }}"
-        SCORE_COLOR="danger"
-        
-        if [ "$LIGHTHOUSE_SCORE" -ge 90 ]; then
-          SCORE_COLOR="good"
-        elif [ "$LIGHTHOUSE_SCORE" -ge 75 ]; then
-          SCORE_COLOR="warning"
-        fi
-        
-        # Build fields array
+        ALERT_LEVEL="${{ steps.severity.outputs.alert_level }}"
+        ESCALATION="${{ steps.severity.outputs.escalation }}"
+
+        # Determine urgency and formatting
+        case "$ALERT_LEVEL" in
+          "emergency")
+            URGENCY="<!channel> URGENT ATTENTION REQUIRED"
+            SCORE_COLOR="danger"
+            ;;
+          "critical")
+            URGENCY="<!here> Critical Performance Issue"
+            SCORE_COLOR="danger"
+            ;;
+          "warning")
+            URGENCY="Performance Degradation Detected"
+            SCORE_COLOR="warning"
+            ;;
+          *)
+            URGENCY="Performance Status Update"
+            SCORE_COLOR="good"
+            ;;
+        esac
+
+        # Build comprehensive fields array
         FIELDS='[
           {
-            "title": "Performance Score",
+            "title": "🎯 Lighthouse Score",
             "value": "'$LIGHTHOUSE_SCORE'/100",
             "short": true
           },
           {
-            "title": "Violations",
-            "value": "${{ steps.parse.outputs.violation_count }}",
+            "title": "🚨 Alert Level",
+            "value": "'$ALERT_LEVEL'",
             "short": true
           },
           {
-            "title": "Warnings", 
-            "value": "${{ steps.parse.outputs.warning_count }}",
+            "title": "❌ Critical Issues",
+            "value": "${{ steps.severity.outputs.critical_count }}",
             "short": true
           },
           {
-            "title": "Status",
-            "value": "${{ inputs.performance-status }}",
+            "title": "⚠️ Warnings",
+            "value": "${{ steps.severity.outputs.warning_count }}",
+            "short": true
+          },
+          {
+            "title": "⏱️ Response Time",
+            "value": "< 2 minutes required",
+            "short": true
+          },
+          {
+            "title": "📊 Priority",
+            "value": "${{ steps.severity.outputs.priority }}",
             "short": true
           }
         ]'
-        
-        # Add links if available
+
+        # Add deployment and monitoring links
+        FIELDS=$(echo $FIELDS | jq '. + [
+          {
+            "title": "🌐 Live Site",
+            "value": "<${{ inputs.deployment-url }}|View Site>",
+            "short": true
+          },
+          {
+            "title": "🖱️ Cursor Demo",
+            "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Test Cursor>",
+            "short": true
+          }
+        ]')
+
+        # Add A/B testing dashboard link
+        FIELDS=$(echo $FIELDS | jq '. + [
+          {
+            "title": "🧪 A/B Test Dashboard",
+            "value": "<${{ inputs.deployment-url }}/admin/ab-test|View Variants>",
+            "short": true
+          }
+        ]')
+
+        # Add external monitoring links if available
         if [ -n "${{ inputs.lighthouse-report-url }}" ]; then
-          FIELDS=$(echo $FIELDS | jq '. + [{"title": "Lighthouse Report", "value": "<${{ inputs.lighthouse-report-url }}|View Report>", "short": true}]')
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "📊 Lighthouse Report", "value": "<${{ inputs.lighthouse-report-url }}|View Report>", "short": true}]')
         fi
-        
+
         if [ -n "${{ inputs.pagespeed-url }}" ]; then
-          FIELDS=$(echo $FIELDS | jq '. + [{"title": "PageSpeed Insights", "value": "<${{ inputs.pagespeed-url }}|View Analysis>", "short": true}]')
+          FIELDS=$(echo $FIELDS | jq '. + [{"title": "🔍 PageSpeed Insights", "value": "<${{ inputs.pagespeed-url }}|View Analysis>", "short": true}]')
         fi
-        
-        # Create main payload
-        PAYLOAD=$(cat <<EOF
+
+        # Add GitHub Actions link
+        FIELDS=$(echo $FIELDS | jq '. + [{"title": "🔧 Build Logs", "value": "<${{ inputs.github-run-url }}|View Logs>", "short": true}]')
+
+        # Create main alert payload
+        MAIN_PAYLOAD=$(cat <<EOF
         {
           "username": "DigiClick AI Performance Monitor",
-          "icon_emoji": ":chart_with_upwards_trend:",
+          "icon_emoji": ":rotating_light:",
+          "text": "$URGENCY",
           "attachments": [
             {
               "color": "${{ steps.severity.outputs.color }}",
               "title": "${{ steps.severity.outputs.emoji }} ${{ steps.severity.outputs.title }}",
               "text": "${{ steps.parse.outputs.summary }}",
               "fields": $FIELDS,
-              "footer": "Performance Budget Monitoring",
+              "footer": "DigiClick AI Performance Monitoring • Commit: ${{ inputs.commit-hash }}",
               "footer_icon": "https://developers.google.com/web/tools/lighthouse/images/lighthouse-icon-128.png",
               "ts": $(date +%s)
             }
@@ -204,66 +339,112 @@ runs:
         }
         EOF
         )
-        
-        # Send to Slack
+
+        # Send main alert to Slack
         curl -X POST -H 'Content-type: application/json' \
-          --data "$PAYLOAD" \
+          --data "$MAIN_PAYLOAD" \
           "${{ inputs.webhook-url }}"
 
-    - name: Send detailed performance alert for violations
-      if: inputs.performance-status == 'failure'
+    - name: Send detailed alert with immediate actions
+      if: steps.severity.outputs.alert_level != 'success'
       shell: bash
       run: |
-        # Send detailed violation alert
+        # Send detailed alert with immediate actions and recommendations
+        ALERT_LEVEL="${{ steps.severity.outputs.alert_level }}"
         VIOLATIONS='${{ inputs.violations }}'
-        VIOLATION_TEXT=""
-        
-        # Format violations for Slack
-        if [ "${{ steps.parse.outputs.violation_count }}" -gt 0 ]; then
-          VIOLATION_TEXT=$(echo "$VIOLATIONS" | jq -r '.[] | "• " + .type + ": " + .message' | head -10)
+
+        # Format violations for display
+        VIOLATION_SUMMARY=""
+        if [ "${{ steps.severity.outputs.critical_count }}" -gt 0 ] || [ "${{ steps.severity.outputs.warning_count }}" -gt 0 ]; then
+          VIOLATION_SUMMARY=$(echo "$VIOLATIONS" | jq -r '.[] | "• " + (.type // "unknown") + ": " + (.message // "No details")' | head -8)
         fi
-        
+
+        # Create detailed alert payload
         DETAILED_PAYLOAD=$(cat <<EOF
         {
           "username": "DigiClick AI Performance Monitor",
-          "icon_emoji": ":rotating_light:",
+          "icon_emoji": ":warning:",
           "attachments": [
             {
-              "color": "danger",
-              "title": "🚨 URGENT: Performance Budget Violations Detected",
-              "text": "Immediate optimization required to maintain user experience and SEO rankings.",
+              "color": "${{ steps.severity.outputs.color }}",
+              "title": "${{ steps.severity.outputs.emoji }} Detailed Performance Analysis",
+              "text": "Comprehensive breakdown of performance issues and recommended actions.",
               "fields": [
                 {
-                  "title": "Critical Issues",
-                  "value": "$VIOLATION_TEXT",
+                  "title": "🚨 Immediate Actions Required",
+                  "value": "${{ steps.recommendations.outputs.immediate_actions }}",
                   "short": false
                 },
                 {
-                  "title": "Recommendations",
+                  "title": "📋 Specific Issues Detected",
+                  "value": "$VIOLATION_SUMMARY",
+                  "short": false
+                },
+                {
+                  "title": "🔧 Optimization Recommendations",
                   "value": "${{ steps.recommendations.outputs.recommendations }}",
                   "short": false
-                },
-                {
-                  "title": "Test Cursor System",
-                  "value": "<${{ inputs.deployment-url }}/cursor-context-demo|Verify Cursor Performance>",
-                  "short": true
-                },
-                {
-                  "title": "GitHub Actions",
-                  "value": "<${{ inputs.github-run-url }}|View Build Logs>",
-                  "short": true
                 }
               ],
-              "footer": "Performance regression detected in commit ${{ inputs.commit-hash }}",
+              "footer": "Alert Level: $ALERT_LEVEL • Commit: ${{ inputs.commit-hash }}",
               "ts": $(date +%s)
             }
           ]
         }
         EOF
         )
-        
+
         curl -X POST -H 'Content-type: application/json' \
           --data "$DETAILED_PAYLOAD" \
+          "${{ inputs.webhook-url }}"
+
+    - name: Send emergency escalation alert
+      if: steps.severity.outputs.alert_level == 'emergency'
+      shell: bash
+      run: |
+        # Send emergency escalation with rollback instructions
+        EMERGENCY_PAYLOAD=$(cat <<EOF
+        {
+          "username": "DigiClick AI Emergency Alert",
+          "icon_emoji": ":rotating_light:",
+          "text": "<!channel> 🚨 EMERGENCY: DigiClick AI System-wide Performance Failure",
+          "attachments": [
+            {
+              "color": "danger",
+              "title": "🚨 EMERGENCY RESPONSE REQUIRED",
+              "text": "Multiple critical performance failures detected. Immediate intervention required.",
+              "fields": [
+                {
+                  "title": "🔥 Emergency Actions",
+                  "value": "• Contact on-call engineer immediately\n• Verify system status: <${{ inputs.deployment-url }}|Live Site>\n• Test cursor functionality: <${{ inputs.deployment-url }}/cursor-context-demo|Cursor Demo>\n• Prepare for emergency rollback\n• Monitor user impact and error rates",
+                  "short": false
+                },
+                {
+                  "title": "📊 System Status",
+                  "value": "• Lighthouse Score: ${{ inputs.lighthouse-score }}/100\n• Critical Issues: ${{ steps.severity.outputs.critical_count }}\n• Alert Level: EMERGENCY\n• Response Time: < 5 minutes",
+                  "short": true
+                },
+                {
+                  "title": "🔧 Quick Links",
+                  "value": "• <${{ inputs.github-run-url }}|Build Logs>\n• <${{ inputs.deployment-url }}/admin/ab-test|A/B Dashboard>\n• <https://app.netlify.com|Netlify Dashboard>",
+                  "short": true
+                },
+                {
+                  "title": "📞 Emergency Contacts",
+                  "value": "• Lead Developer: lead-dev@digiclickai.com\n• DevOps Engineer: devops@digiclickai.com\n• On-call Engineer: Check PagerDuty",
+                  "short": false
+                }
+              ],
+              "footer": "Emergency Alert • Immediate Response Required • Commit: ${{ inputs.commit-hash }}",
+              "ts": $(date +%s)
+            }
+          ]
+        }
+        EOF
+        )
+
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$EMERGENCY_PAYLOAD" \
           "${{ inputs.webhook-url }}"
 
     - name: Send cursor system specific alert

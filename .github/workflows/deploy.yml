@@ -511,15 +511,49 @@ jobs:
             reports/
           retention-days: 30
 
-      - name: 🚨 Send performance alerts
+      - name: 🔍 Run enhanced performance analysis
+        id: enhanced_analysis
+        run: |
+          echo "Running enhanced performance analysis with alert manager..."
+
+          # Create performance metrics JSON for alert manager
+          cat > performance_metrics.json << EOF
+          {
+            "lighthouse_score": ${{ steps.performance.outputs.lighthouse_score }},
+            "performance_status": "${{ steps.performance.outputs.overall_status }}",
+            "violations": ${{ steps.performance.outputs.violations }},
+            "warnings": ${{ steps.performance.outputs.warnings }},
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "commit_hash": "${{ github.sha }}",
+            "deployment_url": "${{ secrets.NEXT_PUBLIC_APP_URL }}",
+            "github_run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          EOF
+
+          # Run performance alert manager
+          node scripts/performance-alert-manager.js performance_metrics.json || echo "Alert manager completed with warnings"
+
+          # Extract enhanced metrics for notifications
+          ALERT_LEVEL=$(jq -r '.alert_level // "unknown"' performance_metrics.json 2>/dev/null || echo "unknown")
+          CRITICAL_COUNT=$(echo '${{ steps.performance.outputs.violations }}' | jq '[.[] | select(.severity == "critical")] | length' 2>/dev/null || echo "0")
+          WARNING_COUNT=$(echo '${{ steps.performance.outputs.violations }}' | jq '[.[] | select(.severity == "warning")] | length' 2>/dev/null || echo "0")
+
+          echo "alert_level=$ALERT_LEVEL" >> $GITHUB_OUTPUT
+          echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+
+      - name: 🚨 Send enhanced performance alerts
         if: always()
         uses: ./.github/actions/performance-notify
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          email-config: ${{ secrets.EMAIL_CONFIG }}
           performance-status: ${{ steps.performance.outputs.overall_status }}
           lighthouse-score: ${{ steps.performance.outputs.lighthouse_score }}
           violations: ${{ steps.performance.outputs.violations }}
           warnings: ${{ steps.performance.outputs.warnings }}
+          lighthouse-report-url: ${{ steps.performance.outputs.lighthouse_report_url }}
+          pagespeed-url: "https://pagespeed.web.dev/report?url=${{ secrets.NEXT_PUBLIC_APP_URL }}"
           deployment-url: ${{ secrets.NEXT_PUBLIC_APP_URL }}
           commit-hash: ${{ github.sha }}
           github-run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
