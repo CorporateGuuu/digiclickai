@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import UnifiedHeader from '../UnifiedHeader/UnifiedHeader';
 import UnifiedFooter from '../UnifiedFooter/UnifiedFooter';
@@ -17,7 +16,8 @@ const PWAInstallPrompt = dynamic(
 );
 
 export default function Layout({ children, title, description }) {
-  const { data: session } = useSession();
+  // DigiClick AI uses its own authentication system
+  const session = null;
 
   const pageTitle = title
     ? `${title} | MDTS`

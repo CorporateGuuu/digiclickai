@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './UnifiedHeader.module.css';
@@ -7,7 +6,12 @@ import ShippingCutoff from '../ShippingCutoff/ShippingCutoff';
 import SearchBar from '../SearchBar/SearchBar';
 
 const UnifiedHeader = () => {
-  const { data: session } = useSession();
+  // DigiClick AI uses its own authentication system
+  const session = null;
+  const signOut = () => {
+    // DigiClick AI authentication logout would go here
+    console.log('Sign out clicked');
+  };
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);

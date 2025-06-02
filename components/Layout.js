@@ -1,6 +1,12 @@
 import React from 'react';
-import EnhancedCustomCursor from './CustomCursor/EnhancedCustomCursor';
+import dynamic from 'next/dynamic';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+
+// Dynamic import for client-side only cursor
+const EnhancedCustomCursor = dynamic(
+  () => import('./CustomCursor/EnhancedCustomCursor'),
+  { ssr: false }
+);
 
 /**
  * Simple Layout Component with CustomCursor
@@ -14,10 +20,10 @@ export default function Layout({
 }) {
   return (
     <div className={`layout-container ${className}`}>
-      {/* Custom Cursor with Error Boundary */}
+      {/* Enhanced Custom Cursor with Error Boundary */}
       {showCursor && (
         <ErrorBoundary fallback={null}>
-          <CustomCursor theme={cursorTheme} />
+          <EnhancedCustomCursor theme={cursorTheme} />
         </ErrorBoundary>
       )}
       

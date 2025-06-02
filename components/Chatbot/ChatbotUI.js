@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
 import styles from './Chatbot.module.css';
 
 const ChatbotUI = () => {
-  const { data: session } = useSession();
+  // DigiClick AI uses its own authentication system
+  const session = null;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');

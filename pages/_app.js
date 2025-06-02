@@ -65,21 +65,8 @@ function AppContent({ Component, pageProps }) {
 }
 
 function MyApp({ Component, pageProps }) {
-  // Check if we have session in pageProps
-  const { session, ...restPageProps } = pageProps || {};
-
-  // Try to use SessionProvider if available
-  try {
-    const { SessionProvider } = require('next-auth/react');
-    return (
-      <SessionProvider session={session}>
-        <AppContent Component={Component} pageProps={restPageProps} />
-      </SessionProvider>
-    );
-  } catch (e) {
-    // Fallback if next-auth is not available
-    return <AppContent Component={Component} pageProps={pageProps} />;
-  }
+  // DigiClick AI uses its own authentication system
+  return <AppContent Component={Component} pageProps={pageProps} />;
 }
 
 export default MyApp;

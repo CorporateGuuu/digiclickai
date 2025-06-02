@@ -83,10 +83,10 @@ export default function TechStack() {
             </div>
             <div className={styles.techCard}>
               <div className={styles.techIcon}>
-                <img src="/images/tech/supabase.svg" alt="Supabase" />
+                <img src="/images/tech/mongodb.svg" alt="MongoDB" />
               </div>
-              <h3>Supabase</h3>
-              <p>Open-source Firebase alternative with PostgreSQL</p>
+              <h3>MongoDB</h3>
+              <p>NoSQL database for flexible, scalable data storage</p>
             </div>
             <div className={styles.techCard}>
               <div className={styles.techIcon}>

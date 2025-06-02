@@ -56,7 +56,7 @@
     "@mui/material": "^7.0.2",
     "@notionhq/client": "^2.3.0",
     "@stripe/stripe-js": "^7.2.0",
-    "@supabase/supabase-js": "^2.49.4",
+
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
@@ -65,7 +65,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
-    "connect-pg-simple": "^10.0.0",
+
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -83,14 +83,14 @@
     "micro": "^10.0.1",
     "multer": "^1.4.5-lts.2",
     "next": "^14.1.0",
-    "next-auth": "^4.24.11",
+
     "next-pwa": "^5.6.0",
     "next-seo": "^6.4.0",
     "next-sitemap": "^4.2.3",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.10.1",
     "particles.js": "^2.0.0",
-    "pg": "^8.15.6",
+
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
