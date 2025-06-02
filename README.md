@@ -1,155 +1,288 @@
-# MobileSentrix Scraper
+# DigiClick AI - Premium AI Automation Platform
 
-This project contains multiple implementations of a web scraper for the MobileSentrix website. Each implementation is designed to work with different environments and limitations.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/digiclick-ai)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/your-site/deploys)
 
-## Table of Contents
+> **Transform your business with cutting-edge AI automation solutions featuring an immersive custom cursor experience.**
 
-- [Installation](#installation)
-- [Scraper Implementations](#scraper-implementations)
-  - [Browser-Based Scraper with CORS Proxy](#browser-based-scraper-with-cors-proxy)
-  - [Node.js Scraper](#nodejs-scraper)
-  - [PHP Scraper](#php-scraper)
-  - [Python Scraper](#python-scraper)
-- [Command Line Developer Tools](#command-line-developer-tools)
-- [Output](#output)
-- [Troubleshooting](#troubleshooting)
+## 🎯 Features
 
-## Installation
+### 🖱️ **Custom Cursor System**
+- **Particle Trail Effects** - Smooth, velocity-based particle trails
+- **Smart State Detection** - Automatically adapts to different content types
+- **Interactive Feedback** - Visual feedback for buttons, links, and special zones
+- **Performance Optimized** - 60fps animations with GPU acceleration
+- **Mobile Responsive** - Automatically hides on touch devices
+- **Accessibility Compliant** - Respects reduced motion preferences
 
-No installation is required for the browser-based scraper. For other implementations, you'll need to have the respective runtime environments installed.
+### 🎨 **DigiClick AI Theme**
+- **Futuristic Design** - Dark theme with neon accents (#00d4ff, #7b2cbf)
+- **Orbitron/Poppins Fonts** - Professional typography system
+- **GSAP Animations** - Smooth, professional animations throughout
+- **Gradient Effects** - Dynamic gradients and glow effects
+- **Responsive Design** - Mobile-first approach with touch optimization
 
-## Scraper Implementations
+### 🚀 **Core Functionality**
+- **AI Services Showcase** - Dynamic service loading from backend API
+- **Contact Forms** - Enhanced forms with cursor interactions
+- **Authentication System** - JWT-based login/signup with protected routes
+- **Portfolio Display** - Dynamic portfolio loading with animations
+- **Analytics Integration** - Google Analytics and performance monitoring
 
-### Browser-Based Scraper with CORS Proxy
+## 🚀 Quick Start
 
-The easiest way to run the scraper without any installation:
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Git
 
-1. Open `cors_proxy_scraper.html` in your web browser
-2. Select a CORS proxy from the dropdown (needed to bypass browser security restrictions)
-3. Click "Scrape Website"
-4. View the results and download the report
-
-**File:** `cors_proxy_scraper.html`
-
-### Node.js Scraper
-
-For a more robust scraping experience with Node.js:
-
-1. Install Node.js from [nodejs.org](https://nodejs.org/)
-2. Open a terminal/command prompt
-3. Navigate to the directory containing the scraper
-4. Run the scraper:
+### Installation
 
 ```bash
-node node_scraper.js
-```
+# Clone the repository
+git clone https://github.com/your-username/digiclick-ai.git
+cd digiclick-ai
 
-**File:** `node_scraper.js`
-
-### PHP Scraper
-
-If you have PHP installed or access to a PHP server:
-
-1. Make sure PHP is installed (version 7.0 or higher recommended)
-2. Open a terminal/command prompt
-3. Navigate to the directory containing the scraper
-4. Run the scraper:
-
-```bash
-php php_scraper.php
-```
-
-Alternatively, upload to a PHP-enabled web server and access it through a browser.
-
-**File:** `php_scraper.php`
-
-### Python Scraper
-
-For Python users, multiple options are available:
-
-#### Simple Scraper (No External Dependencies)
-
-```bash
-python3 simple_scraper.py
-```
-
-**File:** `simple_scraper.py`
-
-#### Resilient Scraper (No External Dependencies)
-
-```bash
-python3 resilient_scraper.py
-```
-
-**File:** `resilient_scraper.py`
-
-#### Advanced Scraper (Requires External Libraries)
-
-```bash
 # Install dependencies
-pip3 install requests beautifulsoup4 pandas aiohttp
+npm install
 
-# Run the scraper
-python3 mobilesentrix_scraper.py
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
+
+# Start development server
+npm run dev
 ```
 
-**File:** `mobilesentrix_scraper.py`
+Visit `http://localhost:3000` to see the application with custom cursor functionality.
 
-## Command Line Developer Tools
-
-Some scrapers require the Command Line Developer Tools on macOS. To install:
-
-1. Open Terminal
-2. Run the following command:
+### 🎮 Test Cursor Interactions
 
 ```bash
-xcode-select --install
+# Check cursor system health
+npm run check:cursor
+
+# Visit cursor demo page
+npm run cursor:demo
+# Then go to: http://localhost:3000/cursor-demo
 ```
 
-3. Follow the on-screen instructions to complete the installation
+## 🎨 Custom Cursor Usage
 
-For more details, see `install_dev_tools.md`.
+### Basic Implementation
+```jsx
+import { DigiClickLayout } from '../components/Layout';
 
-## Output
+export default function MyPage() {
+  return (
+    <DigiClickLayout showCursor={true} cursorTheme="default">
+      <section className="hero glow-trigger">
+        <h1 className="glow-text">Welcome to DigiClick AI</h1>
+        <p>Experience the future of AI automation</p>
+        <button className="cta-button pulse-box">Get Started</button>
+      </section>
+    </DigiClickLayout>
+  );
+}
+```
 
-All scrapers save their output to an `output` directory, which includes:
+### Available CSS Classes
+- **`.cta-button`** - Enhanced buttons with cursor interactions
+- **`.glow-text`** - Gradient text with glow effects
+- **`.nav-link`** - Navigation links with hover animations
+- **`.pulse-box`** - Pulsing containers for special content
+- **`.glow-trigger`** - Zones that trigger enhanced cursor glow
 
-- `mobilesentrix_report.html` - Interactive HTML report
-- `mobilesentrix_data.json` - Raw data in JSON format
-- `mobilesentrix_images.txt` - List of image URLs
-- `mobilesentrix_categories.txt` - List of categories
-- `mobilesentrix_products.txt` - Tab-separated product data
+### Cursor States
+1. **Default** - Blue glow with particle trails
+2. **Pointer** - Green accent with "CLICK" label (buttons, links)
+3. **Glow** - Purple enhanced glow (special zones)
+4. **Text** - Red accent (headings, text elements)
+5. **Click** - White flash with expanding ripples
 
-## Troubleshooting
+## 🏗️ Project Structure
 
-### CORS Issues with Browser-Based Scraper
+```
+digiclick-ai/
+├── components/
+│   ├── CustomCursor/
+│   │   ├── CustomCursor.js          # Main cursor component
+│   │   ├── CustomCursor.module.css  # Cursor styles
+│   │   └── index.js                 # Export file
+│   ├── Layout.js                    # Layout with cursor integration
+│   ├── AuthModal.js                 # Authentication modal
+│   ├── Portfolio.js                 # Portfolio component
+│   └── Chatbot/                     # Chatbot system
+├── hooks/
+│   └── useMousePosition.js          # Mouse tracking hook
+├── pages/
+│   ├── index.js                     # Homepage with cursor
+│   ├── cursor-demo.js               # Cursor demonstration
+│   ├── enhanced-demo.js             # Enhanced CSS demo
+│   └── _app.js                      # App with Layout integration
+├── styles/
+│   ├── globals.css                  # Global styles with cursor classes
+│   ├── Home.module.css              # Enhanced homepage styles
+│   └── cursor-integration-guide.md  # CSS integration guide
+├── scripts/
+│   ├── deploy.js                    # Automated deployment
+│   ├── check-cursor.js              # Health check script
+│   └── package-scripts.json        # NPM scripts reference
+├── tests/
+│   └── cursor.test.js               # Cursor functionality tests
+└── docs/
+    └── DEPLOYMENT_GUIDE.md          # Comprehensive deployment guide
+```
 
-If you encounter CORS errors with the browser-based scraper:
+## 🚀 Deployment
 
-1. Try a different CORS proxy from the dropdown
-2. Some proxies may have request limits or be temporarily unavailable
-3. As a last resort, use one of the other scraper implementations
+### Quick Deploy to Vercel
+```bash
+# Deploy with automated checks
+npm run deploy
 
-### Python/Node.js/PHP Not Found
+# Or deploy to specific platform
+npm run deploy:vercel
+npm run deploy:netlify
+```
 
-If you get "command not found" errors:
+### Manual Deployment
+```bash
+# Build the application
+npm run build
 
-1. Make sure the respective runtime is installed
-2. Check that it's in your system PATH
-3. Try using the full path to the executable
+# Deploy to your preferred platform
+# See DEPLOYMENT_GUIDE.md for detailed instructions
+```
 
-### SSL Certificate Errors
+### Environment Variables
+```env
+# Required
+NEXT_PUBLIC_API_URL=https://your-backend-api.com
+NEXT_PUBLIC_APP_URL=https://your-domain.com
 
-If you encounter SSL certificate errors:
+# Optional
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_CURSOR_PERFORMANCE_MODE=high
+```
 
-1. The scrapers are configured to ignore SSL verification for simplicity
-2. This is generally safe for scraping public websites
-3. If you're concerned, modify the code to enable SSL verification
+## 🧪 Testing
 
-### Empty Results
+```bash
+# Run all tests
+npm test
 
-If the scraper runs but returns no products:
+# Test cursor functionality specifically
+npm run test:cursor
 
-1. The website structure may have changed
-2. Try a different scraper implementation
-3. Check the website manually to confirm it's accessible
+# Check system health
+npm run check:cursor
+
+# Performance testing
+npm run performance:test
+```
+
+## 📱 Browser Support
+
+- **Desktop**: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- **Mobile**: iOS Safari 14+, Chrome Mobile 90+
+- **Cursor Features**: Desktop only (automatically hidden on touch devices)
+
+## 🎯 Performance
+
+- **60fps animations** with GPU acceleration
+- **Automatic cleanup** prevents memory leaks
+- **Touch device optimization** with cursor hiding
+- **Reduced motion support** for accessibility
+- **Lazy loading** for optimal performance
+
+## 🔧 Development
+
+### Adding New Cursor Interactions
+```jsx
+// Add cursor classes to elements
+<div className="my-element glow-trigger pulse-box">
+  <h3 className="glow-text">Interactive Content</h3>
+  <button className="cta-button">Action Button</button>
+</div>
+```
+
+### Custom Cursor Themes
+```jsx
+// Use different cursor themes
+<Layout cursorTheme="neon">        // Neon theme
+<Layout cursorTheme="minimal">     // Minimal theme
+<Layout cursorTheme="corporate">   // Corporate theme
+```
+
+### Performance Monitoring
+```jsx
+// Enable debug mode
+<Layout showCursor={true} debug={true}>
+  {children}
+</Layout>
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/cursor-enhancement`
+3. Run tests: `npm run test:cursor`
+4. Commit changes: `git commit -m 'Add cursor enhancement'`
+5. Push to branch: `git push origin feature/cursor-enhancement`
+6. Submit a pull request
+
+### Development Workflow
+- All cursor changes must pass `npm run test:cursor`
+- Health check must score 90%+ with `npm run check:cursor`
+- Test on multiple devices and browsers
+- Verify accessibility compliance
+
+## 📚 Documentation
+
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Complete deployment instructions
+- **[Cursor Integration Guide](styles/cursor-integration-guide.md)** - CSS integration examples
+- **[Component Documentation](docs/COMPONENTS.md)** - Component usage guide
+
+## 🎨 Design System
+
+### Colors
+- **Primary Background**: `#121212`
+- **Primary Accent**: `#00d4ff` (Cyan blue)
+- **Secondary Accent**: `#7b2cbf` (Purple)
+- **Text**: `#e0e0e0` (Light gray)
+
+### Typography
+- **Headers**: Orbitron (futuristic, tech-focused)
+- **Body**: Poppins (clean, readable)
+- **Code**: Courier New (monospace)
+
+### Cursor Colors
+- **Default**: `#00d4ff` (Blue glow)
+- **Pointer**: `#00ff88` (Green accent)
+- **Glow**: `#7b2cbf` (Purple glow)
+- **Text**: `#ff6b6b` (Red accent)
+- **Click**: `#ffffff` (White flash)
+
+## 🔗 Links
+
+- **Live Demo**: [https://digiclick-ai.vercel.app](https://digiclick-ai.vercel.app)
+- **Cursor Demo**: [https://digiclick-ai.vercel.app/cursor-demo](https://digiclick-ai.vercel.app/cursor-demo)
+- **Backend API**: [https://digiclick-ai-backend.onrender.com](https://digiclick-ai-backend.onrender.com)
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **GSAP** - Animation library powering smooth cursor effects
+- **Next.js** - React framework for optimal performance
+- **Vercel** - Deployment platform for seamless hosting
+- **DigiClick AI Team** - For the vision and design direction
+
+---
+
+**Built with ❤️ by the DigiClick AI team**
+
+*Experience the future of AI automation with immersive cursor interactions.*

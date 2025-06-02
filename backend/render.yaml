@@ -1,0 +1,166 @@
+# Render.com deployment configuration for DigiClick AI Backend
+services:
+  - type: web
+    name: digiclick-ai-backend
+    env: node
+    plan: starter # Change to 'standard' or 'pro' for production
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    
+    # Environment variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: PORT
+        value: 10000
+      
+      - key: API_VERSION
+        value: v1
+      
+      # Database Configuration
+      - key: MONGODB_URI
+        sync: false # Set this in Render dashboard
+      
+      - key: DB_NAME
+        value: digiclick-ai-production
+      
+      # JWT Configuration
+      - key: JWT_SECRET
+        generateValue: true
+        sync: false
+      
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: 7
+      
+      # Password Hashing
+      - key: BCRYPT_SALT_ROUNDS
+        value: 12
+      
+      # CORS Configuration
+      - key: FRONTEND_URL
+        value: https://digiclick.ai
+      
+      - key: ALLOWED_ORIGINS
+        value: https://digiclick.ai,https://www.digiclick.ai,http://localhost:3000,http://localhost:3002
+      
+      # Rate Limiting
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+      
+      # Email Configuration (Gmail SMTP)
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      
+      - key: SMTP_PORT
+        value: 587
+      
+      - key: SMTP_SECURE
+        value: false
+      
+      - key: SMTP_USER
+        sync: false # Set this in Render dashboard
+      
+      - key: SMTP_PASS
+        sync: false # Set this in Render dashboard
+      
+      - key: FROM_EMAIL
+        value: noreply@digiclick.ai
+      
+      - key: FROM_NAME
+        value: DigiClick AI
+      
+      # AI Service Configuration
+      - key: OPENAI_API_KEY
+        sync: false # Set this in Render dashboard
+      
+      - key: AI_MODEL
+        value: gpt-3.5-turbo
+      
+      - key: AI_MAX_TOKENS
+        value: 1000
+      
+      # Security
+      - key: COOKIE_SECRET
+        generateValue: true
+        sync: false
+      
+      - key: SESSION_SECRET
+        generateValue: true
+        sync: false
+      
+      # Logging
+      - key: LOG_LEVEL
+        value: info
+      
+      - key: LOG_FILE
+        value: logs/app.log
+      
+      # Health Check
+      - key: HEALTH_CHECK_ENDPOINT
+        value: /health
+      
+      # Admin Configuration
+      - key: ADMIN_EMAIL
+        value: admin@digiclick.ai
+      
+      - key: ADMIN_PASSWORD
+        sync: false # Set this in Render dashboard
+      
+      # File Upload
+      - key: MAX_FILE_SIZE
+        value: 5242880
+      
+      - key: UPLOAD_PATH
+        value: uploads/
+    
+    # Auto-deploy settings
+    autoDeploy: true
+    
+    # Build settings
+    buildFilter:
+      paths:
+        - backend/**
+      ignoredPaths:
+        - frontend/**
+        - docs/**
+        - README.md
+    
+    # Health check settings
+    healthCheck:
+      path: /health
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    # Scaling settings
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetCPU: 70
+      targetMemory: 80
+    
+    # Disk settings
+    disk:
+      name: digiclick-ai-disk
+      size: 1GB
+      mount: /opt/render/project/src/uploads
+
+# Database (if using Render PostgreSQL - optional)
+databases:
+  - name: digiclick-ai-postgres
+    databaseName: digiclick_ai_production
+    user: digiclick_ai_user
+    plan: starter # Change to 'standard' or 'pro' for production
+
+# Redis (if needed for caching - optional)
+# - name: digiclick-ai-redis
+#   plan: starter
+#   maxmemoryPolicy: allkeys-lru

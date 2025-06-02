@@ -1,61 +1,69 @@
-# E-Commerce Platform Integration Guide
+# DigiClick AI Platform Integration Guide
 
-This guide explains how the data scraping, database, and frontend components are integrated in the e-commerce platform.
+This guide explains how the database, API, and frontend components are integrated in the DigiClick AI platform.
 
 ## Architecture Overview
 
 The platform consists of three main components:
 
-1. **Python Scrapers**: Scripts that extract product data from external sources and insert it into the PostgreSQL database
-2. **PostgreSQL Database**: Stores all product, category, user, and order data
-3. **Next.js Frontend**: Displays the data and provides the user interface
+1. **Backend API**: Express.js server that handles authentication, services, and contact forms
+2. **Database**: MongoDB for storing user data, services, and application state
+3. **Next.js Frontend**: React-based frontend with custom cursor system and AI automation features
 
 ## Database Setup
 
-The database uses PostgreSQL with tables for products, categories, users, carts, and orders. To set up the database:
+The DigiClick AI platform uses MongoDB for data storage. To set up the database:
 
 ```bash
-# Run the database setup script
-./database/setup_database.sh
+# Install MongoDB dependencies
+npm install mongodb mongoose
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your MongoDB connection string
 ```
 
 This will:
-- Create the PostgreSQL database
-- Set up the schema with all required tables
-- Import initial data from CSV files
+- Connect to MongoDB Atlas or local MongoDB instance
+- Set up collections for users, services, and contact forms
+- Initialize the database with default AI services data
 
-## Data Scraping and Import
+## API Integration
 
-The Python scrapers extract data from external sources and insert it directly into the database:
+DigiClick AI services and data can be managed through the backend API:
 
 ```bash
-# Install required Python packages
-pip install -r Scripts/requirements.txt
+# Start the backend API server
+npm run dev:api
 
-# Run the database scraper
-./Scripts/run_database_scraper.sh
+# Or use the deployed backend
+# API URL: https://digiclick-ai-backend.onrender.com
 ```
 
-The scraper:
-- Extracts product data from MobileSentrix and other sources
-- Normalizes the data (categories, specifications, etc.)
-- Inserts the data into the PostgreSQL database using SQLAlchemy
-- Handles duplicates with UPSERT operations
+The API provides:
+- Authentication endpoints for user login/signup
+- Services management for AI automation offerings
+- Contact form handling with email notifications
+- Portfolio management for showcasing AI projects
+- Analytics and performance tracking
 
 ## Frontend Integration
 
-The Next.js frontend connects to the database using the `pg` package:
+The Next.js frontend integrates with the backend API and includes the custom cursor system:
 
-1. **Database Connection**: The `lib/db.ts` file provides functions to query the database
-2. **API Routes**: The `/api` routes fetch data from the database and return it as JSON
-3. **Server Components**: The page components fetch data directly from the database
+1. **API Integration**: The `utils/api.js` file provides functions to communicate with the backend
+2. **Custom Cursor**: The `components/CustomCursor` provides immersive cursor interactions
+3. **Layout System**: The `components/Layout.js` integrates cursor with error boundaries and performance monitoring
+4. **Authentication**: JWT-based authentication with protected routes and user management
 
 ### Running the Frontend
 
 ```bash
 # Install dependencies
-cd phone-electronics-store
 npm install
+
+# Set up environment variables
+cp .env.example .env.local
 
 # Run the development server
 npm run dev
@@ -63,43 +71,64 @@ npm run dev
 
 ## Data Flow
 
-1. **Scrapers → Database**: Python scrapers extract data and insert it into PostgreSQL
-2. **Database → API**: Next.js API routes query the database and return JSON
-3. **API → Frontend**: React components fetch data from the API and render it
+1. **Frontend → API**: React components make requests to the backend API
+2. **API → Database**: Express.js server queries MongoDB and returns JSON
+3. **Database → Frontend**: Data flows through API to React components for rendering
+4. **Cursor System**: Custom cursor enhances user interactions across all components
 
 ## Folder Structure
 
 ```
-├── database/               # Database setup and models
-│   ├── models/             # Database models for each entity
-│   ├── schema.sql          # Database schema
-│   ├── setup.js            # Database setup script
-│   └── setup_database.sh   # Main setup script
-├── Scripts/                # Python scraper scripts
-│   ├── database_scraper.py # Scraper that inserts into database
-│   └── requirements.txt    # Python dependencies
-└── phone-electronics-store/ # Next.js frontend
-    ├── app/                # Next.js app directory
-    │   ├── api/            # API routes
-    │   └── page.tsx        # Home page
-    ├── components/         # React components
-    └── lib/                # Utility functions
-        └── db.ts           # Database connection
+digiclick-ai/
+├── components/                 # React components
+│   ├── CustomCursor/          # Custom cursor system
+│   │   ├── CustomCursor.js
+│   │   ├── CustomCursor.module.css
+│   │   └── index.js
+│   ├── Layout.js              # Layout with cursor integration
+│   ├── AuthModal.js           # Authentication modal
+│   └── Portfolio.js           # Portfolio component
+├── pages/                     # Next.js pages
+│   ├── api/                   # API routes
+│   ├── index.js               # Homepage with cursor
+│   ├── cursor-demo.js         # Cursor demonstration
+│   └── _app.js                # App with Layout integration
+├── hooks/                     # Custom React hooks
+│   └── useMousePosition.js    # Mouse tracking hook
+├── styles/                    # CSS and styling
+│   ├── globals.css            # Global styles with cursor classes
+│   └── Home.module.css        # Enhanced homepage styles
+├── utils/                     # Utility functions
+│   └── api.js                 # API communication
+├── scripts/                   # Deployment and utility scripts
+│   ├── deploy.js              # Automated deployment
+│   └── check-cursor.js        # Health check script
+└── tests/                     # Test files
+    └── cursor.test.js         # Cursor functionality tests
 ```
 
 ## Maintenance and Updates
 
-To update the product data:
+To update the DigiClick AI platform:
 
-1. Run the scraper script to fetch new data:
+1. Update services and content through the backend API
+2. Deploy new features using the automated deployment scripts:
    ```bash
-   ./Scripts/run_database_scraper.sh
+   npm run deploy:vercel
    ```
+3. Monitor cursor performance with health check scripts:
+   ```bash
+   npm run check:cursor
+   ```
+4. Update custom cursor themes and interactions as needed
 
-2. The frontend will automatically display the updated data on the next page load
+The system includes automated CI/CD through GitHub Actions for seamless updates and deployments.
 
 ## Troubleshooting
 
-- **Database Connection Issues**: Check PostgreSQL is running and the connection string is correct
-- **Scraper Errors**: Check the scraper logs in `scraper.log`
-- **Frontend Errors**: Check the Next.js server logs for API or database errors
+- **Database Connection Issues**: Check MongoDB connection string and network access
+- **Cursor Not Appearing**: Run `npm run check:cursor` to verify cursor system health
+- **Frontend Build Errors**: Make sure all dependencies are installed with `npm install`
+- **API Connection Issues**: Verify backend API is running and CORS is configured correctly
+- **Authentication Problems**: Check JWT configuration and token storage
+- **Performance Issues**: Monitor cursor performance and disable effects if needed
