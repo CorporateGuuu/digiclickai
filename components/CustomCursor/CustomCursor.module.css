@@ -152,7 +152,21 @@
   );
 }
 
-/* Cursor Text */
+/* Cursor Icons */
+.cursorIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 5px currentColor;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Enhanced Cursor Text */
 .cursorText {
   position: fixed;
   pointer-events: none;
@@ -163,13 +177,52 @@
   color: #00d4ff;
   text-transform: uppercase;
   letter-spacing: 2px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 4px 8px;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 6px 12px;
+  border-radius: 6px;
   border: 1px solid #00d4ff;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  box-shadow:
+    0 0 15px rgba(0, 212, 255, 0.6),
+    inset 0 0 10px rgba(0, 212, 255, 0.1);
   animation: textGlow 1s ease-in-out infinite alternate;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
+}
+
+/* Context-specific text styles */
+.ctaText {
+  background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(123, 44, 191, 0.2));
+  border-color: #7b2cbf;
+  color: #7b2cbf;
+  font-weight: 800;
+  animation: ctaTextGlow 1.2s ease-in-out infinite alternate;
+}
+
+.loadingText {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: #00d4ff;
+  animation: loadingTextPulse 1s ease-in-out infinite;
+}
+
+.disabledText {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+  color: #ff4444;
+  opacity: 0.7;
+}
+
+.successText {
+  background: rgba(0, 255, 136, 0.1);
+  border-color: #00ff88;
+  color: #00ff88;
+  animation: successTextGlow 1s ease-in-out infinite alternate;
+}
+
+.errorText {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+  color: #ff4444;
+  animation: errorTextShake 0.5s ease-in-out infinite;
 }
 
 /* Animations */
@@ -292,10 +345,17 @@
   }
 }
 
-/* Enhanced Cursor States for GSAP Integration */
+/* Enhanced Context-Aware Cursor States */
 
-/* CTA Button Hover State */
+/* CTA Button Hover State - Larger glowing circle (20px → 30px) */
+.cursor.cta {
+  width: 30px;
+  height: 30px;
+}
+
 .cursor.cta .cursorCore {
+  width: 12px;
+  height: 12px;
   background: linear-gradient(45deg, #00d4ff, #7b2cbf, #ff6b6b);
   box-shadow:
     0 0 25px #00d4ff,
@@ -305,6 +365,8 @@
 }
 
 .cursor.cta .cursorGlow {
+  width: 30px;
+  height: 30px;
   border: 2px solid rgba(0, 212, 255, 0.9);
   background: radial-gradient(
     circle,
@@ -314,13 +376,143 @@
   );
 }
 
-/* Navigation Link Hover State */
+/* Navigation Link Hover State - Arrow pointer with trailing particle effect */
 .cursor.nav .cursorCore {
   background: #7b2cbf;
   box-shadow:
     0 0 15px #7b2cbf,
     0 0 30px rgba(123, 44, 191, 0.6);
   animation: navGlow 2s ease-in-out infinite;
+  position: relative;
+}
+
+.cursor.nav .cursorCore::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #7b2cbf;
+  font-size: 8px;
+  font-weight: bold;
+}
+
+/* Text Input Cursor State - I-beam with typing indicator */
+.cursor.text {
+  width: 8px;
+  height: 32px;
+}
+
+.cursor.text .cursorCore {
+  width: 2px;
+  height: 20px;
+  background: #00d4ff;
+  border-radius: 1px;
+  box-shadow:
+    0 0 10px #00d4ff,
+    0 0 20px rgba(0, 212, 255, 0.5);
+  animation: textBlink 1s ease-in-out infinite;
+}
+
+.cursor.text .cursorGlow {
+  width: 8px;
+  height: 32px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 212, 255, 0.2) 0%,
+    rgba(0, 212, 255, 0.4) 50%,
+    rgba(0, 212, 255, 0.2) 100%
+  );
+}
+
+/* Zoom Cursor State - Expand with zoom icon and pulsing animation */
+.cursor.zoom .cursorCore {
+  background: radial-gradient(circle, #00d4ff, #7b2cbf);
+  box-shadow:
+    0 0 20px #00d4ff,
+    0 0 40px #7b2cbf,
+    0 0 60px rgba(0, 212, 255, 0.6);
+  animation: zoomPulse 1.5s ease-in-out infinite;
+}
+
+.cursor.zoom .cursorGlow {
+  animation: zoomGlow 1.5s ease-in-out infinite;
+}
+
+/* Drag Cursor State - Custom drag cursor with directional arrows */
+.cursor.drag .cursorCore {
+  background: conic-gradient(from 0deg, #00d4ff, #7b2cbf, #ff6b6b, #00d4ff);
+  box-shadow:
+    0 0 25px #00d4ff,
+    0 0 50px rgba(123, 44, 191, 0.7);
+  animation: dragRotate 2s linear infinite;
+}
+
+.cursor.dragging .cursorCore {
+  background: linear-gradient(45deg, #ff6b6b, #00d4ff);
+  box-shadow:
+    0 0 30px #ff6b6b,
+    0 0 60px #00d4ff;
+  animation: draggingPulse 0.5s ease-in-out infinite;
+}
+
+/* Upload Cursor State - Upload icon with animated cloud/arrow */
+.cursor.upload .cursorCore {
+  background: linear-gradient(135deg, #00d4ff, #7b2cbf, #00ff88);
+  box-shadow:
+    0 0 20px #00d4ff,
+    0 0 40px rgba(0, 255, 136, 0.6);
+  animation: uploadFloat 2s ease-in-out infinite;
+}
+
+/* Loading Cursor State - Spinning animation */
+.cursor.loading .cursorCore {
+  background: conic-gradient(from 0deg, #00d4ff 0%, transparent 50%, #7b2cbf 100%);
+  box-shadow:
+    0 0 20px #00d4ff,
+    0 0 40px #7b2cbf;
+  animation: loadingSpin 1s linear infinite;
+}
+
+/* Disabled Cursor State - Reduced opacity with red accent */
+.cursor.disabled {
+  opacity: 0.5;
+}
+
+.cursor.disabled .cursorCore {
+  background: linear-gradient(45deg, #ff4444, #666666);
+  box-shadow:
+    0 0 15px #ff4444,
+    0 0 30px rgba(255, 68, 68, 0.5);
+  animation: disabledPulse 2s ease-in-out infinite;
+}
+
+.cursor.disabled .cursorGlow {
+  border-color: rgba(255, 68, 68, 0.6);
+  background: radial-gradient(
+    circle,
+    rgba(255, 68, 68, 0.2) 0%,
+    rgba(102, 102, 102, 0.1) 50%,
+    transparent 100%
+  );
+}
+
+/* Form Validation States */
+.cursor.success .cursorCore {
+  background: linear-gradient(45deg, #00ff88, #00d4ff);
+  box-shadow:
+    0 0 20px #00ff88,
+    0 0 40px rgba(0, 255, 136, 0.7);
+  animation: successPulse 1s ease-in-out infinite;
+}
+
+.cursor.error .cursorCore {
+  background: linear-gradient(45deg, #ff4444, #ff6b6b);
+  box-shadow:
+    0 0 20px #ff4444,
+    0 0 40px rgba(255, 68, 68, 0.7);
+  animation: errorShake 0.5s ease-in-out infinite;
 }
 
 /* Glow Text Hover State */
@@ -436,6 +628,166 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* New Context-Aware Animations */
+@keyframes textBlink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes zoomPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 20px #00d4ff,
+      0 0 40px #7b2cbf,
+      0 0 60px rgba(0, 212, 255, 0.6);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow:
+      0 0 30px #00d4ff,
+      0 0 60px #7b2cbf,
+      0 0 90px rgba(0, 212, 255, 0.8);
+  }
+}
+
+@keyframes zoomGlow {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(3);
+  }
+}
+
+@keyframes dragRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes draggingPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes uploadFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes loadingSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes disabledPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px #00ff88,
+      0 0 40px rgba(0, 255, 136, 0.7);
+  }
+  50% {
+    box-shadow:
+      0 0 30px #00ff88,
+      0 0 60px rgba(0, 255, 136, 0.9);
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+/* Enhanced Text Animations */
+@keyframes ctaTextGlow {
+  0% {
+    text-shadow: 0 0 5px #7b2cbf;
+    box-shadow:
+      0 0 15px rgba(123, 44, 191, 0.6),
+      inset 0 0 10px rgba(123, 44, 191, 0.1);
+  }
+  100% {
+    text-shadow: 0 0 15px #7b2cbf, 0 0 25px #7b2cbf;
+    box-shadow:
+      0 0 25px rgba(123, 44, 191, 0.8),
+      inset 0 0 15px rgba(123, 44, 191, 0.2);
+  }
+}
+
+@keyframes loadingTextPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes successTextGlow {
+  0% {
+    text-shadow: 0 0 5px #00ff88;
+    box-shadow:
+      0 0 15px rgba(0, 255, 136, 0.6),
+      inset 0 0 10px rgba(0, 255, 136, 0.1);
+  }
+  100% {
+    text-shadow: 0 0 15px #00ff88, 0 0 25px #00ff88;
+    box-shadow:
+      0 0 25px rgba(0, 255, 136, 0.8),
+      inset 0 0 15px rgba(0, 255, 136, 0.2);
+  }
+}
+
+@keyframes errorTextShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
   }
 }
 

@@ -14,6 +14,10 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
   const [cursorType, setCursorType] = useState('default');
   const [isVisible, setIsVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [validationState, setValidationState] = useState(null); // 'success', 'error', null
   
   const animationRef = useRef();
   const gsapRef = useRef(null);
@@ -175,66 +179,158 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
       const cursor = cursorRef.current;
       const cursorInner = cursorInnerRef.current;
       const cursorGlow = cursorGlowRef.current;
-      
+
       if (!gsapRef.current || !cursor) return;
-      
+
       const gsap = gsapRef.current;
-      
+
+      // Reset states
+      setIsLoading(false);
+      setIsDisabled(false);
+      setIsDragging(false);
+      setValidationState(null);
+
+      // Check for disabled elements first
+      if (target.disabled || target.closest('[disabled]') || target.closest('.disabled')) {
+        setIsHovering(true);
+        setIsDisabled(true);
+        setCursorType('disabled');
+        gsap.to(cursor, { scale: 1.1, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 1.5, opacity: 0.3, duration: 0.3 });
+        }
+        return;
+      }
+
+      // Check for loading states
+      if (target.closest('.loading') || target.closest('[data-loading="true"]')) {
+        setIsHovering(true);
+        setIsLoading(true);
+        setCursorType('loading');
+        gsap.to(cursor, {
+          scale: 1.3,
+          duration: 0.3,
+          ease: 'power2.out',
+          rotation: 360,
+          repeat: -1,
+          transformOrigin: 'center'
+        });
+        return;
+      }
+
       // Enhanced element detection with specific CSS classes
-      if (target.closest('.cta-button')) {
+      if (target.closest('.cta-button, [data-cursor="cta"]')) {
         setIsHovering(true);
         setCursorType('cta');
-        // GSAP scale and glow effects for CTA buttons
-        gsap.to(cursor, { scale: 1.5, duration: 0.3, ease: 'power2.out' });
+        // Transform to larger glowing circle (20px → 30px)
+        gsap.to(cursor, { scale: 2.5, duration: 0.3, ease: 'power2.out' });
         if (cursorGlow) {
-          gsap.to(cursorGlow, { scale: 2, opacity: 0.8, duration: 0.3 });
+          gsap.to(cursorGlow, { scale: 3, opacity: 0.9, duration: 0.3 });
         }
-      } else if (target.closest('.nav-link')) {
+      } else if (target.closest('.nav-link, nav a, [data-cursor="nav"]')) {
         setIsHovering(true);
         setCursorType('nav');
-        // Subtle scale and color changes for navigation
-        gsap.to(cursor, { scale: 1.2, duration: 0.2, ease: 'power2.out' });
-      } else if (target.closest('.glow-text')) {
+        // Arrow pointer with trailing particle effect
+        gsap.to(cursor, { scale: 1.4, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 2, opacity: 0.7, duration: 0.3 });
+        }
+      } else if (target.closest('input[type="text"], input[type="email"], input[type="password"], textarea, [contenteditable], [data-cursor="text"]')) {
+        setIsHovering(true);
+        setCursorType('text');
+        // Precise text cursor (I-beam) with typing indicator
+        gsap.to(cursor, { scaleX: 0.3, scaleY: 1.8, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scaleX: 0.5, scaleY: 2, opacity: 0.6, duration: 0.3 });
+        }
+      } else if (target.closest('.card, .image-container, [data-cursor="zoom"]')) {
+        setIsHovering(true);
+        setCursorType('zoom');
+        // Expand cursor with zoom-in icon and pulsing animation
+        gsap.to(cursor, {
+          scale: 1.8,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, {
+            scale: 2.5,
+            opacity: 0.8,
+            duration: 0.3,
+            repeat: -1,
+            yoyo: true,
+            repeatDelay: 0.5
+          });
+        }
+      } else if (target.closest('[draggable="true"], .draggable, [data-cursor="drag"]')) {
+        setIsHovering(true);
+        setIsDragging(true);
+        setCursorType('drag');
+        // Custom drag cursor with directional arrows
+        gsap.to(cursor, { scale: 1.5, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 2.2, opacity: 0.8, duration: 0.3 });
+        }
+      } else if (target.closest('.file-upload, input[type="file"], [data-cursor="upload"]')) {
+        setIsHovering(true);
+        setCursorType('upload');
+        // Upload icon cursor with animated cloud/arrow graphic
+        gsap.to(cursor, { scale: 1.6, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, {
+            scale: 2.3,
+            opacity: 0.7,
+            duration: 0.3,
+            repeat: -1,
+            yoyo: true,
+            repeatDelay: 0.3
+          });
+        }
+      } else if (target.closest('.glow-text, [data-cursor="glow"]')) {
         setIsHovering(true);
         setCursorType('glow');
         // Enhanced glow effects for highlighted text
-        gsap.to(cursor, { scale: 1.3, duration: 0.3, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 1.5, duration: 0.3, ease: 'power2.out' });
         if (cursorGlow) {
-          gsap.to(cursorGlow, { scale: 2.5, opacity: 1, duration: 0.3 });
+          gsap.to(cursorGlow, { scale: 3, opacity: 1, duration: 0.3 });
         }
-      } else if (target.closest('.pulse-box')) {
+      } else if (target.closest('.pulse-box, [data-cursor="pulse"]')) {
         setIsHovering(true);
         setCursorType('pulse');
         // Pulsing animation for interactive containers
-        gsap.to(cursor, { 
-          scale: 1.4, 
-          duration: 0.3, 
+        gsap.to(cursor, {
+          scale: 1.4,
+          duration: 0.3,
           ease: 'power2.out',
           repeat: -1,
           yoyo: true
         });
-      } else if (target.closest('.glow-trigger')) {
+      } else if (target.closest('.glow-trigger, [data-cursor="trigger"]')) {
         setIsHovering(true);
         setCursorType('trigger');
         // Custom glow effects for special elements
-        gsap.to(cursor, { scale: 1.6, duration: 0.3, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 1.8, duration: 0.3, ease: 'power2.out' });
         if (cursorGlow) {
-          gsap.to(cursorGlow, { scale: 3, opacity: 0.9, duration: 0.3 });
+          gsap.to(cursorGlow, { scale: 3.5, opacity: 0.9, duration: 0.3 });
         }
-      } else if (target.closest('a, button, [role="button"], input, textarea, select')) {
+      } else if (target.closest('a, button, [role="button"], [data-cursor="pointer"]')) {
         setIsHovering(true);
         setCursorType('pointer');
-        gsap.to(cursor, { scale: 1.2, duration: 0.2, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 1.3, duration: 0.3, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 1.8, opacity: 0.7, duration: 0.3 });
+        }
       } else {
         setIsHovering(false);
         setCursorType('default');
         // Reset to default state
-        gsap.to(cursor, { scale: 1, duration: 0.2, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 1, scaleX: 1, scaleY: 1, rotation: 0, duration: 0.3, ease: 'power2.out' });
         if (cursorGlow) {
-          gsap.to(cursorGlow, { scale: 1, opacity: 0.5, duration: 0.2 });
+          gsap.to(cursorGlow, { scale: 1, scaleX: 1, scaleY: 1, opacity: 0.5, duration: 0.3 });
         }
         // Kill any repeating animations
         gsap.killTweensOf(cursor);
+        gsap.killTweensOf(cursorGlow);
       }
     };
 
@@ -256,6 +352,69 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
 
     const handleMouseUp = () => {
       setTimeout(() => setIsClicked(false), 150);
+      setIsDragging(false);
+    };
+
+    // Form validation detection
+    const handleFormValidation = (e) => {
+      const target = e.target;
+      if (!target.closest('input, textarea, select')) return;
+
+      const cursor = cursorRef.current;
+      const cursorGlow = cursorGlowRef.current;
+
+      if (!gsapRef.current || !cursor) return;
+      const gsap = gsapRef.current;
+
+      // Check validation state
+      if (target.validity && !target.validity.valid && target.value) {
+        setValidationState('error');
+        setCursorType('error');
+        gsap.to(cursor, { scale: 1.2, duration: 0.2, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 1.8, opacity: 0.8, duration: 0.2 });
+        }
+      } else if (target.validity && target.validity.valid && target.value) {
+        setValidationState('success');
+        setCursorType('success');
+        gsap.to(cursor, { scale: 1.2, duration: 0.2, ease: 'power2.out' });
+        if (cursorGlow) {
+          gsap.to(cursorGlow, { scale: 1.8, opacity: 0.8, duration: 0.2 });
+        }
+      }
+    };
+
+    // Drag event handlers
+    const handleDragStart = () => {
+      setIsDragging(true);
+      setCursorType('dragging');
+      const cursor = cursorRef.current;
+      if (gsapRef.current && cursor) {
+        gsapRef.current.to(cursor, { scale: 1.8, duration: 0.2, ease: 'power2.out' });
+      }
+    };
+
+    const handleDragEnd = () => {
+      setIsDragging(false);
+      const cursor = cursorRef.current;
+      if (gsapRef.current && cursor) {
+        gsapRef.current.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out' });
+      }
+    };
+
+    // Loading state detection for forms
+    const handleFormSubmit = (e) => {
+      const form = e.target;
+      if (form.tagName === 'FORM') {
+        setIsLoading(true);
+        setCursorType('loading');
+
+        // Reset loading state after a delay (or listen for completion)
+        setTimeout(() => {
+          setIsLoading(false);
+          setCursorType('default');
+        }, 3000);
+      }
     };
 
     // Add event listeners
@@ -264,6 +423,11 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
     document.addEventListener('mouseover', handleMouseOver);
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('input', handleFormValidation);
+    document.addEventListener('change', handleFormValidation);
+    document.addEventListener('dragstart', handleDragStart);
+    document.addEventListener('dragend', handleDragEnd);
+    document.addEventListener('submit', handleFormSubmit);
 
     return () => {
       document.removeEventListener('mouseenter', handleMouseEnter);
@@ -271,10 +435,16 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('input', handleFormValidation);
+      document.removeEventListener('change', handleFormValidation);
+      document.removeEventListener('dragstart', handleDragStart);
+      document.removeEventListener('dragend', handleDragEnd);
+      document.removeEventListener('submit', handleFormSubmit);
 
       // Clean up GSAP animations
       if (gsapRef.current && cursorRef.current) {
         gsapRef.current.killTweensOf(cursorRef.current);
+        gsapRef.current.killTweensOf(cursorGlowRef.current);
       }
     };
   }, [x, y, isTouchDevice]);
@@ -353,22 +523,32 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
       {/* Main Cursor */}
       <div
         ref={cursorRef}
-        className={`${styles.cursor} ${styles[cursorType]} ${styles[theme]} ${isHovering ? styles.hover : ''} ${isClicked ? styles.clicked : ''}`}
+        className={`${styles.cursor} ${styles[cursorType]} ${styles[theme]} ${isHovering ? styles.hover : ''} ${isClicked ? styles.clicked : ''} ${isLoading ? styles.loading : ''} ${isDisabled ? styles.disabled : ''} ${isDragging ? styles.dragging : ''} ${validationState ? styles[validationState] : ''}`}
         role="presentation"
         aria-hidden="true"
       >
         <div ref={cursorInnerRef} className={styles.cursorInner}>
-          <div className={styles.cursorCore}></div>
+          <div className={styles.cursorCore}>
+            {/* Context-aware cursor icons */}
+            {cursorType === 'text' && <div className={styles.cursorIcon}>|</div>}
+            {cursorType === 'zoom' && <div className={styles.cursorIcon}>🔍</div>}
+            {cursorType === 'drag' && <div className={styles.cursorIcon}>✋</div>}
+            {cursorType === 'upload' && <div className={styles.cursorIcon}>☁️</div>}
+            {cursorType === 'loading' && <div className={styles.cursorIcon}>⟳</div>}
+            {cursorType === 'disabled' && <div className={styles.cursorIcon}>⚠</div>}
+            {cursorType === 'success' && <div className={styles.cursorIcon}>✓</div>}
+            {cursorType === 'error' && <div className={styles.cursorIcon}>✗</div>}
+          </div>
           <div ref={cursorGlowRef} className={styles.cursorGlow}></div>
         </div>
       </div>
-      
-      {/* Cursor text for different states */}
+
+      {/* Enhanced cursor text for different states */}
       {cursorType === 'pointer' && isHovering && (
         <div
           className={styles.cursorText}
           style={{
-            transform: `translate3d(${x + 20}px, ${y - 10}px, 0)`
+            transform: `translate3d(${x + 25}px, ${y - 15}px, 0)`
           }}
         >
           CLICK
@@ -377,12 +557,111 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
 
       {cursorType === 'cta' && isHovering && (
         <div
-          className={styles.cursorText}
+          className={`${styles.cursorText} ${styles.ctaText}`}
           style={{
-            transform: `translate3d(${x + 20}px, ${y - 10}px, 0)`
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
           }}
         >
           ENGAGE
+        </div>
+      )}
+
+      {cursorType === 'nav' && isHovering && (
+        <div
+          className={styles.cursorText}
+          style={{
+            transform: `translate3d(${x + 25}px, ${y - 15}px, 0)`
+          }}
+        >
+          NAVIGATE
+        </div>
+      )}
+
+      {cursorType === 'text' && isHovering && (
+        <div
+          className={styles.cursorText}
+          style={{
+            transform: `translate3d(${x + 25}px, ${y - 15}px, 0)`
+          }}
+        >
+          TYPE
+        </div>
+      )}
+
+      {cursorType === 'zoom' && isHovering && (
+        <div
+          className={styles.cursorText}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          ZOOM
+        </div>
+      )}
+
+      {cursorType === 'drag' && isHovering && (
+        <div
+          className={styles.cursorText}
+          style={{
+            transform: `translate3d(${x + 25}px, ${y - 15}px, 0)`
+          }}
+        >
+          DRAG
+        </div>
+      )}
+
+      {cursorType === 'upload' && isHovering && (
+        <div
+          className={styles.cursorText}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          UPLOAD
+        </div>
+      )}
+
+      {cursorType === 'loading' && isLoading && (
+        <div
+          className={`${styles.cursorText} ${styles.loadingText}`}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          LOADING...
+        </div>
+      )}
+
+      {cursorType === 'disabled' && isDisabled && (
+        <div
+          className={`${styles.cursorText} ${styles.disabledText}`}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          DISABLED
+        </div>
+      )}
+
+      {cursorType === 'success' && validationState === 'success' && (
+        <div
+          className={`${styles.cursorText} ${styles.successText}`}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          VALID
+        </div>
+      )}
+
+      {cursorType === 'error' && validationState === 'error' && (
+        <div
+          className={`${styles.cursorText} ${styles.errorText}`}
+          style={{
+            transform: `translate3d(${x + 30}px, ${y - 15}px, 0)`
+          }}
+        >
+          INVALID
         </div>
       )}
 
@@ -390,7 +669,7 @@ const EnhancedCustomCursor = ({ theme = 'default' }) => {
         <div
           className={styles.cursorText}
           style={{
-            transform: `translate3d(${x + 20}px, ${y - 10}px, 0)`
+            transform: `translate3d(${x + 25}px, ${y - 15}px, 0)`
           }}
         >
           GLOW
