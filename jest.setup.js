@@ -28,16 +28,16 @@ jest.mock('next/image', () => ({
   },
 }));
 
-// Mock next-auth
-jest.mock('next-auth/react', () => ({
-  useSession: jest.fn(() => ({
-    data: null,
-    status: 'unauthenticated',
-  })),
-  signIn: jest.fn(),
-  signOut: jest.fn(),
-  getSession: jest.fn(() => Promise.resolve(null)),
-}));
+// Mock next-auth (only if needed)
+// jest.mock('next-auth/react', () => ({
+//   useSession: jest.fn(() => ({
+//     data: null,
+//     status: 'unauthenticated',
+//   })),
+//   signIn: jest.fn(),
+//   signOut: jest.fn(),
+//   getSession: jest.fn(() => Promise.resolve(null)),
+// }));
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -65,3 +65,80 @@ global.fetch = jest.fn(() =>
     status: 200,
   })
 );
+
+// Mock GSAP for cursor testing
+global.gsap = {
+  registerPlugin: jest.fn(),
+  set: jest.fn(),
+  to: jest.fn(() => ({ kill: jest.fn() })),
+  fromTo: jest.fn(() => ({ kill: jest.fn() })),
+  timeline: jest.fn(() => ({
+    to: jest.fn(),
+    fromTo: jest.fn(),
+    kill: jest.fn(),
+    clear: jest.fn(),
+  })),
+  killTweensOf: jest.fn(),
+  ticker: {
+    add: jest.fn(),
+    remove: jest.fn(),
+  },
+};
+
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() { return null; }
+  disconnect() { return null; }
+  unobserve() { return null; }
+};
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  constructor() {}
+  observe() { return null; }
+  disconnect() { return null; }
+  unobserve() { return null; }
+};
+
+// Mock requestAnimationFrame
+global.requestAnimationFrame = (callback) => setTimeout(callback, 16);
+global.cancelAnimationFrame = (id) => clearTimeout(id);
+
+// Mock performance API
+global.performance = {
+  now: jest.fn(() => Date.now()),
+  mark: jest.fn(),
+  measure: jest.fn(),
+  getEntriesByType: jest.fn(() => []),
+  getEntriesByName: jest.fn(() => []),
+};
+
+// Mock CSS.supports
+global.CSS = { supports: jest.fn(() => true) };
+
+// Mock touch and pointer events
+global.TouchEvent = class TouchEvent extends Event {
+  constructor(type, options = {}) {
+    super(type, options);
+    this.touches = options.touches || [];
+    this.targetTouches = options.targetTouches || [];
+    this.changedTouches = options.changedTouches || [];
+  }
+};
+
+global.PointerEvent = class PointerEvent extends Event {
+  constructor(type, options = {}) {
+    super(type, options);
+    this.pointerId = options.pointerId || 1;
+    this.pointerType = options.pointerType || 'mouse';
+  }
+};
+
+// Clean up after each test
+afterEach(() => {
+  jest.clearAllMocks();
+  if (global.gsap && global.gsap.killTweensOf) {
+    global.gsap.killTweensOf('*');
+  }
+});

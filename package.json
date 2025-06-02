@@ -37,8 +37,16 @@
     "validate-env": "node -e \"require('./utils/env-validation').validateAndExit()\"",
     "precommit": "lint-staged",
     "prepare": "husky install",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "test:cursor": "jest tests/cursor.test.js",
+    "test:cursor:watch": "jest tests/cursor.test.js --watch",
     "test:layout": "jest tests/layout.test.js",
+    "test:performance": "node tests/performance/cursor-performance.js",
+    "test:e2e": "node tests/e2e/cursor-e2e.js",
+    "test:accessibility": "node tests/accessibility/cursor-a11y.js",
+    "test:cross-device": "node tests/cross-device/device-tests.js",
+    "test:all": "npm run test && npm run test:performance && npm run test:e2e && npm run test:accessibility",
     "check:cursor": "node scripts/check-cursor.js",
     "deploy:vercel": "node scripts/deploy.js vercel",
     "deploy:netlify": "node scripts/deploy.js netlify",
@@ -144,6 +152,10 @@
     "stylelint-config-recommended": "^14.0.0",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "^6.0.4",
-    "supertest": "^7.1.0"
+    "supertest": "^7.1.0",
+    "puppeteer": "^21.5.0",
+    "lighthouse": "^11.3.0",
+    "axe-core": "^4.8.0",
+    "jest-puppeteer": "^9.0.0"
   }
 }
