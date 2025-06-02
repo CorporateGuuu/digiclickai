@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomCursor from './CustomCursor';
+import EnhancedCustomCursor from './CustomCursor/EnhancedCustomCursor';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 /**
@@ -99,10 +99,10 @@ export function DigiClickLayout({
 }) {
   return (
     <div className={`digiclick-layout ${className}`}>
-      {/* Custom Cursor */}
+      {/* Enhanced Custom Cursor */}
       {showCursor && (
         <ErrorBoundary fallback={null}>
-          <CustomCursor theme={cursorTheme} />
+          <EnhancedCustomCursor theme={cursorTheme} />
         </ErrorBoundary>
       )}
       
@@ -259,7 +259,7 @@ export function MinimalLayout({ children, showCursor = true }) {
     <div className="minimal-layout">
       {showCursor && (
         <ErrorBoundary fallback={null}>
-          <CustomCursor />
+          <EnhancedCustomCursor />
         </ErrorBoundary>
       )}
       

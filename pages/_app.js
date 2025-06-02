@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { AuthProvider } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
+
+// Load GSAP globally for enhanced cursor system
+if (typeof window !== 'undefined') {
+  import('gsap').then((gsap) => {
+    window.gsap = gsap.gsap || gsap.default;
+  });
+}
 
 // Simple global CSS
 const globalStyles = `

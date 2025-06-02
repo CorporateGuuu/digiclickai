@@ -2,41 +2,73 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './CustomCursor.module.css';
 import useMousePosition from '../../hooks/useMousePosition';
 
-const CustomCursor = () => {
+const CustomCursor = ({ theme = 'default' }) => {
   const cursorRef = useRef(null);
-  const trailRef = useRef([]);
+  const cursorInnerRef = useRef(null);
+  const cursorGlowRef = useRef(null);
+  const trailContainerRef = useRef(null);
+  const rippleContainerRef = useRef(null);
+
   const [isHovering, setIsHovering] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [cursorType, setCursorType] = useState('default');
   const [isVisible, setIsVisible] = useState(false);
-  const animationRef = useRef();
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  // Use your enhanced mouse position hook
+  const animationRef = useRef();
+  const gsapRef = useRef(null);
+  const performanceMode = process.env.NEXT_PUBLIC_CURSOR_PERFORMANCE_MODE || 'high';
+
+  // Enhanced mouse position hook with velocity tracking
   const { x, y, isMoving, velocity, getSpeed } = useMousePosition();
 
-  // Cursor animation loop using your mouse position data
+  // Initialize GSAP when available
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.gsap) {
+      gsapRef.current = window.gsap;
+    }
+  }, []);
+
+  // GSAP-powered cursor animation system
+  useEffect(() => {
+    if (isTouchDevice || !isVisible) return;
+
     const cursor = cursorRef.current;
-    if (!cursor) return;
+    const cursorInner = cursorInnerRef.current;
+    const cursorGlow = cursorGlowRef.current;
 
-    let currentX = x;
-    let currentY = y;
+    if (!cursor || !cursorInner || !cursorGlow) return;
 
-    const animate = () => {
-      // Smooth cursor movement with easing (enhanced with velocity)
-      const baseEase = 0.15;
-      const velocityFactor = Math.min(getSpeed() * 0.1, 0.3); // Use velocity for dynamic easing
-      const ease = baseEase + velocityFactor;
+    // Initialize GSAP timeline for smooth animations
+    gsapTimelineRef.current = gsap.timeline({ paused: true });
 
-      currentX += (x - currentX) * ease;
-      currentY += (y - currentY) * ease;
+    // Set initial cursor position
+    gsap.set(cursor, {
+      x: x - 12,
+      y: y - 12,
+      scale: 1,
+      opacity: 1
+    });
 
-      cursor.style.transform = `translate3d(${currentX - 12}px, ${currentY - 12}px, 0)`;
+    // Smooth cursor following with GSAP
+    const updateCursorPosition = () => {
+      if (!cursor) return;
 
-      // Update trail particles with velocity-based effects
-      updateTrail(currentX, currentY);
+      // Dynamic easing based on movement speed
+      const speed = getSpeed();
+      const dynamicEase = speed > 0.5 ? 'power2.out' : 'power3.out';
+      const duration = speed > 0.5 ? 0.1 : 0.2;
 
-      animationRef.current = requestAnimationFrame(animate);
+      gsap.to(cursor, {
+        x: x - 12,
+        y: y - 12,
+        duration: duration,
+        ease: dynamicEase,
+        overwrite: 'auto'
+      });
+
+      // Update trail with GSAP animations
+      updateTrailWithGSAP(x, y, speed);
     };
 
     // Only start animation if mouse is moving or visible

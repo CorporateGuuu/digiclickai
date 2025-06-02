@@ -180,7 +180,7 @@ const Portfolio: React.FC = () => {
         {/* Hero Section */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>
+            <h1 className={`${styles.heroTitle} glow-text`}>
               AI Automation <span className={styles.gradient}>Portfolio</span>
             </h1>
             <p className={styles.heroSubtitle}>
@@ -207,25 +207,25 @@ const Portfolio: React.FC = () => {
         <section className={styles.navigation}>
           <div className={styles.tabs}>
             <button
-              className={`${styles.tab} ${activeTab === 'demos' ? styles.active : ''}`}
+              className={`${styles.tab} ${activeTab === 'demos' ? styles.active : ''} nav-link`}
               onClick={() => setActiveTab('demos')}
             >
               Interactive Demos
             </button>
             <button
-              className={`${styles.tab} ${activeTab === 'cases' ? styles.active : ''}`}
+              className={`${styles.tab} ${activeTab === 'cases' ? styles.active : ''} nav-link`}
               onClick={() => setActiveTab('cases')}
             >
               Case Studies
             </button>
             <button
-              className={`${styles.tab} ${activeTab === 'services' ? styles.active : ''}`}
+              className={`${styles.tab} ${activeTab === 'services' ? styles.active : ''} nav-link`}
               onClick={() => setActiveTab('services')}
             >
               Services
             </button>
             <button
-              className={`${styles.tab} ${activeTab === 'testimonials' ? styles.active : ''}`}
+              className={`${styles.tab} ${activeTab === 'testimonials' ? styles.active : ''} nav-link`}
               onClick={() => setActiveTab('testimonials')}
             >
               Testimonials
@@ -252,8 +252,8 @@ const Portfolio: React.FC = () => {
                         <li key={index}>{feature}</li>
                       ))}
                     </ul>
-                    <button 
-                      className={styles.demoButton}
+                    <button
+                      className={`${styles.demoButton} cta-button`}
                       onClick={() => setSelectedDemo(demo.id)}
                     >
                       Try Demo
@@ -335,7 +335,7 @@ const Portfolio: React.FC = () => {
                       <span className={styles.servicePricing}>{service.pricing}</span>
                       <span className={styles.serviceTimeline}>{service.timeline}</span>
                     </div>
-                    <button className={styles.serviceButton}>
+                    <button className={`${styles.serviceButton} cta-button`}>
                       Get Started
                     </button>
                   </div>
@@ -383,10 +383,10 @@ const Portfolio: React.FC = () => {
               Let's discuss how AI automation can revolutionize your operations
             </p>
             <div className={styles.ctaButtons}>
-              <button className={styles.primaryButton}>
+              <button className={`${styles.primaryButton} cta-button`}>
                 Schedule Consultation
               </button>
-              <button className={styles.secondaryButton}>
+              <button className={`${styles.secondaryButton} cta-button`}>
                 View Pricing
               </button>
             </div>
