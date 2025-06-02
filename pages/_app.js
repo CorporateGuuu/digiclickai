@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { AuthProvider } from '../contexts/AuthContext';
+import { ABTestProvider } from '../src/contexts/ABTestContext';
 import Layout from '../components/Layout';
+import ABTestCursorManager from '../src/components/cursor/ABTestCursorManager';
 
 // Load GSAP globally for enhanced cursor system
 if (typeof window !== 'undefined') {
@@ -47,19 +49,24 @@ try {
 function AppContent({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <div className="app-wrapper">
-        <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta name="theme-color" content="#121212" />
-          <link rel="shortcut icon" href="/favicon.ico" />
-          <style>{globalStyles}</style>
-        </Head>
+      <ABTestProvider>
+        <div className="app-wrapper">
+          <Head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta name="theme-color" content="#121212" />
+            <link rel="shortcut icon" href="/favicon.ico" />
+            <style>{globalStyles}</style>
+          </Head>
 
-        {/* Enhanced Layout with Custom Cursor */}
-        <Layout showCursor={true} cursorTheme="default">
-          <Component {...pageProps} />
-        </Layout>
-      </div>
+          {/* A/B Test Cursor Manager */}
+          <ABTestCursorManager>
+            {/* Enhanced Layout without cursor (handled by A/B test manager) */}
+            <Layout showCursor={false}>
+              <Component {...pageProps} />
+            </Layout>
+          </ABTestCursorManager>
+        </div>
+      </ABTestProvider>
     </AuthProvider>
   );
 }
