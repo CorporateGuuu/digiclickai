@@ -16,6 +16,7 @@
   NEXT_PUBLIC_API_URL = "https://digiclick-ai-backend.onrender.com"
   NEXT_PUBLIC_APP_URL = "https://digiclickai.netlify.app"
   NODE_ENV = "production"
+  FORCE_REBUILD = "2025-06-02-21-50"
 
 [build.packages]
   apt = ["postgresql-client", "libpq-dev", "build-essential"]

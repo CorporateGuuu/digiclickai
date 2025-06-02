@@ -5,6 +5,8 @@ set -o pipefail  # Return value of a pipeline is the value of the last command t
 
 # DigiClick AI Enhanced Build Script for Netlify
 echo "🚀 Starting DigiClick AI Enhanced Cursor System Build..."
+echo "🕐 Build Timestamp: $(date)"
+echo "🔄 Force Rebuild: 2025-06-02-21-50"
 echo "=================================================="
 
 # Print environment information
