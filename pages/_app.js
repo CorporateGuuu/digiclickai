@@ -4,6 +4,8 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { ABTestProvider } from '../src/contexts/ABTestContext';
 import Layout from '../components/Layout';
 import ABTestCursorManager from '../src/components/cursor/ABTestCursorManager';
+import { initializeSentry } from '../src/lib/sentry-config';
+import { initializeCoreWebVitalsMonitoring } from '../src/lib/core-web-vitals-monitor';
 
 // Load GSAP globally for enhanced cursor system
 if (typeof window !== 'undefined') {
@@ -47,6 +49,19 @@ try {
 }
 
 function AppContent({ Component, pageProps }) {
+  useEffect(() => {
+    // Initialize monitoring systems
+    if (typeof window !== 'undefined') {
+      // Initialize Sentry error tracking
+      initializeSentry();
+
+      // Initialize Core Web Vitals monitoring
+      initializeCoreWebVitalsMonitoring();
+
+      console.log('✅ DigiClick AI monitoring systems initialized');
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <ABTestProvider>

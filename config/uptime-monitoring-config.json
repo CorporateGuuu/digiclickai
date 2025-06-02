@@ -1,0 +1,391 @@
+{
+  "monitoring_config": {
+    "service": "uptimerobot",
+    "api_key": "${UPTIMEROBOT_API_KEY}",
+    "account_email": "${UPTIMEROBOT_EMAIL}",
+    "notification_channels": {
+      "slack_webhook": "${SLACK_WEBHOOK_URL}",
+      "email_alerts": "${ALERT_EMAIL_RECIPIENTS}",
+      "sms_alerts": "${EMERGENCY_SMS_NUMBERS}"
+    }
+  },
+  "monitoring_targets": {
+    "critical_pages": {
+      "check_interval": 60,
+      "timeout": 30,
+      "uptime_target": 99.9,
+      "alert_threshold": 120,
+      "locations": ["us-east", "eu-west", "asia-pacific"],
+      "pages": [
+        {
+          "name": "DigiClick AI Homepage",
+          "url": "${NEXT_PUBLIC_APP_URL}/",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["DigiClick", "AI", "cursor"],
+            "case_sensitive": false
+          },
+          "performance_monitoring": {
+            "response_time_threshold": 3000,
+            "size_threshold": 2048
+          }
+        },
+        {
+          "name": "Cursor Context Demo",
+          "url": "${NEXT_PUBLIC_APP_URL}/cursor-context-demo",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["cursor", "demo", "gsap", "variant"],
+            "case_sensitive": false
+          },
+          "performance_monitoring": {
+            "response_time_threshold": 4000,
+            "size_threshold": 3072
+          },
+          "custom_headers": {
+            "User-Agent": "DigiClick-Monitor/1.0"
+          }
+        },
+        {
+          "name": "A/B Testing Dashboard",
+          "url": "${NEXT_PUBLIC_APP_URL}/admin/ab-test",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["A/B", "test", "variant", "analytics"],
+            "case_sensitive": false
+          },
+          "performance_monitoring": {
+            "response_time_threshold": 5000,
+            "size_threshold": 2048
+          }
+        },
+        {
+          "name": "Contact Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/contact",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["contact", "form", "email"],
+            "case_sensitive": false
+          }
+        },
+        {
+          "name": "Pricing Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/pricing",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["pricing", "plan", "subscription"],
+            "case_sensitive": false
+          }
+        }
+      ]
+    },
+    "standard_pages": {
+      "check_interval": 300,
+      "timeout": 30,
+      "uptime_target": 99.5,
+      "alert_threshold": 300,
+      "locations": ["us-east", "eu-west"],
+      "pages": [
+        {
+          "name": "About Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/about",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "Services Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/services",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "Portfolio Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/portfolio",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "Blog Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/blog",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "FAQ Page",
+          "url": "${NEXT_PUBLIC_APP_URL}/faq",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "Privacy Policy",
+          "url": "${NEXT_PUBLIC_APP_URL}/privacy-policy",
+          "method": "GET",
+          "expected_status": 200
+        },
+        {
+          "name": "Terms of Service",
+          "url": "${NEXT_PUBLIC_APP_URL}/terms-of-service",
+          "method": "GET",
+          "expected_status": 200
+        }
+      ]
+    },
+    "backend_apis": {
+      "check_interval": 30,
+      "timeout": 10,
+      "uptime_target": 99.5,
+      "alert_threshold": 60,
+      "locations": ["us-east", "eu-west", "asia-pacific"],
+      "endpoints": [
+        {
+          "name": "Backend Health Check",
+          "url": "${NEXT_PUBLIC_API_URL}/health",
+          "method": "GET",
+          "expected_status": 200,
+          "keyword_monitoring": {
+            "enabled": true,
+            "keywords": ["ok", "healthy", "status"],
+            "case_sensitive": false
+          },
+          "performance_monitoring": {
+            "response_time_threshold": 2000
+          }
+        },
+        {
+          "name": "Contact API",
+          "url": "${NEXT_PUBLIC_API_URL}/api/contact",
+          "method": "GET",
+          "expected_status": [200, 405],
+          "performance_monitoring": {
+            "response_time_threshold": 3000
+          }
+        },
+        {
+          "name": "Newsletter API",
+          "url": "${NEXT_PUBLIC_API_URL}/api/newsletter",
+          "method": "GET",
+          "expected_status": [200, 405],
+          "performance_monitoring": {
+            "response_time_threshold": 2000
+          }
+        },
+        {
+          "name": "Demo Scheduling API",
+          "url": "${NEXT_PUBLIC_API_URL}/api/demo",
+          "method": "GET",
+          "expected_status": [200, 405],
+          "performance_monitoring": {
+            "response_time_threshold": 3000
+          }
+        },
+        {
+          "name": "Analytics API",
+          "url": "${NEXT_PUBLIC_API_URL}/api/analytics",
+          "method": "GET",
+          "expected_status": [200, 405],
+          "performance_monitoring": {
+            "response_time_threshold": 2000
+          }
+        }
+      ]
+    },
+    "cdn_assets": {
+      "check_interval": 300,
+      "timeout": 15,
+      "uptime_target": 99.9,
+      "alert_threshold": 180,
+      "locations": ["us-east", "eu-west", "asia-pacific"],
+      "assets": [
+        {
+          "name": "Main CSS Bundle",
+          "url": "${NEXT_PUBLIC_APP_URL}/_next/static/css/app.css",
+          "method": "HEAD",
+          "expected_status": 200,
+          "performance_monitoring": {
+            "response_time_threshold": 1000,
+            "size_threshold": 102400
+          }
+        },
+        {
+          "name": "Main JS Bundle",
+          "url": "${NEXT_PUBLIC_APP_URL}/_next/static/chunks/main.js",
+          "method": "HEAD",
+          "expected_status": 200,
+          "performance_monitoring": {
+            "response_time_threshold": 2000,
+            "size_threshold": 512000
+          }
+        },
+        {
+          "name": "GSAP Library",
+          "url": "${NEXT_PUBLIC_APP_URL}/_next/static/chunks/gsap.js",
+          "method": "HEAD",
+          "expected_status": 200,
+          "performance_monitoring": {
+            "response_time_threshold": 1500
+          }
+        }
+      ]
+    }
+  },
+  "alert_configurations": {
+    "notification_rules": {
+      "immediate_alerts": {
+        "triggers": [
+          "critical_page_down",
+          "backend_api_down",
+          "multiple_location_failure"
+        ],
+        "channels": ["slack", "email", "sms"],
+        "escalation_delay": 0
+      },
+      "warning_alerts": {
+        "triggers": [
+          "slow_response_time",
+          "keyword_missing",
+          "single_location_failure"
+        ],
+        "channels": ["slack", "email"],
+        "escalation_delay": 300
+      },
+      "recovery_notifications": {
+        "triggers": [
+          "service_restored",
+          "performance_improved"
+        ],
+        "channels": ["slack"],
+        "escalation_delay": 0
+      }
+    },
+    "alert_thresholds": {
+      "response_time": {
+        "warning": 3000,
+        "critical": 5000,
+        "emergency": 10000
+      },
+      "uptime": {
+        "warning": 99.5,
+        "critical": 99.0,
+        "emergency": 95.0
+      },
+      "consecutive_failures": {
+        "warning": 2,
+        "critical": 3,
+        "emergency": 5
+      }
+    },
+    "maintenance_windows": {
+      "scheduled_maintenance": {
+        "enabled": true,
+        "timezone": "UTC",
+        "windows": [
+          {
+            "name": "Weekly Maintenance",
+            "day": "sunday",
+            "start_time": "02:00",
+            "duration": 120,
+            "suppress_alerts": true
+          }
+        ]
+      }
+    }
+  },
+  "integration_settings": {
+    "slack_integration": {
+      "webhook_url": "${SLACK_WEBHOOK_URL}",
+      "channel": "#digiclick-deployments",
+      "username": "DigiClick AI Uptime Monitor",
+      "icon_emoji": ":chart_with_upwards_trend:",
+      "message_format": "detailed",
+      "include_graphs": true
+    },
+    "email_integration": {
+      "smtp_server": "${SMTP_SERVER}",
+      "smtp_port": "${SMTP_PORT}",
+      "smtp_username": "${SMTP_USERNAME}",
+      "smtp_password": "${SMTP_PASSWORD}",
+      "from_email": "${FROM_EMAIL}",
+      "recipients": "${ALERT_EMAIL_RECIPIENTS}",
+      "html_format": true,
+      "include_charts": true
+    },
+    "webhook_integration": {
+      "custom_webhooks": [
+        {
+          "name": "Performance Alert Integration",
+          "url": "${NEXT_PUBLIC_APP_URL}/.netlify/functions/uptime-webhook",
+          "method": "POST",
+          "headers": {
+            "Authorization": "Bearer ${WEBHOOK_SECRET}",
+            "Content-Type": "application/json"
+          },
+          "events": ["down", "up", "slow"]
+        }
+      ]
+    }
+  },
+  "reporting": {
+    "daily_reports": {
+      "enabled": true,
+      "time": "09:00",
+      "timezone": "UTC",
+      "recipients": "${DAILY_REPORT_RECIPIENTS}",
+      "include_metrics": [
+        "uptime_percentage",
+        "average_response_time",
+        "total_downtime",
+        "incident_count",
+        "performance_trends"
+      ]
+    },
+    "weekly_reports": {
+      "enabled": true,
+      "day": "monday",
+      "time": "09:00",
+      "timezone": "UTC",
+      "recipients": "${WEEKLY_REPORT_RECIPIENTS}",
+      "include_metrics": [
+        "uptime_trends",
+        "performance_analysis",
+        "incident_summary",
+        "sla_compliance",
+        "recommendations"
+      ]
+    }
+  },
+  "advanced_features": {
+    "ssl_monitoring": {
+      "enabled": true,
+      "certificate_expiry_warning": 30,
+      "check_interval": 86400
+    },
+    "domain_monitoring": {
+      "enabled": true,
+      "domain_expiry_warning": 60,
+      "check_interval": 86400
+    },
+    "blacklist_monitoring": {
+      "enabled": true,
+      "check_interval": 86400,
+      "blacklist_sources": [
+        "google_safe_browsing",
+        "norton_safe_web",
+        "mcafee_site_advisor"
+      ]
+    },
+    "port_monitoring": {
+      "enabled": false,
+      "ports": [80, 443]
+    }
+  }
+}
