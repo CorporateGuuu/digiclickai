@@ -11,6 +11,16 @@ echo "=================================================="
 echo "📊 Build Environment Information:"
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
+
+# Verify Node.js version compatibility
+NODE_VERSION=$(node -v | sed 's/v//')
+echo "🔍 Checking Node.js version compatibility..."
+if [[ "$NODE_VERSION" < "18.18.0" ]]; then
+  echo "⚠️ Warning: Node.js version $NODE_VERSION may not be compatible with Next.js 15.3.3"
+  echo "📋 Required: ^18.18.0 || ^19.8.0 || >= 20.0.0"
+else
+  echo "✅ Node.js version $NODE_VERSION is compatible"
+fi
 echo "Current directory: $(pwd)"
 echo "Repository directory: $REPOSITORY_ROOT"
 echo "Build directory: $BUILD_DIR"

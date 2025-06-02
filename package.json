@@ -36,7 +36,7 @@
     "setup:production": "NODE_ENV=production node scripts/setup-env.js",
     "validate-env": "node -e \"require('./utils/env-validation').validateAndExit()\"",
     "precommit": "lint-staged",
-    "prepare": "husky install",
+    "prepare": "echo 'Skipping husky install in production'",
     "test:cursor": "jest tests/cursor.test.js",
     "test:cursor:watch": "jest tests/cursor.test.js --watch",
     "test:layout": "jest tests/layout.test.js",

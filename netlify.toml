@@ -5,7 +5,7 @@
   ignore = "git diff --quiet HEAD^ HEAD -- . ':!node_modules'"
 
 [build.environment]
-  NODE_VERSION = "18.17.0"
+  NODE_VERSION = "20.18.0"
   NPM_VERSION = "9.6.7"
   NETLIFY_USE_PYTHON = "true"
   PYTHON_VERSION = "3.9"
