@@ -33,7 +33,7 @@ if [ -f "package.json" ]; then
 
   # Install dependencies with production flag to avoid dev dependencies
   echo "📦 Installing dependencies..."
-  npm ci --prefer-offline --no-audit || npm install --production=false
+  npm install --force --prefer-offline --no-audit || npm install --legacy-peer-deps --production=false
 
   # Verify cursor system dependencies
   echo "🖱️ Verifying Enhanced Cursor System dependencies..."
