@@ -154,6 +154,18 @@ EOL
   echo "🗺️ Generating sitemap..."
   npm run sitemap:generate || echo "⚠️ Sitemap generation failed, continuing..."
 
+  # Copy sitemap to out directory for static export
+  if [ -f "public/sitemap.xml" ]; then
+    cp public/sitemap.xml out/sitemap.xml
+    echo "✅ Sitemap copied to static export directory"
+  fi
+
+  # Copy robots.txt to out directory
+  if [ -f "public/robots.txt" ]; then
+    cp public/robots.txt out/robots.txt
+    echo "✅ Robots.txt copied to static export directory"
+  fi
+
   # Verify build output
   echo "✅ Build completed! Verifying output..."
   if [ -d "out" ]; then

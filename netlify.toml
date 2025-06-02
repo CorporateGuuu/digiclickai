@@ -20,38 +20,46 @@
 [functions]
   node_bundler = "esbuild"
 
-# These redirects are crucial for a Next.js application
+# Static export redirects for DigiClick AI
+[[redirects]]
+  from = "/portfolio"
+  to = "/portfolio/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cursor-demo"
+  to = "/cursor-demo/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about/index.html"
+  status = 200
+
+# Handle static assets
 [[redirects]]
   from = "/_next/static/*"
   to = "/_next/static/:splat"
   status = 200
 
-[[redirects]]
-  from = "/_next/data/*"
-  to = "/_next/data/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/_next/image*"
-  to = "/_next/image:splat"
-  status = 200
-
+# API routes (these won't work in static export but keeping for compatibility)
 [[redirects]]
   from = "/api/*"
-  to = "/api/:splat"
+  to = "/.netlify/functions/:splat"
   status = 200
 
-# Handle 404 errors with custom 404 page
+# Sitemap and robots
 [[redirects]]
-  from = "/*"
-  to = "/404"
-  status = 404
-
-# SPA fallback - this should be the last redirect
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
   status = 200
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
