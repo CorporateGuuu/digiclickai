@@ -1,0 +1,71 @@
+.hero {
+  position: relative;
+  height: 100vh;
+  background-color: #121212; /* User's dark color scheme */
+  color: #FFD700; /* Gold accent color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+}
+
+.backgroundAnimation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #FFD700 0%, transparent 70%);
+  animation: pulse 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px #FFD700;
+}
+
+.ctaButton {
+  background-color: #FFD700;
+  color: #121212;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #e6c200;
+}
+
+.established {
+  display: block;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  color: #FFD700;
+  opacity: 0.8;
+}
