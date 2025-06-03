@@ -70,7 +70,12 @@
     "accessibility:full": "npm run accessibility:audit && npm run accessibility:test",
     "test:a11y": "npm run accessibility:full",
     "production:validate": "node scripts/production-readiness-validation.js",
-    "production:ready": "npm run production:validate"
+    "production:ready": "npm run production:validate",
+    "test:manual": "node scripts/manual-testing-helper.js validate",
+    "test:manual:checklist": "node scripts/manual-testing-helper.js checklist",
+    "test:deployment": "npm run production:validate && npm run test:manual",
+    "test:deployment:quick": "npm run test:manual",
+    "test:deployment:full": "npm run production:validate && npm run test:manual && npm run test:e2e"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
