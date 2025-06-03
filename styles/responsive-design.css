@@ -1,0 +1,561 @@
+/* DigiClick AI Comprehensive Responsive Design System */
+/* Mobile-first approach with WCAG 2.1 AA compliance and 60fps performance */
+
+/* CSS Custom Properties for Responsive Control */
+:root {
+  /* Responsive Breakpoints */
+  --mobile-max: 767px;
+  --tablet-min: 768px;
+  --tablet-max: 1023px;
+  --desktop-min: 1024px;
+  --large-desktop-min: 1440px;
+  
+  /* Touch Target Sizes (WCAG AA Compliance) */
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+  --touch-target-large: 56px;
+  
+  /* Mobile-specific Spacing */
+  --mobile-padding: 16px;
+  --mobile-margin: 12px;
+  --mobile-gap: 8px;
+  
+  /* Tablet-specific Spacing */
+  --tablet-padding: 24px;
+  --tablet-margin: 16px;
+  --tablet-gap: 12px;
+  
+  /* Desktop Spacing */
+  --desktop-padding: 32px;
+  --desktop-margin: 24px;
+  --desktop-gap: 16px;
+  
+  /* Performance Mode for Mobile */
+  --mobile-animation-duration: 0.2s;
+  --tablet-animation-duration: 0.25s;
+  --desktop-animation-duration: 0.3s;
+  
+  /* Font Scaling */
+  --mobile-font-scale: 0.9;
+  --tablet-font-scale: 1;
+  --desktop-font-scale: 1.1;
+}
+
+/* Device Detection Classes */
+.touch-device {
+  --cursor-enabled: 0;
+  --touch-interactions: 1;
+}
+
+.non-touch-device {
+  --cursor-enabled: 1;
+  --touch-interactions: 0;
+}
+
+.mobile-device {
+  --device-type: mobile;
+  --animation-complexity: reduced;
+}
+
+.tablet-device {
+  --device-type: tablet;
+  --animation-complexity: normal;
+}
+
+.desktop-device {
+  --device-type: desktop;
+  --animation-complexity: full;
+}
+
+/* Base Mobile-First Styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Touch Target Optimization */
+.touch-target,
+button,
+a,
+input,
+textarea,
+select,
+.clickable {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  position: relative;
+}
+
+/* Enhanced Touch Targets for Mobile */
+@media (max-width: 767px) {
+  .touch-target,
+  button,
+  a:not(.inline-link),
+  input,
+  textarea,
+  select {
+    min-height: var(--touch-target-comfortable);
+    min-width: var(--touch-target-comfortable);
+    padding: 12px 16px;
+  }
+  
+  /* Larger touch targets for primary actions */
+  .cta-button,
+  .primary-button,
+  .submit-button {
+    min-height: var(--touch-target-large);
+    padding: 16px 24px;
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+}
+
+/* Mobile Layout Optimizations */
+@media (max-width: 767px) {
+  body {
+    font-size: calc(16px * var(--mobile-font-scale));
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 212, 255, 0.2);
+  }
+  
+  /* Container adjustments */
+  .container {
+    padding-left: var(--mobile-padding);
+    padding-right: var(--mobile-padding);
+    max-width: 100%;
+  }
+  
+  /* Grid adjustments */
+  .grid,
+  .pricing-grid,
+  .team-grid,
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: var(--mobile-gap);
+    padding: var(--mobile-padding);
+  }
+  
+  /* Navigation optimizations */
+  .nav-links {
+    flex-direction: column;
+    gap: var(--mobile-gap);
+    width: 100%;
+  }
+  
+  .nav-links a {
+    padding: 12px 16px;
+    text-align: center;
+    border-radius: 8px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+  }
+  
+  /* Form optimizations */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevent iOS zoom */
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  
+  /* Modal and panel adjustments */
+  .accessibility-menu,
+  .cursor-customization-panel,
+  .visual-effects-panel {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    margin: 0;
+  }
+  
+  .panel-content {
+    padding: var(--mobile-padding);
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+}
+
+/* Tablet Layout Optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    font-size: calc(16px * var(--tablet-font-scale));
+  }
+  
+  .container {
+    padding-left: var(--tablet-padding);
+    padding-right: var(--tablet-padding);
+    max-width: 100%;
+  }
+  
+  /* Two-column layouts for tablets */
+  .grid,
+  .pricing-grid,
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--tablet-gap);
+    padding: var(--tablet-padding);
+  }
+  
+  /* Tablet navigation */
+  .nav-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--tablet-gap);
+  }
+  
+  /* Tablet-specific touch targets */
+  button,
+  .touch-target {
+    min-height: var(--touch-target-comfortable);
+    padding: 10px 20px;
+  }
+  
+  /* Modal sizing for tablets */
+  .accessibility-menu,
+  .cursor-customization-panel,
+  .visual-effects-panel {
+    width: 90vw;
+    max-width: 600px;
+    height: auto;
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 1024px) {
+  body {
+    font-size: calc(16px * var(--desktop-font-scale));
+  }
+  
+  .container {
+    padding-left: var(--desktop-padding);
+    padding-right: var(--desktop-padding);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Multi-column layouts for desktop */
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--desktop-gap);
+  }
+  
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--desktop-gap);
+  }
+  
+  .team-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--desktop-gap);
+  }
+  
+  /* Desktop hover states */
+  .hover-enabled:hover {
+    transform: translateY(-2px);
+    transition: transform var(--desktop-animation-duration) ease-out;
+  }
+}
+
+/* Large Desktop Optimizations */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+  
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Orientation-specific Styles */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Landscape mobile optimizations */
+  .hero,
+  .section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .accessibility-menu,
+  .cursor-customization-panel,
+  .visual-effects-panel {
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 767px) {
+  /* Portrait mobile optimizations */
+  .hero {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* High DPI Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Crisp rendering for high DPI displays */
+  .logo,
+  .icon,
+  .svg-element {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Adjust glow effects for high DPI */
+  .glow-element {
+    box-shadow: 
+      0 0 calc(10px / 2) rgba(0, 212, 255, 0.6),
+      0 0 calc(20px / 2) rgba(123, 44, 191, 0.4);
+  }
+}
+
+/* Reduced Motion Responsive Adjustments */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .parallax,
+  .auto-scroll,
+  .infinite-scroll {
+    transform: none !important;
+  }
+}
+
+/* Dark Mode Responsive Adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mobile-tap-highlight: rgba(0, 212, 255, 0.3);
+  }
+  
+  body {
+    -webkit-tap-highlight-color: var(--mobile-tap-highlight);
+  }
+}
+
+/* Print Styles */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .accessibility-menu,
+  .cursor-customization-panel,
+  .visual-effects-panel,
+  .loading-spinner,
+  .cursor {
+    display: none !important;
+  }
+  
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Focus Management for Different Input Methods */
+.keyboard-navigation :focus {
+  outline: 3px solid #00d4ff;
+  outline-offset: 2px;
+}
+
+.touch-navigation :focus {
+  outline: 2px solid #00d4ff;
+  outline-offset: 1px;
+}
+
+.mouse-navigation :focus {
+  outline: 1px solid #00d4ff;
+  outline-offset: 1px;
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth scrolling with performance consideration */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Touch Interaction Animations */
+.touch-active {
+  transform: scale(0.95);
+  opacity: 0.8;
+  transition: all 0.1s ease-out;
+}
+
+.tap-animation {
+  animation: tapRipple 0.3s ease-out;
+}
+
+@keyframes tapRipple {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(0, 212, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 212, 255, 0);
+  }
+}
+
+/* Touch-specific hover states */
+.touch-device .hover-effect:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.touch-device .hover-effect:hover {
+  transform: none;
+  opacity: 1;
+}
+
+/* Gesture indicators */
+.swipe-indicator {
+  position: relative;
+  overflow: hidden;
+}
+
+.swipe-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00d4ff);
+  animation: swipeHint 2s ease-in-out infinite;
+}
+
+@keyframes swipeHint {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+  }
+}
+
+/* Mobile-specific loading optimizations */
+@media (max-width: 767px) {
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+
+  .skeleton-loader {
+    animation-duration: 1s;
+  }
+
+  /* Reduce visual complexity on mobile */
+  .mobile-device .glow-element {
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+  }
+
+  .mobile-device .holographic-text {
+    background: #00d4ff;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: none;
+  }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Stylus support */
+  .tablet-device input,
+  .tablet-device textarea {
+    touch-action: manipulation;
+  }
+
+  /* Hybrid touch/mouse interactions */
+  .tablet-device .hover-effect:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-out;
+  }
+}
+
+/* Container Query Support (Progressive Enhancement) */
+@supports (container-type: inline-size) {
+  .responsive-container {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 400px) {
+    .card {
+      padding: var(--mobile-padding);
+    }
+  }
+
+  @container (min-width: 401px) and (max-width: 800px) {
+    .card {
+      padding: var(--tablet-padding);
+    }
+  }
+
+  @container (min-width: 801px) {
+    .card {
+      padding: var(--desktop-padding);
+    }
+  }
+}
+
+/* Network-aware optimizations */
+@media (prefers-reduced-data: reduce) {
+  .background-image,
+  .hero-video,
+  .decorative-animation {
+    display: none;
+  }
+
+  .gradient-background {
+    background: #121212;
+  }
+}
+
+/* Battery-aware optimizations */
+@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+  * {
+    animation-play-state: paused !important;
+    transition-duration: 0.01ms !important;
+  }
+}

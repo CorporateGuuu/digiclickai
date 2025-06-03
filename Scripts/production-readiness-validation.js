@@ -41,6 +41,7 @@ class ProductionReadinessValidator {
       await this.validateCursorSystem();
       await this.validateCursorCustomization();
       await this.validateVisualEffects();
+      await this.validateResponsiveDesign();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -610,6 +611,179 @@ class ProductionReadinessValidator {
                             content.includes('setPerformanceMode');
 
     return { passed: hasVisualEffects };
+  }
+
+  async validateResponsiveDesign() {
+    console.log('📱 Validating Responsive Design System...');
+
+    try {
+      // Check responsive design CSS
+      console.log('  Checking responsive design CSS...');
+      const responsiveCSS = this.checkResponsiveCSS();
+      if (responsiveCSS.passed) {
+        this.results.mobile_compatibility.passed++;
+        this.results.mobile_compatibility.details.push('✅ Responsive design CSS implemented');
+      } else {
+        this.results.mobile_compatibility.failed++;
+        this.results.mobile_compatibility.details.push('❌ Responsive design CSS missing');
+      }
+
+      // Check touch interaction manager
+      console.log('  Checking touch interaction manager...');
+      const touchManager = this.checkTouchInteractionManager();
+      if (touchManager.passed) {
+        this.results.mobile_compatibility.passed++;
+        this.results.mobile_compatibility.details.push('✅ Touch interaction manager implemented');
+      } else {
+        this.results.mobile_compatibility.failed++;
+        this.results.mobile_compatibility.details.push('❌ Touch interaction manager missing');
+      }
+
+      // Check progressive enhancement
+      console.log('  Checking progressive enhancement...');
+      const progressiveEnhancement = this.checkProgressiveEnhancement();
+      if (progressiveEnhancement.passed) {
+        this.results.browser_compatibility.passed++;
+        this.results.browser_compatibility.details.push('✅ Progressive enhancement implemented');
+      } else {
+        this.results.browser_compatibility.failed++;
+        this.results.browser_compatibility.details.push('❌ Progressive enhancement missing');
+      }
+
+      // Check accessibility manager responsive integration
+      console.log('  Checking responsive accessibility integration...');
+      const responsiveAccessibility = this.checkResponsiveAccessibility();
+      if (responsiveAccessibility.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Responsive accessibility integration working');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Responsive accessibility integration issues');
+      }
+
+      // Check viewport configuration
+      console.log('  Checking viewport configuration...');
+      const viewportConfig = this.checkViewportConfiguration();
+      if (viewportConfig.passed) {
+        this.results.mobile_compatibility.passed++;
+        this.results.mobile_compatibility.details.push('✅ Viewport configuration optimized');
+      } else {
+        this.results.mobile_compatibility.failed++;
+        this.results.mobile_compatibility.details.push('❌ Viewport configuration issues');
+      }
+
+      console.log('✅ Responsive design validation completed\n');
+    } catch (error) {
+      this.results.mobile_compatibility.failed++;
+      this.results.mobile_compatibility.details.push(`❌ Responsive design validation failed: ${error.message}`);
+      console.log('❌ Responsive design validation failed\n');
+    }
+  }
+
+  checkResponsiveCSS() {
+    const cssPath = path.join(process.cwd(), 'styles/responsive-design.css');
+
+    if (!fs.existsSync(cssPath)) {
+      return { passed: false, reason: 'Responsive design CSS missing' };
+    }
+
+    const content = fs.readFileSync(cssPath, 'utf8');
+    const hasRequiredFeatures = content.includes('--touch-target-min') &&
+                               content.includes('@media (max-width: 767px)') &&
+                               content.includes('@media (min-width: 768px)') &&
+                               content.includes('touch-active') &&
+                               content.includes('tap-animation') &&
+                               content.includes('mobile-device') &&
+                               content.includes('tablet-device') &&
+                               content.includes('prefers-reduced-motion');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkTouchInteractionManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/touch-interaction-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Touch interaction manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('TouchInteractionManager') &&
+                               content.includes('detectDeviceCapabilities') &&
+                               content.includes('setupTouchEventListeners') &&
+                               content.includes('handleTouchStart') &&
+                               content.includes('handleSwipe') &&
+                               content.includes('triggerHapticFeedback') &&
+                               content.includes('gestureThreshold');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkProgressiveEnhancement() {
+    const enhancementPath = path.join(process.cwd(), 'src/lib/progressive-enhancement.js');
+
+    if (!fs.existsSync(enhancementPath)) {
+      return { passed: false, reason: 'Progressive enhancement manager missing' };
+    }
+
+    const content = fs.readFileSync(enhancementPath, 'utf8');
+    const hasRequiredFeatures = content.includes('ProgressiveEnhancementManager') &&
+                               content.includes('detectBrowser') &&
+                               content.includes('detectFeatureSupport') &&
+                               content.includes('loadPolyfillsIfNeeded') &&
+                               content.includes('cssCustomProperties') &&
+                               content.includes('cssGrid') &&
+                               content.includes('setupFallbacks');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkResponsiveAccessibility() {
+    const managerPath = path.join(process.cwd(), 'src/lib/accessibility-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Accessibility manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasResponsiveFeatures = content.includes('responsiveSettings') &&
+                                 content.includes('updateResponsiveSettings') &&
+                                 content.includes('touchTargetSize') &&
+                                 content.includes('mobileOptimizations') &&
+                                 content.includes('hapticFeedback') &&
+                                 content.includes('getCurrentBreakpoint') &&
+                                 content.includes('handleOrientationChange');
+
+    return { passed: hasResponsiveFeatures };
+  }
+
+  checkViewportConfiguration() {
+    // Check if HTML files have proper viewport meta tags
+    const htmlFiles = [
+      path.join(process.cwd(), 'pages/_document.js'),
+      path.join(process.cwd(), 'pages/_document.tsx'),
+      path.join(process.cwd(), 'public/index.html')
+    ];
+
+    for (const htmlFile of htmlFiles) {
+      if (fs.existsSync(htmlFile)) {
+        const content = fs.readFileSync(htmlFile, 'utf8');
+        if (content.includes('viewport') && content.includes('width=device-width')) {
+          return { passed: true };
+        }
+      }
+    }
+
+    // Check if viewport is set programmatically
+    const accessibilityManagerPath = path.join(process.cwd(), 'src/lib/accessibility-manager.js');
+    if (fs.existsSync(accessibilityManagerPath)) {
+      const content = fs.readFileSync(accessibilityManagerPath, 'utf8');
+      if (content.includes('viewport') && content.includes('preventAutoZoom')) {
+        return { passed: true };
+      }
+    }
+
+    return { passed: false, reason: 'Viewport configuration not found' };
   }
 
   generateReport() {

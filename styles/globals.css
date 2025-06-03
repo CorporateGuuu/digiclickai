@@ -7,6 +7,7 @@
 @import './enhanced-theme.css';
 @import './ZIndexFix.module.css';
 @import './visual-effects.css';
+@import './responsive-design.css';
 
 /* Theme Variables */
 :root {

@@ -37,6 +37,17 @@ class AccessibilityManager {
         gradientIntensity: 80, // 0-100%
         loadingAnimations: true,
         performanceMode: 'normal' // normal, reduced, minimal
+      },
+      // Responsive design settings
+      responsiveSettings: {
+        touchTargetSize: 'comfortable', // minimum, comfortable, large
+        mobileOptimizations: true,
+        tabletOptimizations: true,
+        hapticFeedback: true,
+        gestureNavigation: true,
+        autoZoomPrevention: true,
+        orientationLock: false,
+        deviceSpecificOptimizations: true
       }
     };
     
@@ -824,6 +835,233 @@ class AccessibilityManager {
 
     this.updateVisualEffects(defaultSettings);
     this.announce('Visual effects reset to defaults');
+  }
+
+  // Responsive Design Management Methods
+  updateResponsiveSettings(settings) {
+    const previousSettings = { ...this.config.responsiveSettings };
+    this.config.responsiveSettings = { ...this.config.responsiveSettings, ...settings };
+
+    // Apply responsive settings CSS custom properties
+    this.applyResponsiveProperties();
+
+    // Dispatch event for responsive system to update
+    window.dispatchEvent(new CustomEvent('responsive-settings-changed', {
+      detail: {
+        settings: this.config.responsiveSettings,
+        previousSettings,
+        changes: settings
+      }
+    }));
+
+    this.saveSettings();
+    this.announce(`Responsive settings updated`);
+  }
+
+  applyResponsiveProperties() {
+    const settings = this.config.responsiveSettings;
+    const root = document.documentElement;
+
+    // Touch target sizes
+    const touchSizes = {
+      'minimum': '44px',
+      'comfortable': '48px',
+      'large': '56px'
+    };
+    root.style.setProperty('--touch-target-size', touchSizes[settings.touchTargetSize] || touchSizes.comfortable);
+
+    // Device optimizations
+    root.style.setProperty('--mobile-optimizations', settings.mobileOptimizations ? '1' : '0');
+    root.style.setProperty('--tablet-optimizations', settings.tabletOptimizations ? '1' : '0');
+    root.style.setProperty('--haptic-feedback', settings.hapticFeedback ? '1' : '0');
+    root.style.setProperty('--gesture-navigation', settings.gestureNavigation ? '1' : '0');
+
+    // Apply device-specific classes
+    document.body.classList.toggle('mobile-optimized', settings.mobileOptimizations);
+    document.body.classList.toggle('tablet-optimized', settings.tabletOptimizations);
+    document.body.classList.toggle('haptic-enabled', settings.hapticFeedback);
+    document.body.classList.toggle('gesture-enabled', settings.gestureNavigation);
+
+    // Auto-zoom prevention
+    if (settings.autoZoomPrevention) {
+      this.preventAutoZoom();
+    }
+
+    // Orientation lock
+    if (settings.orientationLock && screen.orientation) {
+      try {
+        screen.orientation.lock('portrait').catch(() => {
+          console.log('Orientation lock not supported or denied');
+        });
+      } catch (error) {
+        console.log('Orientation lock not available');
+      }
+    }
+  }
+
+  preventAutoZoom() {
+    // Prevent zoom on input focus for iOS
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      const currentContent = viewport.getAttribute('content');
+      if (!currentContent.includes('user-scalable=no')) {
+        viewport.setAttribute('content',
+          currentContent + ', user-scalable=no, maximum-scale=1.0'
+        );
+      }
+    }
+
+    // Ensure minimum font size to prevent zoom
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+      const computedStyle = window.getComputedStyle(input);
+      const fontSize = parseFloat(computedStyle.fontSize);
+      if (fontSize < 16) {
+        input.style.fontSize = '16px';
+      }
+    });
+  }
+
+  setTouchTargetSize(size) {
+    const validSizes = ['minimum', 'comfortable', 'large'];
+    if (validSizes.includes(size)) {
+      this.updateResponsiveSettings({ touchTargetSize: size });
+      this.announce(`Touch target size set to ${size}`);
+    }
+  }
+
+  toggleMobileOptimizations() {
+    const newValue = !this.config.responsiveSettings.mobileOptimizations;
+    this.updateResponsiveSettings({ mobileOptimizations: newValue });
+    this.announce(`Mobile optimizations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleTabletOptimizations() {
+    const newValue = !this.config.responsiveSettings.tabletOptimizations;
+    this.updateResponsiveSettings({ tabletOptimizations: newValue });
+    this.announce(`Tablet optimizations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleHapticFeedback() {
+    const newValue = !this.config.responsiveSettings.hapticFeedback;
+    this.updateResponsiveSettings({ hapticFeedback: newValue });
+    this.announce(`Haptic feedback ${newValue ? 'enabled' : 'disabled'}`);
+
+    // Update touch interaction manager
+    if (window.touchInteractionManager) {
+      if (newValue) {
+        window.touchInteractionManager.enableHapticFeedback();
+      } else {
+        window.touchInteractionManager.disableHapticFeedback();
+      }
+    }
+  }
+
+  toggleGestureNavigation() {
+    const newValue = !this.config.responsiveSettings.gestureNavigation;
+    this.updateResponsiveSettings({ gestureNavigation: newValue });
+    this.announce(`Gesture navigation ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleAutoZoomPrevention() {
+    const newValue = !this.config.responsiveSettings.autoZoomPrevention;
+    this.updateResponsiveSettings({ autoZoomPrevention: newValue });
+    this.announce(`Auto-zoom prevention ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleOrientationLock() {
+    const newValue = !this.config.responsiveSettings.orientationLock;
+    this.updateResponsiveSettings({ orientationLock: newValue });
+    this.announce(`Orientation lock ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleDeviceSpecificOptimizations() {
+    const newValue = !this.config.responsiveSettings.deviceSpecificOptimizations;
+    this.updateResponsiveSettings({ deviceSpecificOptimizations: newValue });
+    this.announce(`Device-specific optimizations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  resetResponsiveSettings() {
+    const defaultSettings = {
+      touchTargetSize: 'comfortable',
+      mobileOptimizations: true,
+      tabletOptimizations: true,
+      hapticFeedback: true,
+      gestureNavigation: true,
+      autoZoomPrevention: true,
+      orientationLock: false,
+      deviceSpecificOptimizations: true
+    };
+
+    this.updateResponsiveSettings(defaultSettings);
+    this.announce('Responsive settings reset to defaults');
+  }
+
+  // Device detection and optimization
+  optimizeForCurrentDevice() {
+    if (!this.config.responsiveSettings.deviceSpecificOptimizations) return;
+
+    const touchManager = window.touchInteractionManager;
+    if (!touchManager) return;
+
+    const deviceInfo = touchManager.getDeviceInfo();
+
+    // Mobile-specific optimizations
+    if (deviceInfo.isMobile) {
+      this.updateVisualEffects({ performanceMode: 'reduced' });
+      this.updateCursorCustomization({
+        particleTrails: false,
+        clickRipples: false
+      });
+      this.announce('Mobile optimizations applied');
+    }
+
+    // Tablet-specific optimizations
+    else if (deviceInfo.isTablet) {
+      this.updateVisualEffects({ performanceMode: 'normal' });
+      this.updateCursorCustomization({
+        particleTrails: true,
+        clickRipples: true
+      });
+      this.announce('Tablet optimizations applied');
+    }
+
+    // Desktop optimizations
+    else {
+      this.updateVisualEffects({ performanceMode: 'normal' });
+      this.announce('Desktop optimizations applied');
+    }
+  }
+
+  // Responsive breakpoint detection
+  getCurrentBreakpoint() {
+    const width = window.innerWidth;
+
+    if (width < 768) return 'mobile';
+    if (width < 1024) return 'tablet';
+    if (width < 1440) return 'desktop';
+    return 'large-desktop';
+  }
+
+  // Orientation change handling
+  handleOrientationChange() {
+    const orientation = window.orientation ||
+      (window.screen && window.screen.orientation && window.screen.orientation.angle) || 0;
+
+    const isLandscape = Math.abs(orientation) === 90;
+
+    document.body.classList.toggle('landscape', isLandscape);
+    document.body.classList.toggle('portrait', !isLandscape);
+
+    // Dispatch orientation change event
+    window.dispatchEvent(new CustomEvent('orientation-changed', {
+      detail: {
+        orientation: isLandscape ? 'landscape' : 'portrait',
+        angle: orientation
+      }
+    }));
+
+    this.announce(`Orientation changed to ${isLandscape ? 'landscape' : 'portrait'}`);
   }
 }
 
