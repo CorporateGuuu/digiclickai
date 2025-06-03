@@ -44,6 +44,7 @@ class ProductionReadinessValidator {
       await this.validateResponsiveDesign();
       await this.validateNavigationEnhancements();
       await this.validateBackendIntegration();
+      await this.validateCachingOptimization();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -1129,6 +1130,175 @@ class ProductionReadinessValidator {
     }
 
     return { passed: false, reason: 'Backend integration manager not found' };
+  }
+
+  async validateCachingOptimization() {
+    console.log('⚡ Validating Caching & Performance Optimization System...');
+
+    try {
+      // Check Redis cache manager
+      console.log('  Checking Redis cache manager...');
+      const redisCacheManager = this.checkRedisCacheManager();
+      if (redisCacheManager.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Redis cache manager implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Redis cache manager missing');
+      }
+
+      // Check API cache manager
+      console.log('  Checking API cache manager...');
+      const apiCacheManager = this.checkAPICacheManager();
+      if (apiCacheManager.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ API cache manager implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ API cache manager missing');
+      }
+
+      // Check database optimization manager
+      console.log('  Checking database optimization manager...');
+      const databaseOptimizationManager = this.checkDatabaseOptimizationManager();
+      if (databaseOptimizationManager.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Database optimization manager implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Database optimization manager missing');
+      }
+
+      // Check frontend performance manager
+      console.log('  Checking frontend performance manager...');
+      const frontendPerformanceManager = this.checkFrontendPerformanceManager();
+      if (frontendPerformanceManager.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Frontend performance manager implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Frontend performance manager missing');
+      }
+
+      // Check advanced service worker
+      console.log('  Checking advanced service worker...');
+      const advancedServiceWorker = this.checkAdvancedServiceWorker();
+      if (advancedServiceWorker.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Advanced service worker implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Advanced service worker missing');
+      }
+
+      console.log('✅ Caching optimization validation completed\n');
+    } catch (error) {
+      this.results.cursor_system.failed++;
+      this.results.cursor_system.details.push(`❌ Caching optimization validation failed: ${error.message}`);
+      console.log('❌ Caching optimization validation failed\n');
+    }
+  }
+
+  checkRedisCacheManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/redis-cache-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Redis cache manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('RedisCacheManager') &&
+                               content.includes('get') &&
+                               content.includes('set') &&
+                               content.includes('del') &&
+                               content.includes('invalidatePattern') &&
+                               content.includes('cacheTTL') &&
+                               content.includes('cacheKeys') &&
+                               content.includes('isGDPRCompliant') &&
+                               content.includes('warmCriticalCaches');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkAPICacheManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/api-cache-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'API cache manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('APICacheManager') &&
+                               content.includes('cachedFetch') &&
+                               content.includes('cacheFirstStrategy') &&
+                               content.includes('networkFirstStrategy') &&
+                               content.includes('staleWhileRevalidate') &&
+                               content.includes('generateCacheKey') &&
+                               content.includes('invalidateRelatedCache') &&
+                               content.includes('conditionalRequests') &&
+                               content.includes('compressionEnabled');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkDatabaseOptimizationManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/database-optimization-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Database optimization manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('DatabaseOptimizationManager') &&
+                               content.includes('optimizeQuery') &&
+                               content.includes('executeOptimizedQuery') &&
+                               content.includes('indexingStrategies') &&
+                               content.includes('queryCache') &&
+                               content.includes('getOptimalIndex') &&
+                               content.includes('recordQueryMetrics') &&
+                               content.includes('analyzeQueryPerformance');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkFrontendPerformanceManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/frontend-performance-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Frontend performance manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('FrontendPerformanceManager') &&
+                               content.includes('setupPerformanceMonitoring') &&
+                               content.includes('setupLazyLoading') &&
+                               content.includes('preloadCriticalResources') &&
+                               content.includes('monitorFrameRate') &&
+                               content.includes('performanceMetrics') &&
+                               content.includes('optimizationStrategies') &&
+                               content.includes('preloadingRules');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkAdvancedServiceWorker() {
+    const swPath = path.join(process.cwd(), 'public/cache-sw.js');
+
+    if (!fs.existsSync(swPath)) {
+      return { passed: false, reason: 'Advanced service worker missing' };
+    }
+
+    const content = fs.readFileSync(swPath, 'utf8');
+    const hasRequiredFeatures = content.includes('ADVANCED_CACHE_NAME') &&
+                               content.includes('CACHE_STRATEGIES') &&
+                               content.includes('ADVANCED_CACHING_RULES') &&
+                               content.includes('advancedCacheFirst') &&
+                               content.includes('advancedNetworkFirst') &&
+                               content.includes('advancedStaleWhileRevalidate') &&
+                               content.includes('performanceMetrics') &&
+                               content.includes('warmCache');
+
+    return { passed: hasRequiredFeatures };
   }
 
   generateReport() {
