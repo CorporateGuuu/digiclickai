@@ -48,6 +48,18 @@ class AccessibilityManager {
         autoZoomPrevention: true,
         orientationLock: false,
         deviceSpecificOptimizations: true
+      },
+      // Navigation and UX settings
+      navigationSettings: {
+        pageTransitions: true,
+        transitionDuration: 0.5, // 0.1 - 1.0 seconds
+        transitionVariant: 'enhanced', // control, enhanced, minimal, gaming
+        breadcrumbDisplay: true,
+        breadcrumbViewMode: 'full', // full, compact, minimal
+        loadingAnimations: true,
+        routePreloading: true,
+        gestureNavigation: true,
+        keyboardShortcuts: true
       }
     };
     
@@ -1062,6 +1074,187 @@ class AccessibilityManager {
     }));
 
     this.announce(`Orientation changed to ${isLandscape ? 'landscape' : 'portrait'}`);
+  }
+
+  // Navigation and UX Management Methods
+  updateNavigationSettings(settings) {
+    const previousSettings = { ...this.config.navigationSettings };
+    this.config.navigationSettings = { ...this.config.navigationSettings, ...settings };
+
+    // Apply navigation settings
+    this.applyNavigationProperties();
+
+    // Dispatch event for navigation system to update
+    window.dispatchEvent(new CustomEvent('navigation-settings-changed', {
+      detail: {
+        settings: this.config.navigationSettings,
+        previousSettings,
+        changes: settings
+      }
+    }));
+
+    this.saveSettings();
+    this.announce(`Navigation settings updated`);
+  }
+
+  applyNavigationProperties() {
+    const settings = this.config.navigationSettings;
+    const root = document.documentElement;
+
+    // Page transitions
+    root.style.setProperty('--page-transitions-enabled', settings.pageTransitions ? '1' : '0');
+    root.style.setProperty('--transition-duration', `${settings.transitionDuration}s`);
+    root.style.setProperty('--transition-variant', settings.transitionVariant);
+
+    // Breadcrumb settings
+    root.style.setProperty('--breadcrumb-display', settings.breadcrumbDisplay ? 'flex' : 'none');
+    root.style.setProperty('--breadcrumb-view-mode', settings.breadcrumbViewMode);
+
+    // Loading animations
+    root.style.setProperty('--loading-animations-enabled', settings.loadingAnimations ? '1' : '0');
+
+    // Apply navigation classes
+    document.body.classList.toggle('transitions-enabled', settings.pageTransitions);
+    document.body.classList.toggle('breadcrumbs-enabled', settings.breadcrumbDisplay);
+    document.body.classList.toggle('loading-animations-enabled', settings.loadingAnimations);
+    document.body.classList.toggle('gesture-navigation-enabled', settings.gestureNavigation);
+    document.body.classList.toggle('keyboard-shortcuts-enabled', settings.keyboardShortcuts);
+
+    // Update page transition manager
+    if (window.pageTransitionManager) {
+      window.pageTransitionManager.setTransitionVariant(settings.transitionVariant);
+      window.pageTransitionManager.setTransitionDuration(settings.transitionDuration);
+    }
+  }
+
+  togglePageTransitions() {
+    const newValue = !this.config.navigationSettings.pageTransitions;
+    this.updateNavigationSettings({ pageTransitions: newValue });
+    this.announce(`Page transitions ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setTransitionDuration(duration) {
+    const clampedDuration = Math.max(0.1, Math.min(1.0, duration));
+    this.updateNavigationSettings({ transitionDuration: clampedDuration });
+    this.announce(`Transition duration set to ${clampedDuration} seconds`);
+  }
+
+  setTransitionVariant(variant) {
+    const validVariants = ['control', 'enhanced', 'minimal', 'gaming'];
+    if (validVariants.includes(variant)) {
+      this.updateNavigationSettings({ transitionVariant: variant });
+      this.announce(`Transition variant set to ${variant}`);
+    }
+  }
+
+  toggleBreadcrumbDisplay() {
+    const newValue = !this.config.navigationSettings.breadcrumbDisplay;
+    this.updateNavigationSettings({ breadcrumbDisplay: newValue });
+    this.announce(`Breadcrumb navigation ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setBreadcrumbViewMode(mode) {
+    const validModes = ['full', 'compact', 'minimal'];
+    if (validModes.includes(mode)) {
+      this.updateNavigationSettings({ breadcrumbViewMode: mode });
+      this.announce(`Breadcrumb view mode set to ${mode}`);
+    }
+  }
+
+  toggleLoadingAnimations() {
+    const newValue = !this.config.navigationSettings.loadingAnimations;
+    this.updateNavigationSettings({ loadingAnimations: newValue });
+    this.announce(`Loading animations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleRoutePreloading() {
+    const newValue = !this.config.navigationSettings.routePreloading;
+    this.updateNavigationSettings({ routePreloading: newValue });
+    this.announce(`Route preloading ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleGestureNavigation() {
+    const newValue = !this.config.navigationSettings.gestureNavigation;
+    this.updateNavigationSettings({ gestureNavigation: newValue });
+    this.announce(`Gesture navigation ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  toggleKeyboardShortcuts() {
+    const newValue = !this.config.navigationSettings.keyboardShortcuts;
+    this.updateNavigationSettings({ keyboardShortcuts: newValue });
+    this.announce(`Keyboard shortcuts ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  resetNavigationSettings() {
+    const defaultSettings = {
+      pageTransitions: true,
+      transitionDuration: 0.5,
+      transitionVariant: 'enhanced',
+      breadcrumbDisplay: true,
+      breadcrumbViewMode: 'full',
+      loadingAnimations: true,
+      routePreloading: true,
+      gestureNavigation: true,
+      keyboardShortcuts: true
+    };
+
+    this.updateNavigationSettings(defaultSettings);
+    this.announce('Navigation settings reset to defaults');
+  }
+
+  // Navigation analytics and tracking
+  trackNavigationEvent(eventType, details = {}) {
+    // Dispatch custom event for analytics tracking
+    window.dispatchEvent(new CustomEvent('navigation-analytics', {
+      detail: {
+        eventType,
+        details,
+        timestamp: Date.now(),
+        settings: this.config.navigationSettings,
+        accessibility: {
+          reducedMotion: this.config.enableReducedMotion || this.reducedMotionPreferred,
+          screenReader: this.screenReaderDetected,
+          keyboardUser: this.keyboardUser
+        }
+      }
+    }));
+  }
+
+  // Keyboard shortcut management
+  setupKeyboardShortcuts() {
+    if (!this.config.navigationSettings.keyboardShortcuts) return;
+
+    const shortcuts = {
+      'Alt+H': () => window.location.href = '/',
+      'Alt+B': () => window.history.back(),
+      'Alt+F': () => window.history.forward(),
+      'Alt+R': () => window.location.reload(),
+      'Alt+T': () => this.togglePageTransitions(),
+      'Alt+N': () => this.toggleBreadcrumbDisplay()
+    };
+
+    document.addEventListener('keydown', (e) => {
+      const key = `${e.altKey ? 'Alt+' : ''}${e.ctrlKey ? 'Ctrl+' : ''}${e.shiftKey ? 'Shift+' : ''}${e.key}`;
+
+      if (shortcuts[key]) {
+        e.preventDefault();
+        shortcuts[key]();
+        this.trackNavigationEvent('keyboard_shortcut', { shortcut: key });
+      }
+    });
+  }
+
+  // Route preloading management
+  preloadCriticalRoutes() {
+    if (!this.config.navigationSettings.routePreloading) return;
+
+    const criticalRoutes = ['/', '/about', '/services', '/contact', '/pricing'];
+
+    if (window.pageTransitionManager) {
+      criticalRoutes.forEach(route => {
+        window.pageTransitionManager.preloadRoute(route);
+      });
+    }
   }
 }
 

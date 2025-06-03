@@ -8,6 +8,7 @@
 @import './ZIndexFix.module.css';
 @import './visual-effects.css';
 @import './responsive-design.css';
+@import './navigation-enhancements.css';
 
 /* Theme Variables */
 :root {
