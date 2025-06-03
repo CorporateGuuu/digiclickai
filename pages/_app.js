@@ -56,6 +56,17 @@ function AppContent({ Component, pageProps }) {
       // Initialize Sentry error tracking
       initializeSentry();
 
+      // Initialize Sentry RUM
+      if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+        const Sentry = require('@sentry/react');
+        const { BrowserTracing } = require('@sentry/tracing');
+        Sentry.init({
+          dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+          integrations: [new BrowserTracing()],
+          tracesSampleRate: 1.0,
+        });
+      }
+
       // Initialize Core Web Vitals monitoring
       initializeCoreWebVitalsMonitoring();
 

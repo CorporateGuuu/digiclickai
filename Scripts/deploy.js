@@ -5,9 +5,11 @@
  * Automates the deployment process with cursor functionality testing
  */
 
+
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 // Colors for console output
 const colors = {
@@ -127,8 +129,8 @@ function buildApplication() {
   return execCommand('npm run build', 'Building application');
 }
 
-function deployToVercel() {
-  log('\n🚀 Deploying to Vercel...', 'yellow');
+function deployToVercel(staging = false) {
+  log(`\n🚀 Deploying to Vercel ${staging ? '(staging)' : '(production)'}...`, 'yellow');
   
   // Check if Vercel CLI is installed
   try {
@@ -138,11 +140,12 @@ function deployToVercel() {
     return false;
   }
   
-  return execCommand('vercel --prod', 'Deploying to Vercel');
+  const deployCommand = staging ? 'vercel --previews' : 'vercel --prod';
+  return execCommand(deployCommand, `Deploying to Vercel ${staging ? 'staging' : 'production'}`);
 }
 
-function deployToNetlify() {
-  log('\n🚀 Deploying to Netlify...', 'yellow');
+function deployToNetlify(staging = false) {
+  log(`\n🚀 Deploying to Netlify ${staging ? '(staging)' : '(production)'}...`, 'yellow');
   
   // Check if Netlify CLI is installed
   try {
@@ -152,7 +155,8 @@ function deployToNetlify() {
     return false;
   }
   
-  return execCommand('netlify deploy --prod --dir=.next', 'Deploying to Netlify');
+  const deployCommand = staging ? 'netlify deploy --dir=.next' : 'netlify deploy --prod --dir=.next';
+  return execCommand(deployCommand, `Deploying to Netlify ${staging ? 'staging' : 'production'}`);
 }
 
 function generateSitemap() {
@@ -207,17 +211,32 @@ function generateSitemap() {
   }
 }
 
-function main() {
+function promptApproval() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+    rl.question('⚠️  Are you sure you want to proceed with production deployment? (yes/no): ', (answer) => {
+      rl.close();
+      resolve(answer.toLowerCase() === 'yes');
+    });
+  });
+}
+
+async function main() {
   log('🎯 DigiClick AI Deployment Script', 'bright');
   log('=====================================', 'bright');
   
   const args = process.argv.slice(2);
   const platform = args[0] || 'vercel';
   const skipTests = args.includes('--skip-tests');
+  const staging = args.includes('--staging');
   
   log(`\n📋 Deployment Configuration:`, 'cyan');
   log(`   Platform: ${platform}`, 'cyan');
   log(`   Skip Tests: ${skipTests}`, 'cyan');
+  log(`   Staging: ${staging}`, 'cyan');
   
   // Step 1: Check environment variables
   if (!checkEnvironmentVariables()) {
@@ -250,15 +269,24 @@ function main() {
     process.exit(1);
   }
   
-  // Step 7: Deploy based on platform
+  // Step 7: Deployment approval for production
+  if (!staging) {
+    const approved = await promptApproval();
+    if (!approved) {
+      log('❌ Deployment aborted by user.', 'red');
+      process.exit(1);
+    }
+  }
+  
+  // Step 8: Deploy based on platform and environment
   let deploymentSuccess = false;
   
   switch (platform.toLowerCase()) {
     case 'vercel':
-      deploymentSuccess = deployToVercel();
+      deploymentSuccess = deployToVercel(staging);
       break;
     case 'netlify':
-      deploymentSuccess = deployToNetlify();
+      deploymentSuccess = deployToNetlify(staging);
       break;
     default:
       log(`❌ Unknown platform: ${platform}. Supported: vercel, netlify`, 'red');

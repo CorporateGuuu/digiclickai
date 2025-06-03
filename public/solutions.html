@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Innovative solutions for website design, digital marketing, app development, and more to empower your business." />
+    <title>Solutions - Your Company</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #1E3A8A;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #1E40AF;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 smooth-scroll">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold text-gray-800">Your Company</a>
+                </div>
+                <div class="hidden sm:flex sm:items-center sm:space-x-6">
+                    <a href="#home" class="text-gray-600 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#solutions" class="text-gray-600 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium">Solutions</a>
+                    <a href="#contact" class="text-gray-600 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="menu-toggle" class="text-gray-600 hover:text-blue-900 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden bg-white shadow-md">
+            <a href="#home" class="block text-gray-600 hover:text-blue-900 px-4 py-2 text-sm">Home</a>
+            <a href="#solutions" class="block text-gray-600 hover:text-blue-900 px-4 py-2 text-sm">Solutions</a>
+            <a href="#contact" class="block text-gray-600 hover:text-blue-900 px-4 py-2 text-sm">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-white py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-5xl font-bold text-gray-800 mb-6 leading-tight">
+                Comprehensive Technology Solutions
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                From e-commerce to business automation, our tailored solutions drive growth and efficiency for your business.
+            </p>
+            <a href="#contact" class="inline-block btn-primary text-white px-8 py-3 rounded-md font-semibold text-sm uppercase tracking-wide">
+                Start Your Project
+            </a>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section id="solutions" class="bg-gray-100 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-12">Our Solutions</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Solution 1: Website Design -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Website Design & Development</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Build responsive, high-performance websites with seamless CMS integration and secure hosting.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+                <!-- Solution 2: Digital Marketing -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Digital Marketing</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Drive engagement with targeted campaigns, SEO, and abandoned cart recovery strategies.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+                <!-- Solution 3: App Development -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Mobile App Development</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Create iOS and Android apps for order management, customer engagement, and payments.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+                <!-- Solution 4: SEO Services -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">SEO Services</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Boost visibility with local SEO, keyword optimization, and data-driven performance tracking.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+                <!-- Solution 5: Business Automation -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Business Automation</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Automate workflows, client management, and document systems for operational efficiency.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+                <!-- Solution 6: E-commerce Solutions -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">E-commerce Solutions</h3>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        Enhance sales with loyalty programs, storefront apps, and abandoned cart recovery.
+                    </p>
+                    <a href="#contact" class="text-blue-900 font-medium text-sm hover:underline">Get More Details →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="bg-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-12">Get in Touch</h2>
+            <div class="max-w-md mx-auto">
+                <form id="contact-form" class="space-y-5">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="name" name="name" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-900 focus:border-blue-900 text-sm" />
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-900 focus:border-blue-900 text-sm" />
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700">Your Message</label>
+                        <textarea id="message" name="message" rows="5" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-900 focus:border-blue-900 text-sm"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-md font-semibold text-sm uppercase tracking-wide">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+                <p id="form-message" class="mt-4 text-center text-sm text-gray-600 hidden"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Your Company</h3>
+                    <p class="text-gray-400 text-sm">
+                        Empowering businesses with innovative technology solutions.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white text-sm">Home</a></li>
+                        <li><a href="#solutions" class="text-gray-400 hover:text-white text-sm">Solutions</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white text-sm">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <p class="text-gray-400 text-sm">Email: info@yourcompany.com</p>
+                    <p class="text-gray-400 text-sm">Phone: (123) 456-7890</p>
+                    <p class="text-gray-400 text-sm">Address: 123 Business St, Your City, USA</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-gray-400 text-sm">
+                © 2025 Your Company. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Contact Form Submission
+        const contactForm = document.getElementById('contact-form');
+        const formMessage = document.getElementById('form-message');
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formMessage.classList.remove('hidden', 'text-red-600', 'text-green-600');
+            formMessage.textContent = 'Sending...';
+
+            // Mock form submission (replace with your API endpoint)
+            try {
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+                formMessage.textContent = 'Message sent successfully!';
+                formMessage.classList.add('text-green-600');
+                contactForm.reset();
+            } catch (error) {
+                formMessage.textContent = 'Error sending message. Please try again.';
+                formMessage.classList.add('text-red-600');
+            }
+        });
+    </script>
+</body>
+</html>

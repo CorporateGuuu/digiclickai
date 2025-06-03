@@ -17,8 +17,42 @@ const connectDB = async () => {
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
       family: 4, // Use IPv4, skip trying IPv6
       retryWrites: true,
-      w: 'majority'
+      w: 'majority',
+      autoIndex: process.env.NODE_ENV !== 'production', // Disable auto-indexing in production
+      maxTimeMS: 30000, // Set maximum operation time to 30 seconds
+      connectTimeoutMS: 10000, // Connection timeout
+      bufferCommands: false, // Disable buffering of commands when connection is lost
     };
+
+    // Configure mongoose global settings
+    mongoose.set('debug', process.env.NODE_ENV === 'development'); // Enable query logging in development
+    mongoose.set('toJSON', { 
+      virtuals: true,
+      transform: (doc, converted) => {
+        delete converted._id;
+        delete converted.__v;
+        return converted;
+      }
+    });
+
+    // Add global plugins
+    mongoose.plugin(schema => {
+      // Add timestamps to all schemas
+      schema.set('timestamps', true);
+      
+      // Add lean option to all queries
+      schema.pre(/^find/, function() {
+        // Skip lean for specific operations that need the full document
+        if (!this.getOptions().skipLean) {
+          this.lean();
+        }
+      });
+
+      // Add default projection to exclude __v
+      schema.pre(/^find/, function() {
+        this.select('-__v');
+      });
+    });
 
     // Connect to MongoDB
     const conn = await mongoose.connect(mongoURI, options);

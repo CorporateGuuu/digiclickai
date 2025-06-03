@@ -1,223 +1,233 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const compression = require('compression');
 const morgan = require('morgan');
+const path = require('path');
 const cookieParser = require('cookie-parser');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss');
-const hpp = require('hpp');
-require('express-async-errors');
-require('dotenv').config();
-
-// Import utilities
-const logger = require('./utils/logger');
-const { connectDB } = require('./config/database');
-const { errorHandler, notFound } = require('./middleware/errorMiddleware');
+const csurf = require('csurf');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const aiRoutes = require('./routes/ai');
 const contactRoutes = require('./routes/contact');
 const demoRoutes = require('./routes/demo');
 const newsletterRoutes = require('./routes/newsletter');
+const aiRoutes = require('./routes/ai');
 const healthRoutes = require('./routes/health');
 
-// Initialize Express app
+// Import middleware
+const { errorHandler } = require('./middleware/enhancedErrorMiddleware');
+const logger = require('./utils/logger');
+
+// Load environment variables
+require('dotenv').config();
+
+// Create Express app
 const app = express();
 
-// Trust proxy for Render deployment
-app.set('trust proxy', 1);
+// Database connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/digiclick-test', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  autoIndex: process.env.NODE_ENV === 'development' // Only create indexes in development
+})
+.then(() => logger.info('MongoDB Connected'))
+.catch(err => {
+  logger.error('MongoDB connection error:', err);
+  process.exit(1);
+});
+
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const compression = require('compression');
+const morgan = require('morgan');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const csurf = require('csurf');
+
+// Import routes
+const authRoutes = require('./routes/auth');
+const contactRoutes = require('./routes/contact');
+const demoRoutes = require('./routes/demo');
+const newsletterRoutes = require('./routes/newsletter');
+const aiRoutes = require('./routes/ai');
+const healthRoutes = require('./routes/health');
+
+// Import middleware
+const { errorHandler } = require('./middleware/enhancedErrorMiddleware');
+const logger = require('./utils/logger');
+
+// Load environment variables
+require('dotenv').config();
+
+// Create Express app
+const app = express();
+
+// Database connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/digiclick-test', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  autoIndex: process.env.NODE_ENV === 'development' // Only create indexes in development
+})
+.then(() => logger.info('MongoDB Connected'))
+.catch(err => {
+  logger.error('MongoDB connection error:', err);
+  process.exit(1);
+});
+
+// Performance monitoring middleware
+app.use((req, res, next) => {
+  const startHrTime = process.hrtime();
+
+  res.on('finish', () => {
+    const elapsedHrTime = process.hrtime(startHrTime);
+    const elapsedTimeInMs = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+    logger.info(`Request ${req.method} ${req.originalUrl} took ${elapsedTimeInMs.toFixed(3)} ms`);
+  });
+
+  next();
+});
+
+// Mongoose query performance logging middleware
+mongoose.set('debug', function (collectionName, method, query, doc, options) {
+  const start = process.hrtime();
+  const logQuery = () => {
+    const diff = process.hrtime(start);
+    const time = diff[0] * 1e3 + diff[1] / 1e6;
+    logger.info(`Mongoose: ${collectionName}.${method} executed in ${time.toFixed(3)} ms`);
+  };
+  // Use next tick to log after query execution
+  process.nextTick(logQuery);
+});
 
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://trusted.cdn.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https://trusted.cdn.com"],
+      connectSrc: ["'self'", "https://api.trusted.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      scriptSrc: ["'self'"],
-      connectSrc: ["'self'", process.env.FRONTEND_URL]
-    }
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
   },
-  crossOriginEmbedderPolicy: false
 }));
+app.use(mongoSanitize()); // Sanitize data
+app.use(xss()); // Clean user input
+app.use(compression()); // Compress responses
+app.use(cookieParser());
 
 // CORS configuration
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
-      'http://localhost:3000',
-      'http://localhost:3002',
-      'https://digiclick.ai',
-      'https://www.digiclick.ai'
-    ];
-    
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : 'http://localhost:3000',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['X-Total-Count', 'X-Page-Count']
+  optionsSuccessStatus: 200
 };
-
 app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
   message: {
-    error: 'Too many requests from this IP, please try again later.',
-    retryAfter: Math.ceil((parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000) / 1000)
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
-    res.status(429).json({
-      success: false,
-      error: 'Too many requests from this IP, please try again later.',
-      retryAfter: Math.ceil((parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000) / 1000)
-    });
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
   }
 });
-
 app.use('/api/', limiter);
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cookieParser());
+// Body parser
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Data sanitization middleware
-app.use(mongoSanitize()); // Prevent NoSQL injection attacks
-app.use(hpp()); // Prevent HTTP Parameter Pollution
+// CSRF protection
+const csrfProtection = csurf({
+  cookie: true,
+});
+app.use(csrfProtection);
 
-// Compression middleware
-app.use(compression());
+// Middleware to set CSRF token cookie for frontend consumption
+app.use((req, res, next) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  next();
+});
 
-// Logging middleware
+// Logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-} else {
-  app.use(morgan('combined', {
-    stream: {
-      write: (message) => logger.info(message.trim())
-    }
-  }));
 }
 
-// Connect to MongoDB
-connectDB();
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // API Routes
-const API_VERSION = process.env.API_VERSION || 'v1';
-
-app.use(`/api/${API_VERSION}/auth`, authRoutes);
-app.use(`/api/${API_VERSION}/ai`, aiRoutes);
-app.use(`/api/${API_VERSION}/contact`, contactRoutes);
-app.use(`/api/${API_VERSION}/demo`, demoRoutes);
-app.use(`/api/${API_VERSION}/newsletter`, newsletterRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/contact', contactRoutes);
+app.use('/api/v1/demo', demoRoutes);
+app.use('/api/v1/newsletter', newsletterRoutes);
+app.use('/api/v1/ai', aiRoutes);
 app.use('/health', healthRoutes);
 
-// Welcome route
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to DigiClick AI Backend API',
-    version: API_VERSION,
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    documentation: '/api/docs'
-  });
-});
-
-// API documentation route
-app.get('/api/docs', (req, res) => {
-  res.json({
-    success: true,
-    message: 'DigiClick AI API Documentation',
-    version: API_VERSION,
-    endpoints: {
-      authentication: {
-        register: 'POST /api/v1/auth/register',
-        login: 'POST /api/v1/auth/login',
-        logout: 'POST /api/v1/auth/logout',
-        profile: 'GET /api/v1/auth/profile',
-        refresh: 'POST /api/v1/auth/refresh'
-      },
-      ai_services: {
-        chat: 'POST /api/v1/ai/chat',
-        automation: 'POST /api/v1/ai/automation',
-        analysis: 'POST /api/v1/ai/analysis'
-      },
-      communication: {
-        contact: 'POST /api/v1/contact',
-        demo: 'POST /api/v1/demo',
-        newsletter: 'POST /api/v1/newsletter'
-      },
-      system: {
-        health: 'GET /health',
-        docs: 'GET /api/docs'
-      }
-    }
-  });
-});
-
-// Error handling middleware (must be last)
-app.use(notFound);
+// Error handling
 app.use(errorHandler);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API endpoint not found',
+    data: null
+  });
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;
-
 const server = app.listen(PORT, () => {
-  logger.info(`🚀 DigiClick AI Backend Server running on port ${PORT}`);
-  logger.info(`📝 Environment: ${process.env.NODE_ENV}`);
-  logger.info(`🔗 API Documentation: http://localhost:${PORT}/api/docs`);
-  logger.info(`❤️  Health Check: http://localhost:${PORT}/health`);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    logger.info('Process terminated');
-    mongoose.connection.close();
-  });
-});
-
-process.on('SIGINT', () => {
-  logger.info('SIGINT received. Shutting down gracefully...');
-  server.close(() => {
-    logger.info('Process terminated');
-    mongoose.connection.close();
-  });
+  logger.info(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-  logger.error('Unhandled Promise Rejection:', err);
-  server.close(() => {
-    process.exit(1);
-  });
+  logger.error('Unhandled Rejection:', err);
+  // Close server & exit process
+  server.close(() => process.exit(1));
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
   logger.error('Uncaught Exception:', err);
-  process.exit(1);
+  // Close server & exit process
+  server.close(() => process.exit(1));
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received. Shutting down gracefully');
+  server.close(() => {
+    logger.info('Process terminated');
+    mongoose.connection.close(false, () => {
+      process.exit(0);
+    });
+  });
 });
 
 module.exports = app;

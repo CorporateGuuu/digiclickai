@@ -155,6 +155,26 @@ userSchema.index({ role: 1 });
 userSchema.index({ active: 1 });
 userSchema.index({ createdAt: -1 });
 
+// Compound indexes for optimized queries
+userSchema.index({ email: 1, active: 1 }); // For login queries
+userSchema.index({ passwordResetToken: 1, passwordResetExpires: 1 }); // For password reset
+userSchema.index({ emailVerificationToken: 1, emailVerificationExpires: 1 }); // For email verification
+userSchema.index({ role: 1, active: 1 }); // For role-based queries
+userSchema.index({ 'apiUsage.lastReset': 1 }); // For API usage tracking
+
+// Text index for search
+userSchema.index({
+  name: 'text',
+  email: 'text',
+  company: 'text'
+}, {
+  weights: {
+    name: 10,
+    email: 8,
+    company: 5
+  }
+});
+
 // Virtual for account lock status
 userSchema.virtual('isLocked').get(function() {
   return !!(this.lockUntil && this.lockUntil > Date.now());
@@ -279,14 +299,24 @@ userSchema.methods.resetLoginAttempts = function() {
   });
 };
 
-// Static method to find by credentials
+// Static method to find by credentials (optimized)
 userSchema.statics.findByCredentials = async function(email, password) {
-  const user = await this.findOne({ email, active: { $ne: false } }).select('+password');
-  
-  if (!user) {
+  // Use lean for initial email check to improve performance
+  const userExists = await this.findOne({ 
+    email, 
+    active: { $ne: false } 
+  })
+  .select('_id')
+  .lean();
+
+  if (!userExists) {
     throw new Error('Invalid login credentials');
   }
 
+  // If user exists, get full user data with required fields only
+  const user = await this.findById(userExists._id)
+    .select('+password loginAttempts lockUntil lastLogin');
+  
   // Check if account is locked
   if (user.isLocked) {
     await user.incLoginAttempts();
@@ -305,11 +335,71 @@ userSchema.statics.findByCredentials = async function(email, password) {
     await user.resetLoginAttempts();
   }
 
-  // Update last login info
+  // Update last login info (only necessary fields)
   user.lastLogin = new Date();
-  await user.save({ validateBeforeSave: false });
+  user.lastLoginIP = user.lastLoginIP; // Preserve existing IP
+  await user.save({ 
+    validateBeforeSave: false,
+    timestamps: false // Disable timestamps for this update
+  });
 
   return user;
+};
+
+// Static method to get user profile (optimized with lean and projection)
+userSchema.statics.getProfile = function(userId, options = {}) {
+  const { lean = true, select } = options;
+  
+  let query = this.findById(userId);
+  
+  if (lean) {
+    query = query.lean();
+  }
+  
+  if (select) {
+    query = query.select(select);
+  } else if (lean) {
+    // Default projection for profile
+    query = query.select('name email role avatar phone company website bio location preferences isEmailVerified lastLogin apiUsage');
+  }
+  
+  return query;
+};
+
+// Static method to get users list (optimized)
+userSchema.statics.getUsersList = function(filters = {}, options = {}) {
+  const {
+    page = 1,
+    limit = 20,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    lean = true,
+    select
+  } = options;
+
+  const query = { active: true, ...filters };
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
+
+  let userQuery = this.find(query);
+  
+  if (lean) {
+    userQuery = userQuery.lean();
+  }
+  
+  if (select) {
+    userQuery = userQuery.select(select);
+  } else if (lean) {
+    userQuery = userQuery.select('name email role company lastLogin createdAt');
+  }
+
+  return Promise.all([
+    userQuery
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(parseInt(limit)),
+    this.countDocuments(query)
+  ]);
 };
 
 module.exports = mongoose.model('User', userSchema);

@@ -4,6 +4,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { auth, adminAuth } = require('./middleware/auth');
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -17,12 +20,22 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiter
-const limiter = rateLimit({
+// Rate limiters
+const publicLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per window
+    max: 100 // Limit each IP to 100 requests per window
 });
-app.use(limiter);
+
+const adminLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 500 // Higher limit for admin routes
+});
+
+// Apply rate limiting to routes
+app.use('/api/contact', publicLimiter);
+app.use('/api/demo', publicLimiter);
+app.use('/api/services', publicLimiter);
+app.use('/api/admin', adminLimiter);
 
 // MongoDB connection
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/digiclick-ai';
@@ -30,27 +43,54 @@ mongoose.connect(mongoUri)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Schemas
+// User Schema for authentication
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 8);
+    }
+    next();
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Other Schemas
 const contactSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, index: true },
     message: { type: String, required: true },
     serviceInterest: { type: String },
-    createdAt: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now, index: true },
 });
+
+// Add compound index for common query patterns
+contactSchema.index({ email: 1, createdAt: -1 });
 
 const demoSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, index: true },
     company: { type: String },
     demoTime: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now, index: true },
 });
 
+// Add compound index for common query patterns
+demoSchema.index({ email: 1, demoTime: 1 });
+
 const serviceSchema = new mongoose.Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, index: true },
     description: { type: String, required: true },
 });
+
+// Add text index for search functionality
+serviceSchema.index({ title: 'text', description: 'text' });
 
 const Contact = mongoose.model('Contact', contactSchema);
 const Demo = mongoose.model('Demo', demoSchema);
@@ -123,7 +163,12 @@ app.get('/api/services', async (req, res) => {
     try {
         // Check if MongoDB is connected
         if (mongoose.connection.readyState === 1) {
-            const services = await Service.find();
+            const services = await Service.find({}, {
+                _id: 0,
+                __v: 0,
+                title: 1,
+                description: 1
+            }).lean();
             res.status(200).json(services);
         } else {
             // Fallback to static services if MongoDB is not connected
@@ -150,10 +195,78 @@ app.get('/api/services', async (req, res) => {
     }
 });
 
-// Get all contacts (admin endpoint - should be protected in production)
-app.get('/api/contacts', async (req, res) => {
+// Authentication Routes
+app.post('/api/auth/register', [
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 6 }),
+    body('adminKey').equals(process.env.ADMIN_REGISTRATION_KEY || 'your-default-admin-key')
+], async (req, res) => {
     try {
-        const contacts = await Contact.find().sort({ createdAt: -1 });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { email, password } = req.body;
+        
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
+        // Create new admin user
+        const user = new User({
+            email,
+            password,
+            isAdmin: true
+        });
+        await user.save();
+
+        res.status(201).json({ message: 'Admin user created successfully' });
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/api/auth/login', [
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 6 })
+], async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign(
+            { userId: user._id, isAdmin: user.isAdmin },
+            process.env.JWT_SECRET || 'your-default-secret-key',
+            { expiresIn: '24h' }
+        );
+
+        res.json({ token });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Protected Admin Routes
+app.get('/api/contacts', adminAuth, async (req, res) => {
+    try {
+        const contacts = await Contact.find({}, {
+            _id: 0,
+            __v: 0,
+            name: 1,
+            email: 1,
+            message: 1,
+            serviceInterest: 1,
+            createdAt: 1
+        }).sort({ createdAt: -1 }).lean();
         res.status(200).json(contacts);
     } catch (error) {
         console.error('Contacts fetch error:', error);
@@ -161,10 +274,17 @@ app.get('/api/contacts', async (req, res) => {
     }
 });
 
-// Get all demos (admin endpoint - should be protected in production)
-app.get('/api/demos', async (req, res) => {
+app.get('/api/demos', adminAuth, async (req, res) => {
     try {
-        const demos = await Demo.find().sort({ createdAt: -1 });
+        const demos = await Demo.find({}, {
+            _id: 0,
+            __v: 0,
+            name: 1,
+            email: 1,
+            company: 1,
+            demoTime: 1,
+            createdAt: 1
+        }).sort({ createdAt: -1 }).lean();
         res.status(200).json(demos);
     } catch (error) {
         console.error('Demos fetch error:', error);

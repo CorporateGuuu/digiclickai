@@ -207,9 +207,31 @@ contactSchema.index({ service: 1 });
 contactSchema.index({ budget: 1 });
 contactSchema.index({ isSpam: 1 });
 
-// Compound indexes
+// Compound indexes for optimized queries
 contactSchema.index({ status: 1, priority: 1 });
 contactSchema.index({ createdAt: -1, status: 1 });
+contactSchema.index({ status: 1, createdAt: -1 }); // For status filtering with date sorting
+contactSchema.index({ assignedTo: 1, status: 1 }); // For assigned contacts queries
+contactSchema.index({ followUpDate: 1, status: 1 }); // For follow-up queries
+contactSchema.index({ isSpam: 1, createdAt: -1 }); // For non-spam queries with date sorting
+contactSchema.index({ priority: 1, status: 1, createdAt: -1 }); // For priority + status filtering
+contactSchema.index({ service: 1, status: 1 }); // For service-based filtering
+contactSchema.index({ budget: 1, status: 1 }); // For budget-based filtering
+
+// Text search index for search functionality
+contactSchema.index({
+  name: 'text',
+  email: 'text',
+  company: 'text',
+  message: 'text'
+}, {
+  weights: {
+    name: 10,
+    email: 8,
+    company: 5,
+    message: 1
+  }
+});
 
 // Virtual for full contact info
 contactSchema.virtual('fullContactInfo').get(function() {
@@ -309,33 +331,115 @@ contactSchema.methods.assignTo = function(userId, assignedBy) {
   return this.save();
 };
 
-// Static method to get contacts by status
-contactSchema.statics.getByStatus = function(status) {
-  return this.find({ status, isSpam: false })
+// Static method to get contacts by status (optimized with lean and projection)
+contactSchema.statics.getByStatus = function(status, options = {}) {
+  const { lean = true, select } = options;
+  
+  let query = this.find({ status, isSpam: false });
+  
+  if (lean) {
+    query = query.lean();
+  }
+  
+  if (select) {
+    query = query.select(select);
+  } else if (lean) {
+    // Default projection for lean queries
+    query = query.select('name email phone company service budget status priority createdAt assignedTo');
+  }
+  
+  return query
     .populate('assignedTo', 'name email')
     .sort({ createdAt: -1 });
 };
 
-// Static method to get high priority contacts
-contactSchema.statics.getHighPriority = function() {
-  return this.find({ 
+// Static method to get high priority contacts (optimized)
+contactSchema.statics.getHighPriority = function(options = {}) {
+  const { lean = true, select } = options;
+  
+  let query = this.find({ 
     priority: { $in: ['high', 'urgent'] },
     status: { $in: ['new', 'contacted', 'in-progress'] },
     isSpam: false
-  })
+  });
+  
+  if (lean) {
+    query = query.lean();
+  }
+  
+  if (select) {
+    query = query.select(select);
+  } else if (lean) {
+    query = query.select('name email phone company service budget status priority createdAt assignedTo followUpDate');
+  }
+  
+  return query
     .populate('assignedTo', 'name email')
     .sort({ priority: -1, createdAt: -1 });
 };
 
-// Static method to get contacts needing follow-up
-contactSchema.statics.getNeedingFollowUp = function() {
-  return this.find({
+// Static method to get contacts needing follow-up (optimized)
+contactSchema.statics.getNeedingFollowUp = function(options = {}) {
+  const { lean = true, select } = options;
+  
+  let query = this.find({
     followUpDate: { $lte: new Date() },
     status: { $in: ['contacted', 'in-progress'] },
     isSpam: false
-  })
+  });
+  
+  if (lean) {
+    query = query.lean();
+  }
+  
+  if (select) {
+    query = query.select(select);
+  } else if (lean) {
+    query = query.select('name email phone company service status priority followUpDate createdAt assignedTo');
+  }
+  
+  return query
     .populate('assignedTo', 'name email')
     .sort({ followUpDate: 1 });
+};
+
+// Static method for optimized contact listing with pagination
+contactSchema.statics.getContactsList = function(filters = {}, options = {}) {
+  const {
+    page = 1,
+    limit = 20,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    lean = true,
+    select
+  } = options;
+
+  // Build query
+  const query = { isSpam: false, ...filters };
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
+
+  let contactQuery = this.find(query);
+  
+  if (lean) {
+    contactQuery = contactQuery.lean();
+  }
+  
+  if (select) {
+    contactQuery = contactQuery.select(select);
+  } else if (lean) {
+    contactQuery = contactQuery.select('name email phone company service budget status priority createdAt assignedTo followUpDate');
+  }
+
+  return Promise.all([
+    contactQuery
+      .populate('assignedTo', 'name email')
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(parseInt(limit)),
+    this.countDocuments(query)
+  ]);
 };
 
 // Static method to get analytics data
