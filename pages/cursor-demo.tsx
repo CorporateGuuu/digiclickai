@@ -15,9 +15,6 @@ const CursorDemo: React.FC = () => {
         {/* Hero Section */}
         <section className={styles.hero}>
           <h1 className="glow-text">Enhanced Cursor Demo</h1>
-          <p className={styles.subtitle}>
-            Experience our GSAP-powered cursor system with advanced interactions
-          </p>
         </section>
 
         {/* Interactive Elements Grid */}
@@ -172,22 +169,6 @@ const CursorDemo: React.FC = () => {
         <section className={styles.instructions}>
           <h2 className="glow-text">How to Use</h2>
           <div className={styles.instructionGrid}>
-            <div className="pulse-box">
-              <h4>Hover Effects</h4>
-              <p>Move your mouse over different elements to see various cursor transformations</p>
-            </div>
-            <div className="pulse-box">
-              <h4>Click Animations</h4>
-              <p>Click on interactive elements to see ripple effects and scale animations</p>
-            </div>
-            <div className="pulse-box">
-              <h4>Trail System</h4>
-              <p>Move your mouse quickly to see dynamic particle trails</p>
-            </div>
-            <div className="pulse-box">
-              <h4>Performance</h4>
-              <p>All animations are optimized for 60fps performance</p>
-            </div>
           </div>
         </section>
 
