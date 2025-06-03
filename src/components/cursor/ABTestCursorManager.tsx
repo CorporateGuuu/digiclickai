@@ -194,12 +194,33 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
       }
     };
 
+    const handleCursorCustomizationChange = (e: CustomEvent) => {
+      const { settings, previousSettings, changes } = e.detail;
+
+      // Track customization changes for analytics
+      trackCursorEvent('cursor_customization_changed', undefined, {
+        variant,
+        changes,
+        settings,
+        accessibility_mode: accessibilityDisabled
+      });
+
+      // Apply customization to current cursor instance if needed
+      if (window.gsap && !device.isTouch && !accessibilityDisabled) {
+        // Trigger cursor update with new settings
+        window.dispatchEvent(new CustomEvent('cursor-settings-updated', {
+          detail: { settings, variant }
+        }));
+      }
+    };
+
     // Add event listeners
     window.addEventListener('accessibility-disable-cursor', handleAccessibilityDisable);
     window.addEventListener('accessibility-enable-cursor', handleAccessibilityEnable);
     window.addEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
     window.addEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
     window.addEventListener('modal-state-changed', handleModalStateChange as EventListener);
+    window.addEventListener('cursor-customization-changed', handleCursorCustomizationChange as EventListener);
 
     // Cleanup function
     return () => {
@@ -208,6 +229,7 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
       window.removeEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
       window.removeEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
       window.removeEventListener('modal-state-changed', handleModalStateChange as EventListener);
+      window.removeEventListener('cursor-customization-changed', handleCursorCustomizationChange as EventListener);
     };
 
   }, [variant, config, trackCursorEvent, accessibilityDisabled]);

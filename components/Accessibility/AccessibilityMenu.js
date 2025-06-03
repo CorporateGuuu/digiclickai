@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { getAccessibilityManager } from '../../src/lib/accessibility-manager';
+import CursorCustomizationPanel from './CursorCustomizationPanel';
 import styles from './AccessibilityMenu.module.css';
 
 const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCursorCustomizationOpen, setIsCursorCustomizationOpen] = useState(false);
+  const [accessibilityManager, setAccessibilityManager] = useState(null);
   const [settings, setSettings] = useState({
     fontSize: 'medium',
     contrast: 'normal',
@@ -23,9 +26,10 @@ const AccessibilityMenu = () => {
       }
 
       // Initialize from accessibility manager
-      const accessibilityManager = getAccessibilityManager();
-      if (accessibilityManager) {
-        const status = accessibilityManager.getAccessibilityStatus();
+      const manager = getAccessibilityManager();
+      setAccessibilityManager(manager);
+      if (manager) {
+        const status = manager.getAccessibilityStatus();
         setSettings(prev => ({
           ...prev,
           reducedMotion: status.reducedMotion,
@@ -255,9 +259,27 @@ const AccessibilityMenu = () => {
                 </label>
               </div>
             </div>
-            
+
+            <div className={styles.settingSection}>
+              <h3>Cursor Customization</h3>
+              <button
+                className={styles.cursorCustomizationButton}
+                onClick={() => setIsCursorCustomizationOpen(true)}
+                disabled={settings.cursorAccessibilityMode}
+                aria-describedby="cursor-customization-help"
+              >
+                Customize Cursor
+              </button>
+              <div id="cursor-customization-help" className={styles.settingHelp}>
+                {settings.cursorAccessibilityMode
+                  ? 'Cursor customization is disabled when cursor effects are turned off'
+                  : 'Customize cursor appearance, effects, and behavior'
+                }
+              </div>
+            </div>
+
             <div className={styles.resetSection}>
-              <button 
+              <button
                 className={styles.resetButton}
                 onClick={resetSettings}
               >
@@ -267,6 +289,12 @@ const AccessibilityMenu = () => {
           </div>
         </div>
       )}
+
+      <CursorCustomizationPanel
+        isOpen={isCursorCustomizationOpen}
+        onClose={() => setIsCursorCustomizationOpen(false)}
+        accessibilityManager={accessibilityManager}
+      />
     </div>
   );
 };

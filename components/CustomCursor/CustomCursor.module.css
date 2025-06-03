@@ -1,17 +1,32 @@
-/* Enhanced DigiClick AI Custom Cursor Styles with GSAP Integration */
+/* Enhanced DigiClick AI Custom Cursor Styles with GSAP Integration and Customization Support */
+
+/* CSS Custom Properties for Dynamic Cursor Customization */
+:root {
+  --cursor-size-multiplier: 1;
+  --cursor-opacity: 1;
+  --cursor-color: #00d4ff;
+  --cursor-border-radius: 50%;
+  --cursor-particles-enabled: 1;
+  --cursor-ripples-enabled: 1;
+  --cursor-glow-enabled: 1;
+  --cursor-hover-enabled: 1;
+  --cursor-motion-override: 0;
+}
 
 .cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
+  width: calc(24px * var(--cursor-size-multiplier));
+  height: calc(24px * var(--cursor-size-multiplier));
   pointer-events: none;
   z-index: 10000;
   mix-blend-mode: difference;
   will-change: transform, scale, opacity;
   backface-visibility: hidden;
   perspective: 1000px;
+  opacity: var(--cursor-opacity);
+  border-radius: var(--cursor-border-radius);
 }
 
 .cursorInner {
@@ -24,17 +39,18 @@
 }
 
 .cursorCore {
-  width: 8px;
-  height: 8px;
-  background: #00d4ff;
-  border-radius: 50%;
+  width: calc(8px * var(--cursor-size-multiplier));
+  height: calc(8px * var(--cursor-size-multiplier));
+  background: var(--cursor-color);
+  border-radius: var(--cursor-border-radius);
   position: relative;
   z-index: 2;
-  box-shadow: 
-    0 0 10px #00d4ff,
-    0 0 20px #00d4ff,
-    0 0 30px #00d4ff;
+  box-shadow:
+    0 0 calc(10px * var(--cursor-size-multiplier) * var(--cursor-glow-enabled)) var(--cursor-color),
+    0 0 calc(20px * var(--cursor-size-multiplier) * var(--cursor-glow-enabled)) var(--cursor-color),
+    0 0 calc(30px * var(--cursor-size-multiplier) * var(--cursor-glow-enabled)) var(--cursor-color);
   animation: cursorPulse 2s ease-in-out infinite;
+  animation-play-state: calc(var(--cursor-motion-override) + (1 - var(--cursor-motion-override)) * var(--cursor-hover-enabled)) > 0 ? running : paused;
 }
 
 .cursorGlow {

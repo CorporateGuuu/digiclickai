@@ -13,7 +13,20 @@ class AccessibilityManager {
       enableScreenReaderMode: false,
       enableKeyboardNavigation: true,
       cursorAccessibilityMode: false,
-      announcements: true
+      announcements: true,
+      // Enhanced cursor customization settings
+      cursorCustomization: {
+        particleTrails: true,
+        clickRipples: true,
+        glowEffects: true,
+        hoverAnimations: true,
+        size: 100, // 50-200% of default
+        opacity: 100, // 30-100%
+        colorTheme: 'default', // default, accent, secondary, custom
+        shape: 'circle', // circle, square, custom
+        reducedMotionOverride: false, // user override for system preference
+        customColor: '#00d4ff'
+      }
     };
     
     this.screenReaderDetected = false;
@@ -519,8 +532,169 @@ class AccessibilityManager {
       screenReader: this.screenReaderDetected || this.config.enableScreenReaderMode,
       keyboardUser: this.keyboardUser,
       cursorAccessibilityMode: this.config.cursorAccessibilityMode,
-      announcements: this.config.announcements
+      announcements: this.config.announcements,
+      cursorCustomization: this.config.cursorCustomization
     };
+  }
+
+  // Cursor customization methods
+  updateCursorCustomization(settings) {
+    const previousSettings = { ...this.config.cursorCustomization };
+    this.config.cursorCustomization = { ...this.config.cursorCustomization, ...settings };
+
+    // Apply CSS custom properties for real-time updates
+    this.applyCursorCustomProperties();
+
+    // Dispatch event for cursor system to update
+    window.dispatchEvent(new CustomEvent('cursor-customization-changed', {
+      detail: {
+        settings: this.config.cursorCustomization,
+        previousSettings,
+        changes: settings
+      }
+    }));
+
+    this.saveSettings();
+    this.announce(`Cursor customization updated`);
+  }
+
+  applyCursorCustomProperties() {
+    const settings = this.config.cursorCustomization;
+    const root = document.documentElement;
+
+    // Size adjustment
+    root.style.setProperty('--cursor-size-multiplier', settings.size / 100);
+
+    // Opacity adjustment
+    root.style.setProperty('--cursor-opacity', settings.opacity / 100);
+
+    // Color theme
+    const colorMap = {
+      'default': '#00d4ff',
+      'accent': '#00d4ff',
+      'secondary': '#a855f7',
+      'custom': settings.customColor
+    };
+    root.style.setProperty('--cursor-color', colorMap[settings.colorTheme] || colorMap.default);
+
+    // Shape
+    root.style.setProperty('--cursor-border-radius', settings.shape === 'circle' ? '50%' : settings.shape === 'square' ? '0%' : '25%');
+
+    // Effect toggles
+    root.style.setProperty('--cursor-particles-enabled', settings.particleTrails ? '1' : '0');
+    root.style.setProperty('--cursor-ripples-enabled', settings.clickRipples ? '1' : '0');
+    root.style.setProperty('--cursor-glow-enabled', settings.glowEffects ? '1' : '0');
+    root.style.setProperty('--cursor-hover-enabled', settings.hoverAnimations ? '1' : '0');
+
+    // Reduced motion override
+    if (settings.reducedMotionOverride && this.reducedMotionPreferred) {
+      root.style.setProperty('--cursor-motion-override', '1');
+    } else {
+      root.style.setProperty('--cursor-motion-override', '0');
+    }
+  }
+
+  toggleCursorEffect(effectName) {
+    const currentValue = this.config.cursorCustomization[effectName];
+    this.updateCursorCustomization({ [effectName]: !currentValue });
+    this.announce(`${effectName} ${!currentValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setCursorSize(size) {
+    const clampedSize = Math.max(50, Math.min(200, size));
+    this.updateCursorCustomization({ size: clampedSize });
+  }
+
+  setCursorOpacity(opacity) {
+    const clampedOpacity = Math.max(30, Math.min(100, opacity));
+    this.updateCursorCustomization({ opacity: clampedOpacity });
+  }
+
+  setCursorColorTheme(theme) {
+    this.updateCursorCustomization({ colorTheme: theme });
+  }
+
+  setCursorShape(shape) {
+    this.updateCursorCustomization({ shape });
+  }
+
+  setCustomColor(color) {
+    this.updateCursorCustomization({ customColor: color, colorTheme: 'custom' });
+  }
+
+  toggleReducedMotionOverride() {
+    const newValue = !this.config.cursorCustomization.reducedMotionOverride;
+    this.updateCursorCustomization({ reducedMotionOverride: newValue });
+    this.announce(`Reduced motion override ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  resetCursorCustomization() {
+    const defaultSettings = {
+      particleTrails: true,
+      clickRipples: true,
+      glowEffects: true,
+      hoverAnimations: true,
+      size: 100,
+      opacity: 100,
+      colorTheme: 'default',
+      shape: 'circle',
+      reducedMotionOverride: false,
+      customColor: '#00d4ff'
+    };
+
+    this.updateCursorCustomization(defaultSettings);
+    this.announce('Cursor customization reset to defaults');
+  }
+
+  exportCursorSettings() {
+    const settings = {
+      accessibility: this.config,
+      timestamp: new Date().toISOString(),
+      version: '1.0'
+    };
+
+    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'digiclick-cursor-settings.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    this.announce('Cursor settings exported');
+  }
+
+  importCursorSettings(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const settings = JSON.parse(e.target.result);
+
+          if (settings.accessibility && settings.accessibility.cursorCustomization) {
+            this.updateCursorCustomization(settings.accessibility.cursorCustomization);
+            this.announce('Cursor settings imported successfully');
+            resolve(settings);
+          } else {
+            throw new Error('Invalid settings file format');
+          }
+        } catch (error) {
+          this.announce('Failed to import cursor settings');
+          reject(error);
+        }
+      };
+
+      reader.onerror = () => {
+        this.announce('Failed to read settings file');
+        reject(new Error('File read error'));
+      };
+
+      reader.readAsText(file);
+    });
   }
 }
 
