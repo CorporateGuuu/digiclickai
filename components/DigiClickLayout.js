@@ -11,6 +11,7 @@ import DigiClickSEO from './DigiClickSEO';
 import DigiClickAnalytics from './DigiClickAnalytics';
 import DigiClickLoading from './DigiClickLoading';
 import DigiClickGlobalStyles from './DigiClickGlobalStyles';
+import Header from './Header/Header';
 
 export default function DigiClickLayout({ 
   children, 
@@ -46,6 +47,7 @@ export default function DigiClickLayout({
       <DigiClickSEO title={title} description={description} pathname={router.pathname} />
       <DigiClickAnalytics googleAnalyticsId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
       <div className={`digiclick-layout ${className}`} data-theme={theme}>
+        <Header />
         {showParticles && (
           <ErrorBoundary>
             <ParticlesBackground />

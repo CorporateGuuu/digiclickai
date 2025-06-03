@@ -1,0 +1,106 @@
+.blog {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 600px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 30px;
+  margin: 0 auto 3rem auto;
+  display: block;
+  transition: border-color 0.3s ease;
+}
+
+.searchInput:focus {
+  border-color: #7b2cbf;
+  outline: none;
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.postCard {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.postCard:hover {
+  transform: translateY(-5px);
+}
+
+.postImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.postContent {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.postMeta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.postCategory {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.postDate {
+  font-style: italic;
+}
+
+.postTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #121212;
+}
+
+.postExcerpt {
+  flex: 1;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.readMore {
+  color: #7b2cbf;
+  font-weight: 600;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: color 0.3s ease;
+}
+
+.readMore:hover {
+  color: #5a1a9e;
+}
