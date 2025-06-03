@@ -245,7 +245,7 @@
     0 0 20px rgba(123, 44, 191, calc(0.2 * var(--holographic-intensity) * var(--holographic-enabled))),
     0 0 30px rgba(168, 85, 247, calc(0.1 * var(--holographic-intensity) * var(--holographic-enabled)));
   animation: holographicShift var(--holographic-speed) ease-in-out infinite;
-  animation-play-state: calc(var(--motion-enabled) * var(--holographic-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
   font-family: 'Orbitron', monospace;
   font-weight: 700;
   position: relative;
@@ -268,7 +268,7 @@
   filter: blur(1px);
   opacity: calc(0.5 * var(--holographic-intensity) * var(--holographic-enabled));
   animation: holographicGlow var(--holographic-speed) ease-in-out infinite reverse;
-  animation-play-state: calc(var(--motion-enabled) * var(--holographic-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 @keyframes holographicShift {
@@ -329,7 +329,7 @@
   );
   background-size: 400% 400%;
   animation: gradientShift var(--gradient-animation-speed) ease-in-out infinite;
-  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
   position: relative;
 }
 
@@ -348,7 +348,7 @@
   );
   opacity: calc(var(--gradient-animation-enabled) * var(--motion-enabled));
   animation: gradientOverlay calc(var(--gradient-animation-speed) * 1.5) ease-in-out infinite reverse;
-  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
   pointer-events: none;
 }
 
@@ -389,7 +389,7 @@
   );
   background-size: 300% 300%;
   animation: heroGradientShift calc(var(--gradient-animation-speed) * 1.2) ease-in-out infinite;
-  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 @keyframes heroGradientShift {

@@ -8,8 +8,39 @@ import AuthModal from '../components/AuthModal';
 import Portfolio from '../components/Portfolio';
 import Chatbot from '../components/Chatbot/Chatbot';
 import styles from '../styles/Home.module.css';
+import { performanceMonitor } from '../src/lib/performance-monitor';
 
-export default function HomePage() {
+// Add getStaticProps for ISR
+export async function getStaticProps() {
+  try {
+    // Fetch initial services data
+    const servicesResponse = await getServices();
+    const initialServices = servicesResponse.success ? (servicesResponse.data.data || servicesResponse.data) : [
+      { title: 'AI-Crafted Websites', description: 'Design visionary websites with AI-driven aesthetics that captivate and convert.' },
+      { title: 'Predictive Marketing', description: 'Harness AI to anticipate trends and optimize campaigns for unparalleled results.' },
+      { title: 'Intelligent SEO', description: 'Elevate your search rankings with AI-powered strategies and dynamic content.' },
+      { title: 'Automation Ecosystems', description: 'Streamline operations with bespoke AI automation for seamless efficiency.' }
+    ];
+
+    return {
+      props: {
+        initialServices,
+      },
+      // Revalidate every 60 seconds for high-traffic pages
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
+    return {
+      props: {
+        initialServices: [],
+      },
+      revalidate: 60,
+    };
+  }
+}
+
+export default function HomePage({ initialServices }) {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -20,13 +51,20 @@ export default function HomePage() {
   });
   const [formStatus, setFormStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState(initialServices);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
 
   const particlesRef = useRef(null);
   const heroRef = useRef(null);
   const servicesRef = useRef(null);
+
+  // Initialize performance monitoring
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.performanceMonitor = performanceMonitor;
+    }
+  }, []);
 
   // Initialize particles.js and apply theme
   useEffect(() => {
@@ -36,10 +74,12 @@ export default function HomePage() {
     const loadParticles = async () => {
       if (typeof window !== 'undefined') {
         try {
-          // Load particles.js from CDN
+          // Load particles.js from CDN with performance tracking
+          const startTime = performance.now();
           const script = document.createElement('script');
           script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
           script.onload = () => {
+            performanceMonitor.trackCacheStatus(performance.getEntriesByName(script.src).length > 0);
             if (window.particlesJS) {
               window.particlesJS('particles-js', {
                 particles: {
@@ -97,7 +137,8 @@ export default function HomePage() {
     const loadGSAP = async () => {
       if (typeof window !== 'undefined') {
         try {
-          // Load GSAP from CDN
+          // Load GSAP from CDN with performance tracking
+          const startTime = performance.now();
           const gsapScript = document.createElement('script');
           gsapScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js';
 
@@ -105,7 +146,9 @@ export default function HomePage() {
           scrollTriggerScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/ScrollTrigger.min.js';
 
           gsapScript.onload = () => {
+            performanceMonitor.trackCacheStatus(performance.getEntriesByName(gsapScript.src).length > 0);
             scrollTriggerScript.onload = () => {
+              performanceMonitor.trackCacheStatus(performance.getEntriesByName(scrollTriggerScript.src).length > 0);
               if (window.gsap) {
                 window.gsap.registerPlugin(window.ScrollTrigger);
 
@@ -294,7 +337,7 @@ export default function HomePage() {
       keywords="DigiClick AI, AI automation, enhanced cursor system, AI web design, business automation, artificial intelligence, GSAP animations, cursor demo"
       showCursor={true}
       showParticles={true}
-      showChatbot={false} // We'll use the existing Chatbot component
+      showChatbot={false}
       cursorTheme="default"
       className={styles.container}
     >
@@ -394,6 +437,7 @@ export default function HomePage() {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
+
       {/* Particles Background - Enhanced for cursor interaction */}
       <div id="particles-js" ref={particlesRef} className={`${styles.particlesContainer} cursor-interactive`}></div>
 

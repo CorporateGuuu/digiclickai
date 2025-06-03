@@ -1,94 +1,68 @@
 [build]
-  base = "/"
-  command = "./netlify.sh"
+  command = "npm run build"
   publish = "out"
-  ignore = "git diff --quiet HEAD^ HEAD -- . ':!node_modules'"
 
-[build.environment]
-  NODE_VERSION = "20.18.0"
-  NPM_VERSION = "9.6.7"
-  NETLIFY_USE_PYTHON = "true"
-  PYTHON_VERSION = "3.9"
-  SITE_NAME = "Digiclick Website"
-  NODE_OPTIONS = "--max-old-space-size=4096"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NEXT_SHARP_PATH = "/tmp/node_modules/sharp"
-  NEXT_PUBLIC_API_URL = "https://digiclick-ai-backend.onrender.com"
-  NEXT_PUBLIC_APP_URL = "https://digiclickai.netlify.app"
-  NODE_ENV = "production"
-  FORCE_REBUILD = "2025-06-02-21-50"
+# Cache control for static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-[build.packages]
-  apt = ["postgresql-client", "libpq-dev", "build-essential"]
+# Cache control for images
+[[headers]]
+  for = "/*.{jpg,jpeg,png,gif,webp,svg,ico}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-[functions]
-  node_bundler = "esbuild"
+# Cache control for CSS and JavaScript
+[[headers]]
+  for = "/*.{css,js}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# Static export redirects for DigiClick AI
+# Cache control for HTML and other dynamic content
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Enable HTTP/2 Server Push
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Link = '''
+    </styles/Home.module.css>; rel=preload; as=style,
+    </styles/visual-effects.css>; rel=preload; as=style,
+    </styles/navigation-enhancements.css>; rel=preload; as=style'''
+
+# Redirect all traffic to HTTPS
 [[redirects]]
-  from = "/portfolio"
-  to = "/portfolio/index.html"
-  status = 200
+  from = "http://*"
+  to = "https://:splat"
+  status = 301
+  force = true
 
-[[redirects]]
-  from = "/cursor-demo"
-  to = "/cursor-demo/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/contact"
-  to = "/contact/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/about"
-  to = "/about/index.html"
-  status = 200
-
-# Handle static assets
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-
-# API routes (these won't work in static export but keeping for compatibility)
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Sitemap and robots
-[[redirects]]
-  from = "/sitemap.xml"
-  to = "/sitemap.xml"
-  status = 200
-
-[[redirects]]
-  from = "/robots.txt"
-  to = "/robots.txt"
-  status = 200
-
-# SPA fallback for client-side routing - MUST be last
+# SPA fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Headers for security and performance
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[headers]]
-  for = "/_next/static/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/static/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+# Enable brotli and gzip compression
+[build.processing]
+  skip_processing = false
+[build.processing.css]
+  bundle = true
+  minify = true
+[build.processing.js]
+  bundle = true
+  minify = true
+[build.processing.html]
+  pretty_urls = true
+[build.processing.images]
+  compress = true

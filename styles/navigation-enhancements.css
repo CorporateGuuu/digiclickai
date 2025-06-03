@@ -74,7 +74,7 @@
   width: 100%;
   height: 100%;
   animation: transitionSpin 1s linear infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .transition-text {
@@ -132,19 +132,19 @@
   width: 100%;
   height: 100%;
   animation: circuitRotate 2s linear infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .circuit-path {
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
   animation: circuitFlow 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .circuit-node {
   animation: circuitPulse 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .route-loading-text {
@@ -187,7 +187,7 @@
   bottom: 0;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: progressShimmer 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 @keyframes circuitRotate {
@@ -252,19 +252,19 @@
   width: 100%;
   height: 100%;
   animation: neuralRotate 3s linear infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .neural-node {
   animation: neuralPulse 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .neural-connection {
   stroke-dasharray: 20;
   stroke-dashoffset: 20;
   animation: neuralFlow 1.2s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .content-loading-text {
@@ -336,18 +336,18 @@
   width: 100%;
   height: 100%;
   animation: geometricRotate 2s linear infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .geometric-shape {
   animation: geometricScale 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
   transform-origin: center;
 }
 
 .geometric-core {
   animation: geometricCorePulse 1.5s ease-in-out infinite;
-  animation-play-state: var(--loading-animations-enabled) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .form-loading-text {

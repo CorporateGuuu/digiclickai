@@ -424,16 +424,21 @@ class CoreWebVitalsMonitor {
       user_agent: navigator.userAgent
     };
     
-    const response = await fetch(this.config.api_endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
+    try {
+      const response = await fetch(this.config.api_endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('❌ Failed to send metrics to API:', error);
+      // Optionally, implement retry or fallback here
     }
   }
 

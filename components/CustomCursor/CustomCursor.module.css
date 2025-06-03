@@ -1,7 +1,7 @@
 /* Enhanced DigiClick AI Custom Cursor Styles with GSAP Integration and Customization Support */
 
 /* CSS Custom Properties for Dynamic Cursor Customization */
-:root {
+.cursorRoot {
   --cursor-size-multiplier: 1;
   --cursor-opacity: 1;
   --cursor-color: #00d4ff;
@@ -50,7 +50,7 @@
     0 0 calc(20px * var(--cursor-size-multiplier) * var(--cursor-glow-enabled)) var(--cursor-color),
     0 0 calc(30px * var(--cursor-size-multiplier) * var(--cursor-glow-enabled)) var(--cursor-color);
   animation: cursorPulse 2s ease-in-out infinite;
-  animation-play-state: calc(var(--cursor-motion-override) + (1 - var(--cursor-motion-override)) * var(--cursor-hover-enabled)) > 0 ? running : paused;
+  animation-play-state: running;
 }
 
 .cursorGlow {

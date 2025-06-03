@@ -19,7 +19,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Enable static export for Netlify
-  output: 'export',
+  // output: 'export',
   trailingSlash: true,
   distDir: 'out',
 
