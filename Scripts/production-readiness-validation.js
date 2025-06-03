@@ -48,6 +48,7 @@ class ProductionReadinessValidator {
       await this.validateTestingInfrastructure();
       await this.validateManualTestingProtocols();
       await this.validateAIChatbotIntegration();
+      await this.validateDynamicContentGeneration();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -1814,6 +1815,181 @@ class ProductionReadinessValidator {
                                     stylesContent.includes('focus');
 
     return { passed: hasAccessibilityFeatures };
+  }
+
+  async validateDynamicContentGeneration() {
+    console.log('📝 Validating Dynamic Content Generation & AI-Powered Content Management...');
+
+    try {
+      // Check AI content generator
+      console.log('  Checking AI content generator...');
+      const aiContentGenerator = this.checkAIContentGenerator();
+      if (aiContentGenerator.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ AI content generator implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ AI content generator missing');
+      }
+
+      // Check SEO content optimizer
+      console.log('  Checking SEO content optimizer...');
+      const seoOptimizer = this.checkSEOContentOptimizer();
+      if (seoOptimizer.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ SEO content optimizer implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ SEO content optimizer missing');
+      }
+
+      // Check dynamic portfolio manager
+      console.log('  Checking dynamic portfolio manager...');
+      const portfolioManager = this.checkDynamicPortfolioManager();
+      if (portfolioManager.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Dynamic portfolio manager implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Dynamic portfolio manager missing');
+      }
+
+      // Check personalization manager
+      console.log('  Checking personalization manager...');
+      const personalizationManager = this.checkPersonalizationManager();
+      if (personalizationManager.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Personalization manager implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Personalization manager missing');
+      }
+
+      // Check content quality and SEO compliance
+      console.log('  Checking content quality and SEO compliance...');
+      const contentQuality = this.checkContentQualityCompliance();
+      if (contentQuality.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Content quality and SEO compliance implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Content quality and SEO compliance missing');
+      }
+
+      console.log('✅ Dynamic content generation validation completed\n');
+    } catch (error) {
+      this.results.cursor_system.failed++;
+      this.results.cursor_system.details.push(`❌ Dynamic content generation validation failed: ${error.message}`);
+      console.log('❌ Dynamic content generation validation failed\n');
+    }
+  }
+
+  checkAIContentGenerator() {
+    const generatorPath = path.join(process.cwd(), 'src/lib/ai-content-generator.js');
+
+    if (!fs.existsSync(generatorPath)) {
+      return { passed: false, reason: 'AI content generator missing' };
+    }
+
+    const content = fs.readFileSync(generatorPath, 'utf8');
+    const hasRequiredFeatures = content.includes('AIContentGenerator') &&
+                               content.includes('generateBlogTopicSuggestions') &&
+                               content.includes('generateBlogPostOutline') &&
+                               content.includes('generateBlogPostContent') &&
+                               content.includes('analyzeContentQuality') &&
+                               content.includes('expertiseAreas') &&
+                               content.includes('contentTemplates') &&
+                               content.includes('qualityMetrics') &&
+                               content.includes('calculateReadabilityScore');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkSEOContentOptimizer() {
+    const optimizerPath = path.join(process.cwd(), 'src/lib/seo-content-optimizer.js');
+
+    if (!fs.existsSync(optimizerPath)) {
+      return { passed: false, reason: 'SEO content optimizer missing' };
+    }
+
+    const content = fs.readFileSync(optimizerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('SEOContentOptimizer') &&
+                               content.includes('generateMetaDescription') &&
+                               content.includes('generateTitleTag') &&
+                               content.includes('generateSchemaMarkup') &&
+                               content.includes('generateInternalLinkingSuggestions') &&
+                               content.includes('performContentGapAnalysis') &&
+                               content.includes('digiclickPages') &&
+                               content.includes('schemaTemplates') &&
+                               content.includes('WCAG');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkDynamicPortfolioManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/dynamic-portfolio-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Dynamic portfolio manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('DynamicPortfolioManager') &&
+                               content.includes('generateProjectDescription') &&
+                               content.includes('generateCaseStudy') &&
+                               content.includes('generateTechStackVisualization') &&
+                               content.includes('portfolioConfig') &&
+                               content.includes('clientIndustries') &&
+                               content.includes('outcomeMetrics') &&
+                               content.includes('technologyStacks') &&
+                               content.includes('accessibility');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkPersonalizationManager() {
+    const managerPath = path.join(process.cwd(), 'src/lib/personalization-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Personalization manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasRequiredFeatures = content.includes('PersonalizationManager') &&
+                               content.includes('trackPageView') &&
+                               content.includes('trackInteraction') &&
+                               content.includes('generateContentRecommendations') &&
+                               content.includes('adaptNavigation') &&
+                               content.includes('GDPR') &&
+                               content.includes('privacySettings') &&
+                               content.includes('userJourneyStages') &&
+                               content.includes('behaviorMetrics');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkContentQualityCompliance() {
+    // Check if content generation includes quality scoring and SEO optimization
+    const generatorPath = path.join(process.cwd(), 'src/lib/ai-content-generator.js');
+    const optimizerPath = path.join(process.cwd(), 'src/lib/seo-content-optimizer.js');
+
+    if (!fs.existsSync(generatorPath) || !fs.existsSync(optimizerPath)) {
+      return { passed: false, reason: 'Content quality compliance files missing' };
+    }
+
+    const generatorContent = fs.readFileSync(generatorPath, 'utf8');
+    const optimizerContent = fs.readFileSync(optimizerPath, 'utf8');
+
+    const hasQualityFeatures = generatorContent.includes('qualityMetrics') &&
+                              generatorContent.includes('readability') &&
+                              generatorContent.includes('technicalAccuracy') &&
+                              generatorContent.includes('brandAlignment') &&
+                              optimizerContent.includes('WCAG') &&
+                              optimizerContent.includes('accessibility') &&
+                              optimizerContent.includes('metaDescription') &&
+                              optimizerContent.includes('schemaMarkup');
+
+    return { passed: hasQualityFeatures };
   }
 
   generateReport() {
