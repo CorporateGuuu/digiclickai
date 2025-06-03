@@ -1,43 +1,36 @@
 {
-  "name": "Midas Technical Solutions",
-  "short_name": "MDTS",
-  "description": "Your trusted source for mobile device parts and repair tools",
+  "name": "DigiClick AI",
+  "short_name": "DigiClick AI",
+  "description": "Premium AI web design and automation solutions with enhanced cursor system",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#d4af37",
+  "background_color": "#121212",
+  "theme_color": "#00d4ff",
   "icons": [
     {
-      "src": "/icons/mdts-icon.svg",
-      "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512",
-      "type": "image/svg+xml",
+      "src": "/icons/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
   "orientation": "portrait",
-  "splash_pages": null,
   "scope": "/",
   "shortcuts": [
     {
-      "name": "Shop",
-      "short_name": "Shop",
-      "description": "Browse our products",
-      "url": "/shop",
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access your dashboard",
+      "url": "/dashboard",
       "icons": [
         {
-          "src": "/icons/shop-icon.svg",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Cart",
-      "short_name": "Cart",
-      "description": "View your shopping cart",
-      "url": "/cart",
-      "icons": [
-        {
-          "src": "/icons/cart-icon.svg",
+          "src": "/icons/dashboard-icon.png",
           "sizes": "192x192"
         }
       ]

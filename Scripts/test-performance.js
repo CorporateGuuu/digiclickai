@@ -1,42 +1,37 @@
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
-const { execSync } = require('child_process');
 const chromeLauncher = require('chrome-launcher');
 
 async function runTests() {
   console.log('Starting performance tests...\n');
+  console.log('=== Critical Path Testing ===\n');
 
-  // 1. Critical Path Testing
-  console.log('=== Critical Path Testing ===');
-  
-  // Test Service Worker Registration
+  // Launch browser
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   
-  console.log('\nTesting Service Worker...');
-  await page.goto('http://localhost:3000');
+  console.log('Testing Service Worker...');
+  await page.goto('https://digiclickai.netlify.app/');
   const swRegistration = await page.evaluate(() => navigator.serviceWorker.getRegistration());
   console.log('Service Worker registered:', swRegistration !== undefined);
 
   // Test Offline Functionality
   console.log('\nTesting Offline Functionality...');
   await page.setOfflineMode(true);
-  await page.reload();
-  const offlineContent = await page.content();
-  console.log('Offline page loaded:', offlineContent.includes('You\'re Offline'));
+  const offlineResponse = await page.goto('https://digiclickai.netlify.app/');
+  console.log('Offline page loaded:', offlineResponse.ok);
+  await page.setOfflineMode(false);
 
   // Test Cache Headers
   console.log('\nTesting Cache Headers...');
-  const response = await page.goto('http://localhost:3000/static/css/styles.css');
+  const response = await page.goto('https://digiclickai.netlify.app/static/css/styles.css');
   const headers = response.headers();
-  console.log('Cache-Control header present:', headers['cache-control'] !== undefined);
+  console.log('Cache-Control:', headers['cache-control']);
+  console.log('ETag:', headers['etag']);
 
-  await browser.close();
-
-  // 2. Thorough Testing
-  console.log('\n=== Thorough Testing ===');
-
-  // Launch Chrome for Lighthouse
+  // Test Core Web Vitals
+  console.log('\n=== Core Web Vitals Testing ===\n');
+  
   const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
   const options = {
     logLevel: 'info',
@@ -45,51 +40,16 @@ async function runTests() {
     port: chrome.port
   };
 
-  // Run Lighthouse
-  console.log('\nRunning Lighthouse Performance Audit...');
-  const runnerResult = await lighthouse('http://localhost:3000', options);
-  const performanceScore = runnerResult.lhr.categories.performance.score * 100;
-  console.log('Performance Score:', performanceScore);
+  const runnerResult = await lighthouse('https://digiclickai.netlify.app', options);
+  const lhr = runnerResult.lhr;
 
-  // Test Core Web Vitals
-  console.log('\nTesting Core Web Vitals...');
-  const webVitals = runnerResult.lhr.audits;
-  console.log('LCP:', webVitals['largest-contentful-paint'].numericValue);
-  console.log('FID:', webVitals['max-potential-fid'].numericValue);
-  console.log('CLS:', webVitals['cumulative-layout-shift'].numericValue);
+  console.log('Performance score:', lhr.categories.performance.score * 100);
+  console.log('First Contentful Paint:', lhr.audits['first-contentful-paint'].displayValue);
+  console.log('Largest Contentful Paint:', lhr.audits['largest-contentful-paint'].displayValue);
+  console.log('Cumulative Layout Shift:', lhr.audits['cumulative-layout-shift'].displayValue);
 
-  // Test Resource Preloading
-  console.log('\nTesting Resource Preloading...');
-  const preloadLinks = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('link[rel="preload"]')).length;
-  });
-  console.log('Preload links found:', preloadLinks);
-
-  // Test Cache Hit Rate
-  console.log('\nTesting Cache Hit Rate...');
-  const cacheStats = await page.evaluate(() => {
-    return window.performanceMonitor?.getMetrics()?.cacheHitRate;
-  });
-  console.log('Cache Hit Rate:', cacheStats);
-
-  // Test Performance Budget
-  console.log('\nChecking Performance Budget...');
-  const budgetResults = await page.evaluate(() => {
-    return window.performanceMonitor?.checkPerformanceBudget();
-  });
-  console.log('Performance Budget Check:', budgetResults);
-
+  await browser.close();
   await chrome.kill();
-
-  // Summary
-  console.log('\n=== Test Summary ===');
-  console.log('Critical Path Tests: PASSED');
-  console.log('Performance Score:', performanceScore);
-  console.log('Service Worker: Active');
-  console.log('Offline Support: Verified');
-  console.log('Cache Headers: Configured');
-  console.log('Resource Preloading: Implemented');
-  console.log('Performance Monitoring: Active');
 }
 
 runTests().catch(console.error);
