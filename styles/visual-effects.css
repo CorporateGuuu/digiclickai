@@ -1,0 +1,438 @@
+/* DigiClick AI Enhanced Visual Effects System */
+/* Maintains WCAG 2.1 AA compliance and 60fps performance */
+
+/* CSS Custom Properties for Visual Effects Control */
+:root {
+  /* Glow Effect Controls */
+  --glow-intensity: 1;
+  --glow-primary: #00d4ff;
+  --glow-secondary: #7b2cbf;
+  --glow-accent: #a855f7;
+  --glow-enabled: 1;
+  
+  /* Holographic Text Controls */
+  --holographic-enabled: 1;
+  --holographic-intensity: 1;
+  --holographic-speed: 3s;
+  
+  /* Background Gradient Controls */
+  --gradient-animation-enabled: 1;
+  --gradient-animation-speed: 6s;
+  --gradient-intensity: 0.8;
+  
+  /* Loading Animation Controls */
+  --loading-animation-enabled: 1;
+  --loading-speed: 1.5s;
+  
+  /* Performance and Accessibility */
+  --motion-enabled: 1;
+  --effects-performance-mode: normal; /* normal, reduced, minimal */
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-enabled: 0;
+    --holographic-speed: 0s;
+    --gradient-animation-speed: 0s;
+    --loading-speed: 0s;
+  }
+}
+
+/* Interactive Element Glow Animations */
+.glow-element {
+  position: relative;
+  transition: all 0.3s ease-out;
+  will-change: box-shadow, transform;
+}
+
+.glow-element::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--glow-primary), var(--glow-secondary), var(--glow-accent));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.3s ease-out;
+  pointer-events: none;
+}
+
+.glow-element:hover::before,
+.glow-element:focus::before {
+  opacity: calc(0.6 * var(--glow-intensity) * var(--glow-enabled));
+}
+
+/* Button Glow Effects */
+.glow-button {
+  background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1));
+  border: 2px solid transparent;
+  border-radius: 12px;
+  box-shadow: 
+    0 0 0 1px rgba(0, 212, 255, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease-out;
+  pointer-events: none;
+}
+
+.glow-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, calc(0.4 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 40px rgba(123, 44, 191, calc(0.3 * var(--glow-intensity) * var(--glow-enabled))),
+    0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: var(--glow-primary);
+}
+
+.glow-button:hover::before {
+  left: 100%;
+}
+
+.glow-button:focus {
+  outline: 3px solid var(--glow-primary);
+  outline-offset: 2px;
+  box-shadow: 
+    0 0 0 1px #121212,
+    0 0 20px rgba(0, 212, 255, calc(0.6 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 40px rgba(123, 44, 191, calc(0.4 * var(--glow-intensity) * var(--glow-enabled)));
+}
+
+/* Link Glow Effects */
+.glow-link {
+  color: var(--glow-primary);
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease-out;
+  text-shadow: 0 0 5px rgba(0, 212, 255, calc(0.3 * var(--glow-intensity) * var(--glow-enabled)));
+}
+
+.glow-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--glow-primary), var(--glow-secondary));
+  transition: width 0.3s ease-out;
+  box-shadow: 0 0 8px rgba(0, 212, 255, calc(0.5 * var(--glow-intensity) * var(--glow-enabled)));
+}
+
+.glow-link:hover {
+  color: var(--glow-secondary);
+  text-shadow: 
+    0 0 10px rgba(0, 212, 255, calc(0.6 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 20px rgba(123, 44, 191, calc(0.4 * var(--glow-intensity) * var(--glow-enabled)));
+  transform: translateY(-1px);
+}
+
+.glow-link:hover::after {
+  width: 100%;
+}
+
+.glow-link:focus {
+  outline: 2px solid var(--glow-primary);
+  outline-offset: 3px;
+  color: var(--glow-accent);
+}
+
+/* Form Input Glow Effects */
+.glow-input {
+  background: rgba(18, 18, 18, 0.8);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 12px 16px;
+  transition: all 0.3s ease-out;
+  box-shadow: 
+    0 0 0 1px rgba(0, 212, 255, 0.1),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.glow-input:focus {
+  outline: none;
+  border-color: var(--glow-primary);
+  box-shadow: 
+    0 0 0 1px #121212,
+    0 0 15px rgba(0, 212, 255, calc(0.5 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 30px rgba(123, 44, 191, calc(0.3 * var(--glow-intensity) * var(--glow-enabled))),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+.glow-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease-out;
+}
+
+.glow-input:focus::placeholder {
+  color: rgba(0, 212, 255, 0.7);
+}
+
+/* Card Glow Effects */
+.glow-card {
+  background: linear-gradient(135deg, rgba(18, 18, 18, 0.9), rgba(42, 42, 42, 0.9));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glow-primary), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.glow-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--glow-primary);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(0, 212, 255, calc(0.3 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 40px rgba(123, 44, 191, calc(0.2 * var(--glow-intensity) * var(--glow-enabled))),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.glow-card:hover::before {
+  opacity: calc(0.8 * var(--glow-intensity) * var(--glow-enabled));
+}
+
+/* Holographic Text Effects */
+.holographic-text {
+  background: linear-gradient(
+    45deg,
+    #00d4ff 0%,
+    #7b2cbf 25%,
+    #a855f7 50%,
+    #00d4ff 75%,
+    #7b2cbf 100%
+  );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 
+    0 0 10px rgba(0, 212, 255, calc(0.3 * var(--holographic-intensity) * var(--holographic-enabled))),
+    0 0 20px rgba(123, 44, 191, calc(0.2 * var(--holographic-intensity) * var(--holographic-enabled))),
+    0 0 30px rgba(168, 85, 247, calc(0.1 * var(--holographic-intensity) * var(--holographic-enabled)));
+  animation: holographicShift var(--holographic-speed) ease-in-out infinite;
+  animation-play-state: calc(var(--motion-enabled) * var(--holographic-enabled)) > 0 ? running : paused;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  position: relative;
+}
+
+.holographic-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 212, 255, 0.3),
+    rgba(123, 44, 191, 0.3),
+    rgba(168, 85, 247, 0.3)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: blur(1px);
+  opacity: calc(0.5 * var(--holographic-intensity) * var(--holographic-enabled));
+  animation: holographicGlow var(--holographic-speed) ease-in-out infinite reverse;
+  animation-play-state: calc(var(--motion-enabled) * var(--holographic-enabled)) > 0 ? running : paused;
+}
+
+@keyframes holographicShift {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 50% 0%;
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    background-position: 50% 100%;
+    filter: hue-rotate(270deg);
+  }
+}
+
+@keyframes holographicGlow {
+  0%, 100% {
+    opacity: calc(0.3 * var(--holographic-intensity) * var(--holographic-enabled));
+    transform: scale(1);
+  }
+  50% {
+    opacity: calc(0.7 * var(--holographic-intensity) * var(--holographic-enabled));
+    transform: scale(1.02);
+  }
+}
+
+/* Fallback for reduced motion */
+.reduce-motion .holographic-text,
+.holographic-text[data-reduced-motion="true"] {
+  background: var(--glow-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: none;
+  text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+}
+
+.reduce-motion .holographic-text::before,
+.holographic-text[data-reduced-motion="true"]::before {
+  display: none;
+}
+
+/* Animated Background Gradients */
+.gradient-background {
+  background: linear-gradient(
+    45deg,
+    rgba(18, 18, 18, 1) 0%,
+    rgba(0, 212, 255, calc(0.05 * var(--gradient-intensity))) 25%,
+    rgba(123, 44, 191, calc(0.03 * var(--gradient-intensity))) 50%,
+    rgba(168, 85, 247, calc(0.02 * var(--gradient-intensity))) 75%,
+    rgba(18, 18, 18, 1) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift var(--gradient-animation-speed) ease-in-out infinite;
+  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+  position: relative;
+}
+
+.gradient-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 212, 255, calc(0.02 * var(--gradient-intensity))) 0%,
+    transparent 50%,
+    rgba(123, 44, 191, calc(0.02 * var(--gradient-intensity))) 100%
+  );
+  opacity: calc(var(--gradient-animation-enabled) * var(--motion-enabled));
+  animation: gradientOverlay calc(var(--gradient-animation-speed) * 1.5) ease-in-out infinite reverse;
+  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 100%;
+  }
+}
+
+@keyframes gradientOverlay {
+  0%, 100% {
+    opacity: calc(0.3 * var(--gradient-intensity) * var(--gradient-animation-enabled));
+    transform: scale(1);
+  }
+  50% {
+    opacity: calc(0.6 * var(--gradient-intensity) * var(--gradient-animation-enabled));
+    transform: scale(1.02);
+  }
+}
+
+/* Hero Section Gradient */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(18, 18, 18, 1) 0%,
+    rgba(0, 212, 255, calc(0.08 * var(--gradient-intensity))) 30%,
+    rgba(123, 44, 191, calc(0.06 * var(--gradient-intensity))) 60%,
+    rgba(18, 18, 18, 1) 100%
+  );
+  background-size: 300% 300%;
+  animation: heroGradientShift calc(var(--gradient-animation-speed) * 1.2) ease-in-out infinite;
+  animation-play-state: calc(var(--motion-enabled) * var(--gradient-animation-enabled)) > 0 ? running : paused;
+}
+
+@keyframes heroGradientShift {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  33% {
+    background-position: 100% 0%;
+  }
+  66% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Performance Optimizations */
+.glow-element,
+.glow-button,
+.glow-card,
+.holographic-text,
+.gradient-background {
+  will-change: transform, opacity, box-shadow;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* High Performance Mode */
+.effects-performance-reduced .glow-element::before,
+.effects-performance-reduced .glow-button::before,
+.effects-performance-reduced .glow-card::before,
+.effects-performance-reduced .holographic-text::before {
+  display: none;
+}
+
+.effects-performance-reduced .gradient-background,
+.effects-performance-reduced .hero-gradient {
+  animation: none;
+  background: #121212;
+}
+
+.effects-performance-minimal * {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}

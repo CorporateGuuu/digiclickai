@@ -482,3 +482,95 @@
 .reduce-motion .shapeOption:hover {
   transform: none;
 }
+
+/* Visual Effects Panel Specific Styles */
+.performanceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.performanceOption {
+  cursor: pointer;
+}
+
+.performanceOption input[type="radio"] {
+  display: none;
+}
+
+.performanceCard {
+  padding: 16px;
+  border: 2px solid #333333;
+  border-radius: 12px;
+  background: rgba(18, 18, 18, 0.8);
+  transition: all 0.3s ease;
+}
+
+.performanceOption input[type="radio"]:checked + .performanceCard {
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.performanceHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.performanceIcon {
+  font-size: 20px;
+}
+
+.performanceLabel {
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.performanceDescription {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #cccccc;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.demoArea {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.demoButton {
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.demoHeading {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  margin: 0;
+  text-align: center;
+}
+
+.demoCard {
+  padding: 16px;
+  text-align: center;
+}
+
+.demoCard p {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+}

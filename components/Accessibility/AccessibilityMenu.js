@@ -2,11 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { getAccessibilityManager } from '../../src/lib/accessibility-manager';
 import CursorCustomizationPanel from './CursorCustomizationPanel';
+import VisualEffectsPanel from './VisualEffectsPanel';
 import styles from './AccessibilityMenu.module.css';
 
 const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCursorCustomizationOpen, setIsCursorCustomizationOpen] = useState(false);
+  const [isVisualEffectsOpen, setIsVisualEffectsOpen] = useState(false);
   const [accessibilityManager, setAccessibilityManager] = useState(null);
   const [settings, setSettings] = useState({
     fontSize: 'medium',
@@ -278,6 +280,20 @@ const AccessibilityMenu = () => {
               </div>
             </div>
 
+            <div className={styles.settingSection}>
+              <h3>Visual Effects</h3>
+              <button
+                className={styles.visualEffectsButton}
+                onClick={() => setIsVisualEffectsOpen(true)}
+                aria-describedby="visual-effects-help"
+              >
+                Customize Visual Effects
+              </button>
+              <div id="visual-effects-help" className={styles.settingHelp}>
+                Control glow animations, holographic text, background gradients, and loading effects
+              </div>
+            </div>
+
             <div className={styles.resetSection}>
               <button
                 className={styles.resetButton}
@@ -293,6 +309,12 @@ const AccessibilityMenu = () => {
       <CursorCustomizationPanel
         isOpen={isCursorCustomizationOpen}
         onClose={() => setIsCursorCustomizationOpen(false)}
+        accessibilityManager={accessibilityManager}
+      />
+
+      <VisualEffectsPanel
+        isOpen={isVisualEffectsOpen}
+        onClose={() => setIsVisualEffectsOpen(false)}
         accessibilityManager={accessibilityManager}
       />
     </div>

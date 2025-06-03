@@ -269,6 +269,30 @@
   transform: none;
 }
 
+/* Visual Effects Button */
+.visualEffectsButton {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #7b2cbf, #a855f7);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+}
+
+.visualEffectsButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.4);
+  background: linear-gradient(45deg, #6a1b9a, #9c27b0);
+}
+
 .settingHelp {
   font-size: 0.75rem;
   color: #6b7280;

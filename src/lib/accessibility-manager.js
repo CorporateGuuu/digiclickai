@@ -26,6 +26,17 @@ class AccessibilityManager {
         shape: 'circle', // circle, square, custom
         reducedMotionOverride: false, // user override for system preference
         customColor: '#00d4ff'
+      },
+      // Visual effects settings
+      visualEffects: {
+        glowAnimations: true,
+        glowIntensity: 100, // 0-100%
+        holographicText: true,
+        holographicIntensity: 100, // 0-100%
+        backgroundGradients: true,
+        gradientIntensity: 80, // 0-100%
+        loadingAnimations: true,
+        performanceMode: 'normal' // normal, reduced, minimal
       }
     };
     
@@ -695,6 +706,124 @@ class AccessibilityManager {
 
       reader.readAsText(file);
     });
+  }
+
+  // Visual Effects Management Methods
+  updateVisualEffects(settings) {
+    const previousSettings = { ...this.config.visualEffects };
+    this.config.visualEffects = { ...this.config.visualEffects, ...settings };
+
+    // Apply visual effects CSS custom properties
+    this.applyVisualEffectsProperties();
+
+    // Dispatch event for visual effects system to update
+    window.dispatchEvent(new CustomEvent('visual-effects-changed', {
+      detail: {
+        settings: this.config.visualEffects,
+        previousSettings,
+        changes: settings
+      }
+    }));
+
+    this.saveSettings();
+    this.announce(`Visual effects updated`);
+  }
+
+  applyVisualEffectsProperties() {
+    const settings = this.config.visualEffects;
+    const root = document.documentElement;
+
+    // Glow effects
+    root.style.setProperty('--glow-enabled', settings.glowAnimations ? '1' : '0');
+    root.style.setProperty('--glow-intensity', settings.glowIntensity / 100);
+
+    // Holographic text
+    root.style.setProperty('--holographic-enabled', settings.holographicText ? '1' : '0');
+    root.style.setProperty('--holographic-intensity', settings.holographicIntensity / 100);
+
+    // Background gradients
+    root.style.setProperty('--gradient-animation-enabled', settings.backgroundGradients ? '1' : '0');
+    root.style.setProperty('--gradient-intensity', settings.gradientIntensity / 100);
+
+    // Loading animations
+    root.style.setProperty('--loading-animation-enabled', settings.loadingAnimations ? '1' : '0');
+
+    // Performance mode
+    root.style.setProperty('--effects-performance-mode', settings.performanceMode);
+
+    // Apply performance mode classes
+    document.body.classList.remove('effects-performance-normal', 'effects-performance-reduced', 'effects-performance-minimal');
+    document.body.classList.add(`effects-performance-${settings.performanceMode}`);
+
+    // Handle reduced motion override
+    if (settings.performanceMode === 'minimal' || (!this.config.cursorCustomization.reducedMotionOverride && this.reducedMotionPreferred)) {
+      root.style.setProperty('--motion-enabled', '0');
+    } else {
+      root.style.setProperty('--motion-enabled', '1');
+    }
+  }
+
+  toggleGlowAnimations() {
+    const newValue = !this.config.visualEffects.glowAnimations;
+    this.updateVisualEffects({ glowAnimations: newValue });
+    this.announce(`Glow animations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setGlowIntensity(intensity) {
+    const clampedIntensity = Math.max(0, Math.min(100, intensity));
+    this.updateVisualEffects({ glowIntensity: clampedIntensity });
+  }
+
+  toggleHolographicText() {
+    const newValue = !this.config.visualEffects.holographicText;
+    this.updateVisualEffects({ holographicText: newValue });
+    this.announce(`Holographic text ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setHolographicIntensity(intensity) {
+    const clampedIntensity = Math.max(0, Math.min(100, intensity));
+    this.updateVisualEffects({ holographicIntensity: clampedIntensity });
+  }
+
+  toggleBackgroundGradients() {
+    const newValue = !this.config.visualEffects.backgroundGradients;
+    this.updateVisualEffects({ backgroundGradients: newValue });
+    this.announce(`Background gradients ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setGradientIntensity(intensity) {
+    const clampedIntensity = Math.max(0, Math.min(100, intensity));
+    this.updateVisualEffects({ gradientIntensity: clampedIntensity });
+  }
+
+  toggleLoadingAnimations() {
+    const newValue = !this.config.visualEffects.loadingAnimations;
+    this.updateVisualEffects({ loadingAnimations: newValue });
+    this.announce(`Loading animations ${newValue ? 'enabled' : 'disabled'}`);
+  }
+
+  setPerformanceMode(mode) {
+    const validModes = ['normal', 'reduced', 'minimal'];
+    if (validModes.includes(mode)) {
+      this.updateVisualEffects({ performanceMode: mode });
+      this.announce(`Performance mode set to ${mode}`);
+    }
+  }
+
+  resetVisualEffects() {
+    const defaultSettings = {
+      glowAnimations: true,
+      glowIntensity: 100,
+      holographicText: true,
+      holographicIntensity: 100,
+      backgroundGradients: true,
+      gradientIntensity: 80,
+      loadingAnimations: true,
+      performanceMode: 'normal'
+    };
+
+    this.updateVisualEffects(defaultSettings);
+    this.announce('Visual effects reset to defaults');
   }
 }
 

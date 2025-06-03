@@ -40,6 +40,7 @@ class ProductionReadinessValidator {
       await this.validateAccessibility();
       await this.validateCursorSystem();
       await this.validateCursorCustomization();
+      await this.validateVisualEffects();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -472,6 +473,143 @@ class ProductionReadinessValidator {
                                content.includes('--cursor-hover-enabled');
 
     return { passed: hasCustomProperties };
+  }
+
+  async validateVisualEffects() {
+    console.log('✨ Validating Visual Effects System...');
+
+    try {
+      // Check visual effects CSS
+      console.log('  Checking visual effects CSS...');
+      const visualEffectsCSS = this.checkVisualEffectsCSS();
+      if (visualEffectsCSS.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Visual effects CSS implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Visual effects CSS missing');
+      }
+
+      // Check loading animations
+      console.log('  Checking loading animations...');
+      const loadingAnimations = this.checkLoadingAnimations();
+      if (loadingAnimations.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Loading animations implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Loading animations missing');
+      }
+
+      // Check visual effects panel
+      console.log('  Checking visual effects panel...');
+      const visualEffectsPanel = this.checkVisualEffectsPanel();
+      if (visualEffectsPanel.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Visual effects panel implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Visual effects panel missing');
+      }
+
+      // Check accessibility manager integration
+      console.log('  Checking visual effects accessibility integration...');
+      const accessibilityIntegration = this.checkVisualEffectsAccessibility();
+      if (accessibilityIntegration.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Visual effects accessibility integration working');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Visual effects accessibility integration issues');
+      }
+
+      console.log('✅ Visual effects validation completed\n');
+    } catch (error) {
+      this.results.cursor_system.failed++;
+      this.results.cursor_system.details.push(`❌ Visual effects validation failed: ${error.message}`);
+      console.log('❌ Visual effects validation failed\n');
+    }
+  }
+
+  checkVisualEffectsCSS() {
+    const cssPath = path.join(process.cwd(), 'styles/visual-effects.css');
+
+    if (!fs.existsSync(cssPath)) {
+      return { passed: false, reason: 'Visual effects CSS missing' };
+    }
+
+    const content = fs.readFileSync(cssPath, 'utf8');
+    const hasRequiredEffects = content.includes('glow-element') &&
+                              content.includes('holographic-text') &&
+                              content.includes('gradient-background') &&
+                              content.includes('--glow-intensity') &&
+                              content.includes('--holographic-enabled') &&
+                              content.includes('--gradient-animation-enabled') &&
+                              content.includes('--loading-animation-enabled');
+
+    return { passed: hasRequiredEffects };
+  }
+
+  checkLoadingAnimations() {
+    const spinnerPath = path.join(process.cwd(), 'components/LoadingAnimations/LoadingSpinner.js');
+    const cssPath = path.join(process.cwd(), 'components/LoadingAnimations/LoadingSpinner.module.css');
+
+    if (!fs.existsSync(spinnerPath) || !fs.existsSync(cssPath)) {
+      return { passed: false, reason: 'Loading animation files missing' };
+    }
+
+    const spinnerContent = fs.readFileSync(spinnerPath, 'utf8');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+    const hasLoadingTypes = spinnerContent.includes('circuit') &&
+                           spinnerContent.includes('geometric') &&
+                           spinnerContent.includes('neural') &&
+                           spinnerContent.includes('LoadingSkeleton') &&
+                           spinnerContent.includes('LoadingButton');
+
+    const hasAnimations = cssContent.includes('@keyframes') &&
+                         cssContent.includes('circuitFlow') &&
+                         cssContent.includes('geometricRotate') &&
+                         cssContent.includes('neuralPulse');
+
+    return { passed: hasLoadingTypes && hasAnimations };
+  }
+
+  checkVisualEffectsPanel() {
+    const panelPath = path.join(process.cwd(), 'components/Accessibility/VisualEffectsPanel.js');
+    const cssPath = path.join(process.cwd(), 'components/Accessibility/VisualEffectsPanel.module.css');
+
+    if (!fs.existsSync(panelPath) || !fs.existsSync(cssPath)) {
+      return { passed: false, reason: 'Visual effects panel files missing' };
+    }
+
+    const panelContent = fs.readFileSync(panelPath, 'utf8');
+    const hasRequiredControls = panelContent.includes('glowAnimations') &&
+                               panelContent.includes('holographicText') &&
+                               panelContent.includes('backgroundGradients') &&
+                               panelContent.includes('loadingAnimations') &&
+                               panelContent.includes('performanceMode') &&
+                               panelContent.includes('demoArea');
+
+    return { passed: hasRequiredControls };
+  }
+
+  checkVisualEffectsAccessibility() {
+    const managerPath = path.join(process.cwd(), 'src/lib/accessibility-manager.js');
+
+    if (!fs.existsSync(managerPath)) {
+      return { passed: false, reason: 'Accessibility manager missing' };
+    }
+
+    const content = fs.readFileSync(managerPath, 'utf8');
+    const hasVisualEffects = content.includes('visualEffects') &&
+                            content.includes('updateVisualEffects') &&
+                            content.includes('applyVisualEffectsProperties') &&
+                            content.includes('toggleGlowAnimations') &&
+                            content.includes('toggleHolographicText') &&
+                            content.includes('setPerformanceMode');
+
+    return { passed: hasVisualEffects };
   }
 
   generateReport() {
