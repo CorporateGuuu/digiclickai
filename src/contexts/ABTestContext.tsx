@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { analyticsQueue } from '../lib/analytics-queue';
 
 // A/B Test Types
 export interface ABTestVariant {
@@ -216,16 +217,8 @@ export const ABTestProvider: React.FC<ABTestProviderProps> = ({
         });
       }
 
-      // Custom analytics endpoint
-      fetch('/api/analytics/ab-test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(eventData),
-      }).catch(error => {
-        console.warn('Analytics tracking failed:', error);
-      });
+      // Enqueue event for batching
+      analyticsQueue.enqueue(eventData);
 
       // Console logging for development
       if (process.env.NODE_ENV === 'development') {

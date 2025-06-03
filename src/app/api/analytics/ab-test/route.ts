@@ -45,32 +45,40 @@ export async function POST(request: NextRequest) {
       rateLimitMap.set(clientIP, { count: 1, resetTime: now + 60000 });
     }
 
-    // Parse request body
-    const eventData: ABTestEvent = await request.json();
+    // Parse request body - now handles both single events and arrays
+    const rawData = await request.json();
+    const eventDataArray = Array.isArray(rawData) ? rawData : [rawData];
 
-    // Validate required fields
-    if (!eventData.event || !eventData.testId || !eventData.variant) {
-      return NextResponse.json(
-        { error: 'Missing required fields: event, testId, variant' },
-        { status: 400 }
-      );
+    // Process each event
+    const sanitizedEvents: ABTestEvent[] = [];
+
+    for (const eventData of eventDataArray) {
+      // Validate required fields
+      if (!eventData.event || !eventData.testId || !eventData.variant) {
+        return NextResponse.json(
+          { error: 'Missing required fields: event, testId, variant' },
+          { status: 400 }
+        );
+      }
+
+      // Sanitize and validate data
+      const sanitizedEvent: ABTestEvent = {
+        event: eventData.event.substring(0, 100),
+        testId: eventData.testId.substring(0, 100),
+        variant: eventData.variant.substring(0, 50),
+        userId: eventData.userId?.substring(0, 100) || 'anonymous',
+        sessionId: eventData.sessionId?.substring(0, 100) || 'unknown',
+        timestamp: eventData.timestamp || new Date().toISOString(),
+        url: eventData.url?.substring(0, 500) || '',
+        userAgent: eventData.userAgent?.substring(0, 500) || '',
+        properties: eventData.properties || {}
+      };
+
+      sanitizedEvents.push(sanitizedEvent);
     }
 
-    // Sanitize and validate data
-    const sanitizedEvent: ABTestEvent = {
-      event: eventData.event.substring(0, 100),
-      testId: eventData.testId.substring(0, 100),
-      variant: eventData.variant.substring(0, 50),
-      userId: eventData.userId?.substring(0, 100) || 'anonymous',
-      sessionId: eventData.sessionId?.substring(0, 100) || 'unknown',
-      timestamp: eventData.timestamp || new Date().toISOString(),
-      url: eventData.url?.substring(0, 500) || '',
-      userAgent: eventData.userAgent?.substring(0, 500) || '',
-      properties: eventData.properties || {}
-    };
-
     // Store event data (in production, save to database)
-    analyticsData.push(sanitizedEvent);
+    analyticsData.push(...sanitizedEvents);
 
     // Keep only last 10000 events in memory
     if (analyticsData.length > 10000) {
@@ -79,14 +87,16 @@ export async function POST(request: NextRequest) {
 
     // Log for development
     if (process.env.NODE_ENV === 'development') {
-      console.log('A/B Test Event:', sanitizedEvent);
+      console.log('A/B Test Events:', sanitizedEvents);
     }
 
     // Send to external analytics services
-    await Promise.allSettled([
-      sendToGoogleAnalytics(sanitizedEvent),
-      sendToCustomAnalytics(sanitizedEvent)
-    ]);
+    await Promise.allSettled(
+      sanitizedEvents.map(event => Promise.all([
+        sendToGoogleAnalytics(event),
+        sendToCustomAnalytics(event)
+      ]))
+    );
 
     return NextResponse.json({ success: true });
 
