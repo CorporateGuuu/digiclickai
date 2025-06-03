@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { getAccessibilityManager } from '../../src/lib/accessibility-manager';
 import styles from './AccessibilityMenu.module.css';
 
 const AccessibilityMenu = () => {
@@ -8,15 +9,30 @@ const AccessibilityMenu = () => {
     fontSize: 'medium',
     contrast: 'normal',
     reducedMotion: false,
-    focusHighlight: false
+    focusHighlight: false,
+    cursorAccessibilityMode: false,
+    announcements: true
   });
   
-  // Load settings from localStorage on component mount
+  // Load settings from localStorage and accessibility manager on component mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedSettings = localStorage.getItem('accessibilitySettings');
       if (savedSettings) {
         setSettings(JSON.parse(savedSettings));
+      }
+
+      // Initialize from accessibility manager
+      const accessibilityManager = getAccessibilityManager();
+      if (accessibilityManager) {
+        const status = accessibilityManager.getAccessibilityStatus();
+        setSettings(prev => ({
+          ...prev,
+          reducedMotion: status.reducedMotion,
+          cursorAccessibilityMode: status.cursorAccessibilityMode,
+          announcements: status.announcements,
+          contrast: status.highContrast ? 'high' : 'normal'
+        }));
       }
     }
   }, []);
@@ -66,7 +82,29 @@ const AccessibilityMenu = () => {
   
   // Handle toggle settings
   const handleToggleSetting = (setting) => {
-    setSettings({ ...settings, [setting]: !settings[setting] });
+    const newValue = !settings[setting];
+    setSettings({ ...settings, [setting]: newValue });
+
+    // Apply through accessibility manager
+    const accessibilityManager = getAccessibilityManager();
+    if (accessibilityManager) {
+      switch (setting) {
+        case 'reducedMotion':
+          if (newValue) {
+            accessibilityManager.enableReducedMotion();
+          } else {
+            accessibilityManager.disableReducedMotion();
+          }
+          break;
+        case 'cursorAccessibilityMode':
+          accessibilityManager.toggleCursorAccessibilityMode();
+          break;
+        case 'announcements':
+          accessibilityManager.config.announcements = newValue;
+          accessibilityManager.saveSettings();
+          break;
+      }
+    }
   };
   
   // Reset all settings to default
@@ -190,6 +228,30 @@ const AccessibilityMenu = () => {
                     onChange={() => handleToggleSetting('focusHighlight')}
                   />
                   <span>Highlight focus</span>
+                </label>
+                <label className={styles.toggleOption}>
+                  <input
+                    type="checkbox"
+                    checked={settings.cursorAccessibilityMode}
+                    onChange={() => handleToggleSetting('cursorAccessibilityMode')}
+                    aria-describedby="cursor-mode-help"
+                  />
+                  <span>Disable cursor effects</span>
+                  <div id="cursor-mode-help" className={styles.settingHelp}>
+                    Disables custom cursor animations for better accessibility
+                  </div>
+                </label>
+                <label className={styles.toggleOption}>
+                  <input
+                    type="checkbox"
+                    checked={settings.announcements}
+                    onChange={() => handleToggleSetting('announcements')}
+                    aria-describedby="announcements-help"
+                  />
+                  <span>Screen reader announcements</span>
+                  <div id="announcements-help" className={styles.settingHelp}>
+                    Enables helpful announcements for screen reader users
+                  </div>
                 </label>
               </div>
             </div>

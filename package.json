@@ -64,7 +64,11 @@
     "optimize-images": "node scripts/optimize-images.js",
     "test:performance:full": "npm run build && npm run optimize && npm run perf-audit",
     "analyze:bundle": "ANALYZE=true npm run build",
-    "monitor:performance": "node scripts/continuous-monitoring.js"
+    "monitor:performance": "node scripts/continuous-monitoring.js",
+    "accessibility:audit": "node scripts/accessibility-audit.js",
+    "accessibility:test": "npm run test -- tests/accessibility/",
+    "accessibility:full": "npm run accessibility:audit && npm run accessibility:test",
+    "test:a11y": "npm run accessibility:full"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -165,6 +169,12 @@
     "imagemin": "^8.0.1",
     "imagemin-webp": "^8.0.0",
     "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-pngquant": "^10.0.0"
+    "imagemin-pngquant": "^10.0.0",
+    "@axe-core/cli": "^4.8.3",
+    "jest-axe": "^8.0.0",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "axe-core": "^4.8.3"
   }
 }

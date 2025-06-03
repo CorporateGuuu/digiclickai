@@ -4,6 +4,7 @@ import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useCursorABTest } from '../../contexts/ABTestContext';
 import { detectDevice, preloadGSAPIfNeeded, loadGSAPForVariant } from '../../lib/gsap-loader';
 import { capturePerformanceIssue } from '../../lib/sentry-config';
+import { getAccessibilityManager } from '../../lib/accessibility-manager';
 import EnhancedCustomCursor from './EnhancedCustomCursor'; // Fallback cursor
 
 // Dynamic imports for cursor variants with chunk splitting
@@ -29,15 +30,27 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
   const [isVisible, setIsVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [accessibilityDisabled, setAccessibilityDisabled] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     // Use optimized device detection
     const device = detectDevice();
     setIsTouchDevice(device.isTouch);
-    setIsVisible(!device.isTouch);
 
-    // Preload GSAP if needed for the variant
-    if (!device.isTouch) {
+    // Initialize accessibility manager
+    const accessibilityManager = getAccessibilityManager();
+    if (accessibilityManager) {
+      const status = accessibilityManager.getAccessibilityStatus();
+      setAccessibilityDisabled(status.cursorAccessibilityMode || status.screenReader);
+      setReducedMotion(status.reducedMotion);
+    }
+
+    // Set visibility based on device and accessibility
+    setIsVisible(!device.isTouch && !accessibilityDisabled);
+
+    // Preload GSAP if needed for the variant and accessibility allows
+    if (!device.isTouch && !accessibilityDisabled) {
       preloadGSAPIfNeeded();
 
       // Load GSAP for current variant
@@ -120,7 +133,50 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
     // Start FPS monitoring after a delay
     setTimeout(() => requestAnimationFrame(measureFPS), 2000);
 
-  }, [variant, config, trackCursorEvent]);
+    // Setup accessibility event listeners
+    const handleAccessibilityDisable = () => {
+      setAccessibilityDisabled(true);
+      setIsVisible(false);
+      trackCursorEvent('accessibility_disabled', undefined, { variant, reason: 'user_request' });
+    };
+
+    const handleAccessibilityEnable = () => {
+      setAccessibilityDisabled(false);
+      setIsVisible(!device.isTouch);
+      trackCursorEvent('accessibility_enabled', undefined, { variant });
+    };
+
+    const handleReducedMotion = (e: CustomEvent) => {
+      setReducedMotion(e.detail.enabled);
+      trackCursorEvent('reduced_motion_changed', undefined, {
+        variant,
+        enabled: e.detail.enabled
+      });
+    };
+
+    const handleVariantSwitch = (e: CustomEvent) => {
+      trackCursorEvent('accessibility_variant_switch', undefined, {
+        variant,
+        new_variant: e.detail.variant,
+        accessibility_mode: accessibilityDisabled
+      });
+    };
+
+    // Add event listeners
+    window.addEventListener('accessibility-disable-cursor', handleAccessibilityDisable);
+    window.addEventListener('accessibility-enable-cursor', handleAccessibilityEnable);
+    window.addEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
+    window.addEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('accessibility-disable-cursor', handleAccessibilityDisable);
+      window.removeEventListener('accessibility-enable-cursor', handleAccessibilityEnable);
+      window.removeEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
+      window.removeEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
+    };
+
+  }, [variant, config, trackCursorEvent, accessibilityDisabled]);
 
   // Handle visibility changes
   useEffect(() => {
@@ -169,9 +225,19 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
     );
   }
 
-  // Don't render cursor on touch devices
-  if (isTouchDevice) {
-    return <>{children}</>;
+  // Don't render cursor on touch devices or when accessibility disabled
+  if (isTouchDevice || accessibilityDisabled) {
+    return (
+      <>
+        {/* Hidden accessibility announcement for screen readers */}
+        <div
+          className="screen-reader-only"
+          aria-live="polite"
+          aria-label={`Cursor system disabled. Current A/B test variant: ${variant}. Touch device: ${isTouchDevice}. Accessibility mode: ${accessibilityDisabled}`}
+        />
+        {children}
+      </>
+    );
   }
 
   // Show loading state while GSAP loads
@@ -179,6 +245,11 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
     return (
       <>
         <EnhancedCustomCursor isVisible={isVisible} />
+        <div
+          className="screen-reader-only"
+          aria-live="polite"
+          aria-label={`Loading cursor variant: ${variant}`}
+        />
         {children}
       </>
     );
@@ -187,34 +258,46 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
   // Render appropriate cursor variant with Suspense
   const renderCursorVariant = () => {
     const CursorFallback = () => (
-      <EnhancedCustomCursor isVisible={isVisible} />
+      <div aria-hidden="true">
+        <EnhancedCustomCursor isVisible={isVisible} />
+      </div>
     );
 
     switch (variant) {
       case 'enhanced':
         return (
           <Suspense fallback={<CursorFallback />}>
-            <EnhancedCursor isVisible={isVisible} />
+            <div aria-hidden="true">
+              <EnhancedCursor isVisible={isVisible} />
+            </div>
           </Suspense>
         );
 
       case 'minimal':
         return (
           <Suspense fallback={<CursorFallback />}>
-            <MinimalCursor isVisible={isVisible} />
+            <div aria-hidden="true">
+              <MinimalCursor isVisible={isVisible} />
+            </div>
           </Suspense>
         );
 
       case 'gaming':
         return (
           <Suspense fallback={<CursorFallback />}>
-            <GamingCursor isVisible={isVisible} />
+            <div aria-hidden="true">
+              <GamingCursor isVisible={isVisible} />
+            </div>
           </Suspense>
         );
 
       case 'control':
       default:
-        return <EnhancedCustomCursor isVisible={isVisible} />;
+        return (
+          <div aria-hidden="true">
+            <EnhancedCustomCursor isVisible={isVisible} />
+          </div>
+        );
     }
   };
 

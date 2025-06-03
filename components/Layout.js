@@ -1,6 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+
+// Accessibility components
+const AccessibilityManager = dynamic(
+  () => import('../src/lib/accessibility-manager').then(mod => ({
+    default: () => {
+      mod.initializeAccessibility();
+      return null;
+    }
+  })),
+  { ssr: false }
+);
+
+const SkipNavigation = dynamic(
+  () => import('./Accessibility/SkipNavigation'),
+  { ssr: false }
+);
+
+const AccessibilityMenu = dynamic(
+  () => import('./Accessibility/AccessibilityMenu'),
+  { ssr: false }
+);
 
 // Dynamic import for client-side only cursor
 const EnhancedCustomCursor = dynamic(
@@ -12,23 +33,57 @@ const EnhancedCustomCursor = dynamic(
  * Simple Layout Component with CustomCursor
  * Enhanced version of your original layout with error boundaries and performance optimizations
  */
-export default function Layout({ 
-  children, 
+export default function Layout({
+  children,
   showCursor = true,
   cursorTheme = 'default',
-  className = ''
+  className = '',
+  pageTitle = '',
+  skipToContent = true,
+  showAccessibilityMenu = true
 }) {
   return (
     <div className={`layout-container ${className}`}>
-      {/* Enhanced Custom Cursor with Error Boundary */}
+      {/* Initialize Accessibility Manager */}
+      <AccessibilityManager />
+
+      {/* Skip Navigation Links */}
+      {skipToContent && <SkipNavigation />}
+
+      {/* Accessibility Menu */}
+      {showAccessibilityMenu && <AccessibilityMenu />}
+
+      {/* ARIA Live Regions for Screen Reader Announcements */}
+      <div
+        id="aria-live-region"
+        aria-live="polite"
+        aria-atomic="true"
+        className="screen-reader-only"
+      />
+      <div
+        id="aria-live-region-assertive"
+        aria-live="assertive"
+        aria-atomic="true"
+        className="screen-reader-only"
+      />
+
+      {/* Enhanced Custom Cursor with Error Boundary and Accessibility */}
       {showCursor && (
         <ErrorBoundary fallback={null}>
-          <EnhancedCustomCursor theme={cursorTheme} />
+          <div aria-hidden="true">
+            <EnhancedCustomCursor theme={cursorTheme} />
+          </div>
         </ErrorBoundary>
       )}
-      
-      {/* Main Content */}
-      <main className="layout-main">
+
+      {/* Main Content with Proper Semantic Structure */}
+      <main
+        id="main-content"
+        className="layout-main"
+        role="main"
+        aria-label={pageTitle ? `Main content: ${pageTitle}` : 'Main content'}
+        tabIndex="-1"
+      >
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
@@ -60,9 +115,42 @@ export default function Layout({
           perspective: 1000px;
         }
 
-        /* Accessibility */
+        /* Accessibility Styles */
+        .screen-reader-only {
+          position: absolute !important;
+          width: 1px !important;
+          height: 1px !important;
+          padding: 0 !important;
+          margin: -1px !important;
+          overflow: hidden !important;
+          clip: rect(0, 0, 0, 0) !important;
+          white-space: nowrap !important;
+          border: 0 !important;
+        }
+
         .layout-main:focus {
-          outline: none;
+          outline: 3px solid #00d4ff;
+          outline-offset: 2px;
+        }
+
+        /* Keyboard Navigation Focus Indicators */
+        .keyboard-user *:focus {
+          outline: 3px solid #00d4ff !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 0 1px #121212, 0 0 8px rgba(0, 212, 255, 0.5) !important;
+        }
+
+        /* High Contrast Mode Support */
+        .high-contrast .layout-container {
+          background: #000000 !important;
+          color: #ffffff !important;
+        }
+
+        .high-contrast *:focus {
+          outline: 4px solid #ffffff !important;
+          outline-offset: 3px !important;
+          background-color: #000000 !important;
+          color: #ffffff !important;
         }
 
         /* Mobile optimizations */
@@ -86,6 +174,24 @@ export default function Layout({
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
           }
+        }
+
+        .reduce-motion * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        /* Screen Reader Mode */
+        .screen-reader-mode .layout-container {
+          font-size: 18px;
+          line-height: 1.6;
+        }
+
+        .screen-reader-mode *:focus {
+          outline: 4px solid #00d4ff !important;
+          outline-offset: 4px !important;
         }
       `}</style>
     </div>

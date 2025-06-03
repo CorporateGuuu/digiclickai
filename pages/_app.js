@@ -6,6 +6,7 @@ import Layout from '../components/Layout';
 import ABTestCursorManager from '../src/components/cursor/ABTestCursorManager';
 import { initializeSentry } from '../src/lib/sentry-config';
 import { initializeCoreWebVitalsMonitoring } from '../src/lib/core-web-vitals-monitor';
+import { initializeAccessibility } from '../src/lib/accessibility-manager';
 
 // Load GSAP globally for enhanced cursor system
 if (typeof window !== 'undefined') {
@@ -58,7 +59,10 @@ function AppContent({ Component, pageProps }) {
       // Initialize Core Web Vitals monitoring
       initializeCoreWebVitalsMonitoring();
 
-      console.log('✅ DigiClick AI monitoring systems initialized');
+      // Initialize Accessibility Manager
+      initializeAccessibility();
+
+      console.log('✅ DigiClick AI monitoring and accessibility systems initialized');
     }
   }, []);
 
