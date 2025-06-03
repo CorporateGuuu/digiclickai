@@ -45,6 +45,7 @@ class ProductionReadinessValidator {
       await this.validateNavigationEnhancements();
       await this.validateBackendIntegration();
       await this.validateCachingOptimization();
+      await this.validateTestingInfrastructure();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -1299,6 +1300,176 @@ class ProductionReadinessValidator {
                                content.includes('warmCache');
 
     return { passed: hasRequiredFeatures };
+  }
+
+  async validateTestingInfrastructure() {
+    console.log('🧪 Validating Testing & Quality Assurance Infrastructure...');
+
+    try {
+      // Check E2E testing framework
+      console.log('  Checking E2E testing framework...');
+      const e2eFramework = this.checkE2EFramework();
+      if (e2eFramework.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ E2E testing framework implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ E2E testing framework missing');
+      }
+
+      // Check accessibility testing
+      console.log('  Checking accessibility testing suite...');
+      const accessibilityTesting = this.checkAccessibilityTesting();
+      if (accessibilityTesting.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Accessibility testing suite implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Accessibility testing suite missing');
+      }
+
+      // Check performance testing
+      console.log('  Checking performance testing suite...');
+      const performanceTesting = this.checkPerformanceTesting();
+      if (performanceTesting.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Performance testing suite implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Performance testing suite missing');
+      }
+
+      // Check visual regression testing
+      console.log('  Checking visual regression testing...');
+      const visualTesting = this.checkVisualTesting();
+      if (visualTesting.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Visual regression testing implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Visual regression testing missing');
+      }
+
+      // Check critical journey tests
+      console.log('  Checking critical journey tests...');
+      const criticalJourneyTests = this.checkCriticalJourneyTests();
+      if (criticalJourneyTests.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Critical journey tests implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Critical journey tests missing');
+      }
+
+      console.log('✅ Testing infrastructure validation completed\n');
+    } catch (error) {
+      this.results.cursor_system.failed++;
+      this.results.cursor_system.details.push(`❌ Testing infrastructure validation failed: ${error.message}`);
+      console.log('❌ Testing infrastructure validation failed\n');
+    }
+  }
+
+  checkE2EFramework() {
+    const configPath = path.join(process.cwd(), 'tests/e2e/playwright.config.js');
+    const setupPath = path.join(process.cwd(), 'tests/e2e/global-setup.js');
+    const teardownPath = path.join(process.cwd(), 'tests/e2e/global-teardown.js');
+
+    if (!fs.existsSync(configPath) || !fs.existsSync(setupPath) || !fs.existsSync(teardownPath)) {
+      return { passed: false, reason: 'E2E framework files missing' };
+    }
+
+    const configContent = fs.readFileSync(configPath, 'utf8');
+    const hasRequiredFeatures = configContent.includes('playwright') &&
+                               configContent.includes('projects') &&
+                               configContent.includes('accessibility') &&
+                               configContent.includes('performance') &&
+                               configContent.includes('visual') &&
+                               configContent.includes('Mobile Chrome') &&
+                               configContent.includes('Mobile Safari');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkAccessibilityTesting() {
+    const testPath = path.join(process.cwd(), 'tests/e2e/specs/accessibility/wcag-compliance.spec.js');
+
+    if (!fs.existsSync(testPath)) {
+      return { passed: false, reason: 'Accessibility tests missing' };
+    }
+
+    const content = fs.readFileSync(testPath, 'utf8');
+    const hasRequiredFeatures = content.includes('WCAG 2.1 AA') &&
+                               content.includes('AxeBuilder') &&
+                               content.includes('keyboard navigation') &&
+                               content.includes('screen reader') &&
+                               content.includes('color contrast') &&
+                               content.includes('reduced motion') &&
+                               content.includes('focus indicators');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkPerformanceTesting() {
+    const testPath = path.join(process.cwd(), 'tests/e2e/specs/performance/core-web-vitals.spec.js');
+
+    if (!fs.existsSync(testPath)) {
+      return { passed: false, reason: 'Performance tests missing' };
+    }
+
+    const content = fs.readFileSync(testPath, 'utf8');
+    const hasRequiredFeatures = content.includes('Core Web Vitals') &&
+                               content.includes('LCP') &&
+                               content.includes('FID') &&
+                               content.includes('CLS') &&
+                               content.includes('60fps') &&
+                               content.includes('frame rate') &&
+                               content.includes('memory usage');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkVisualTesting() {
+    const testPath = path.join(process.cwd(), 'tests/e2e/specs/visual/ui-components.spec.js');
+
+    if (!fs.existsSync(testPath)) {
+      return { passed: false, reason: 'Visual regression tests missing' };
+    }
+
+    const content = fs.readFileSync(testPath, 'utf8');
+    const hasRequiredFeatures = content.includes('Visual Regression') &&
+                               content.includes('toHaveScreenshot') &&
+                               content.includes('viewports') &&
+                               content.includes('mobile') &&
+                               content.includes('tablet') &&
+                               content.includes('desktop') &&
+                               content.includes('cursor customization') &&
+                               content.includes('visual effects');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkCriticalJourneyTests() {
+    const contactFormPath = path.join(process.cwd(), 'tests/e2e/specs/critical-journeys/contact-form.spec.js');
+    const fileUploadPath = path.join(process.cwd(), 'tests/e2e/specs/critical-journeys/file-upload.spec.js');
+
+    if (!fs.existsSync(contactFormPath) || !fs.existsSync(fileUploadPath)) {
+      return { passed: false, reason: 'Critical journey tests missing' };
+    }
+
+    const contactContent = fs.readFileSync(contactFormPath, 'utf8');
+    const uploadContent = fs.readFileSync(fileUploadPath, 'utf8');
+
+    const hasContactFeatures = contactContent.includes('real-time validation') &&
+                              contactContent.includes('auto-save') &&
+                              contactContent.includes('keyboard navigation') &&
+                              contactContent.includes('offline scenarios');
+
+    const hasUploadFeatures = uploadContent.includes('drag and drop') &&
+                             uploadContent.includes('file validation') &&
+                             uploadContent.includes('upload progress') &&
+                             uploadContent.includes('multiple files');
+
+    return { passed: hasContactFeatures && hasUploadFeatures };
   }
 
   generateReport() {
