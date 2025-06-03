@@ -68,7 +68,9 @@
     "accessibility:audit": "node scripts/accessibility-audit.js",
     "accessibility:test": "npm run test -- tests/accessibility/",
     "accessibility:full": "npm run accessibility:audit && npm run accessibility:test",
-    "test:a11y": "npm run accessibility:full"
+    "test:a11y": "npm run accessibility:full",
+    "production:validate": "node scripts/production-readiness-validation.js",
+    "production:ready": "npm run production:validate"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
