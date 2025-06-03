@@ -22,35 +22,64 @@ const performanceMetrics = {
 };
 
 /**
- * Detect device type and touch capability
+ * Enhanced device detection with comprehensive touch capability detection
  */
 export function detectDevice() {
   if (typeof window === 'undefined') {
     return { type: 'server', isTouch: false };
   }
-  
+
   if (deviceType !== null && isTouch !== null) {
     return { type: deviceType, isTouch };
   }
-  
-  // Touch detection
-  isTouch = 'ontouchstart' in window || 
-           navigator.maxTouchPoints > 0 || 
-           navigator.msMaxTouchPoints > 0;
-  
-  // Device type detection
+
+  // Comprehensive touch detection with multiple methods
+  const touchMethods = [
+    'ontouchstart' in window,
+    navigator.maxTouchPoints > 0,
+    navigator.msMaxTouchPoints > 0,
+    window.matchMedia('(pointer: coarse)').matches,
+    window.matchMedia('(hover: none)').matches
+  ];
+
+  isTouch = touchMethods.some(method => method);
+
+  // Enhanced device type detection
   const userAgent = navigator.userAgent.toLowerCase();
-  const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-  const isTablet = /ipad|android(?!.*mobile)/i.test(userAgent);
-  
-  if (isMobile && !isTablet) {
+  const mobileKeywords = [
+    'android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry',
+    'iemobile', 'opera mini', 'mobile', 'tablet', 'touch'
+  ];
+
+  const isMobileUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
+  const isTabletUA = /ipad|android(?!.*mobile)|tablet/i.test(userAgent);
+
+  // Check screen size and orientation for additional mobile detection
+  const isSmallScreen = window.innerWidth <= 768 || window.innerHeight <= 768;
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const isMobileViewport = isSmallScreen && isPortrait;
+
+  // Check for mobile-specific APIs
+  const hasMobileAPIs = (
+    'orientation' in window ||
+    'DeviceOrientationEvent' in window ||
+    'DeviceMotionEvent' in window
+  );
+
+  // Determine device type with enhanced logic
+  if ((isMobileUA && !isTabletUA) || (isTouch && isMobileViewport) || hasMobileAPIs) {
     deviceType = 'mobile';
-  } else if (isTablet) {
+  } else if (isTabletUA || (isTouch && !isMobileViewport)) {
     deviceType = 'tablet';
   } else {
     deviceType = 'desktop';
   }
-  
+
+  // Force touch detection for mobile/tablet devices
+  if (deviceType === 'mobile' || deviceType === 'tablet') {
+    isTouch = true;
+  }
+
   return { type: deviceType, isTouch };
 }
 

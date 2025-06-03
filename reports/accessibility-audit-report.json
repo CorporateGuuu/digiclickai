@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-06-03T00:16:10.388Z",
+  "wcag_level": "2.1 AA",
+  "overall_score": 0,
+  "compliance_status": "NON_COMPLIANT",
+  "total_violations": 0,
+  "total_passes": 0,
+  "test_results": {
+    "automated_testing": {
+      "violations": 0,
+      "passes": 0
+    },
+    "cursor_accessibility": {
+      "aria_hidden": true,
+      "screen_reader_compatible": true,
+      "keyboard_equivalent": true,
+      "reduced_motion_support": true,
+      "touch_device_disabled": true,
+      "control_accessible": true,
+      "enhanced_accessible": true,
+      "minimal_accessible": true,
+      "gaming_accessible": true
+    },
+    "keyboard_navigation": {
+      "tab_order_logical": true,
+      "focus_indicators_visible": true,
+      "skip_links_functional": true,
+      "keyboard_shortcuts_working": true,
+      "escape_key_functional": true
+    },
+    "color_contrast": {
+      "normal_text_ratio": 18.733663902900595,
+      "large_text_ratio": 10.581302720012102,
+      "ui_components_ratio": 0,
+      "focus_indicators_ratio": 0,
+      "wcag_aa_compliant": false
+    },
+    "aria_compliance": {
+      "labels_present": true,
+      "live_regions_functional": true,
+      "roles_appropriate": true,
+      "states_properties_valid": true,
+      "landmarks_present": true
+    },
+    "screen_reader_compatibility": {
+      "nvda_compatible": true,
+      "jaws_compatible": true,
+      "voiceover_compatible": true,
+      "cursor_system_hidden": true,
+      "announcements_working": true
+    }
+  },
+  "violations": [],
+  "recommendations": [
+    "Address all critical and serious accessibility violations",
+    "Improve color contrast ratios to meet WCAG AA standards"
+  ],
+  "next_steps": [
+    "Fix all critical and serious accessibility violations",
+    "Test with real screen reader users",
+    "Implement automated accessibility testing in CI/CD pipeline",
+    "Regular accessibility audits and monitoring",
+    "User testing with people with disabilities"
+  ]
+}

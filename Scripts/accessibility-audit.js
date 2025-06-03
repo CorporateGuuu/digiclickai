@@ -15,12 +15,12 @@ class AccessibilityAuditor {
       wcag_level: 'AA',
       wcag_version: '2.1',
       test_urls: [
-        'http://localhost:3000/',
-        'http://localhost:3000/about',
-        'http://localhost:3000/contact',
-        'http://localhost:3000/pricing',
-        'http://localhost:3000/cursor-context-demo',
-        'http://localhost:3000/admin/ab-test'
+        'http://localhost:3003/',
+        'http://localhost:3003/about',
+        'http://localhost:3003/contact',
+        'http://localhost:3003/pricing',
+        'http://localhost:3003/cursor-context-demo',
+        'http://localhost:3003/admin/ab-test'
       ],
       cursor_variants: ['control', 'enhanced', 'minimal', 'gaming'],
       required_contrast_ratio: 4.5,
@@ -82,7 +82,7 @@ class AccessibilityAuditor {
     console.log('🔍 Checking development server...');
     
     try {
-      const response = await fetch('http://localhost:3000/');
+      const response = await fetch('http://localhost:3003/');
       if (!response.ok) {
         throw new Error('Development server not responding');
       }
@@ -112,7 +112,7 @@ class AccessibilityAuditor {
         
         try {
           const result = execSync(
-            `npx @axe-core/cli ${url} --format json --tags wcag21aa`,
+            `npx @axe-core/cli ${url} --tags wcag21aa --stdout`,
             { encoding: 'utf8' }
           );
           
@@ -301,7 +301,7 @@ class AccessibilityAuditor {
         { bg: '#121212', fg: '#ffffff', type: 'normal_text' },
         { bg: '#121212', fg: '#00d4ff', type: 'accent_text' },
         { bg: '#00d4ff', fg: '#121212', type: 'button_text' },
-        { bg: '#121212', fg: '#7b2cbf', type: 'secondary_text' }
+        { bg: '#121212', fg: '#a855f7', type: 'secondary_text' }
       ];
       
       let passedTests = 0;

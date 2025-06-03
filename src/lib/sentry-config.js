@@ -62,44 +62,7 @@ export const sentryConfig = {
   
   // Integration configuration
   integrations: [
-    new Sentry.BrowserTracing({
-      // Cursor system performance monitoring
-      tracingOrigins: [
-        'localhost',
-        /^https:\/\/digiclickai\.netlify\.app/,
-        /^https:\/\/digiclick-ai-backend\.onrender\.com/
-      ],
-      
-      // Custom routing for Next.js
-      routingInstrumentation: Sentry.nextRouterInstrumentation,
-      
-      // Performance monitoring for cursor interactions
-      beforeNavigate: context => {
-        return {
-          ...context,
-          tags: {
-            ...context.tags,
-            cursor_variant: getCursorVariant(),
-            ab_test_id: getABTestId()
-          }
-        };
-      }
-    }),
-    
-    new Sentry.Replay({
-      // Mask sensitive data
-      maskAllText: false,
-      maskAllInputs: true,
-      blockAllMedia: false,
-      
-      // Session replay configuration
-      sessionSampleRate: ENVIRONMENT === 'production' ? 0.01 : 0.1,
-      errorSampleRate: 1.0,
-      
-      // Privacy settings
-      maskTextSelector: '[data-sensitive]',
-      blockSelector: '[data-private]'
-    })
+    // Basic Sentry integrations only for compatibility
   ]
 };
 
@@ -415,15 +378,14 @@ export function setCursorContext(variant, performance) {
   });
 }
 
-// Release management
+// Release management (deprecated in newer Sentry versions)
+// Use Sentry CLI or GitHub Actions for release management
 export function createRelease(version, environment) {
-  return Sentry.createRelease({
-    version,
-    environment,
-    projects: ['digiclick-ai-frontend']
-  });
+  console.warn('Release management should be handled via Sentry CLI or CI/CD pipeline');
+  return Promise.resolve();
 }
 
 export function finalizeRelease(version) {
-  return Sentry.finalizeRelease(version);
+  console.warn('Release management should be handled via Sentry CLI or CI/CD pipeline');
+  return Promise.resolve();
 }

@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, Suspense, lazy } from 'react';
+import React, { useEffect, useState, Suspense, lazy, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { useCursorABTest } from '../../contexts/ABTestContext';
 import { detectDevice, preloadGSAPIfNeeded, loadGSAPForVariant } from '../../lib/gsap-loader';
 import { capturePerformanceIssue } from '../../lib/sentry-config';
 import { getAccessibilityManager } from '../../lib/accessibility-manager';
-import EnhancedCustomCursor from './EnhancedCustomCursor'; // Fallback cursor
+import { getZIndexManager } from '../../lib/z-index-manager';
+import EnhancedCustomCursor from '../../../components/CustomCursor/EnhancedCustomCursor'; // Fallback cursor
 
 // Dynamic imports for cursor variants with chunk splitting
 const EnhancedCursor = lazy(() =>
@@ -25,6 +27,7 @@ interface ABTestCursorManagerProps {
 }
 
 const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) => {
+  const router = useRouter();
   const { variant, config, trackCursorEvent, isVariant } = useCursorABTest();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -32,6 +35,11 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
   const [loadError, setLoadError] = useState(false);
   const [accessibilityDisabled, setAccessibilityDisabled] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Refs for cleanup
+  const gsapCleanupRef = useRef<(() => void) | null>(null);
+  const performanceMonitorRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Use optimized device detection
@@ -45,6 +53,9 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
       setAccessibilityDisabled(status.cursorAccessibilityMode || status.screenReader);
       setReducedMotion(status.reducedMotion);
     }
+
+    // Initialize z-index manager for modal handling
+    const zIndexManager = getZIndexManager();
 
     // Set visibility based on device and accessibility
     setIsVisible(!device.isTouch && !accessibilityDisabled);
@@ -162,11 +173,33 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
       });
     };
 
+    const handleModalStateChange = (e: CustomEvent) => {
+      const { action, modalZIndex, cursorAdjustment } = e.detail;
+
+      if (cursorAdjustment) {
+        switch (cursorAdjustment.action) {
+          case 'hide':
+            setIsVisible(false);
+            trackCursorEvent('cursor_hidden_for_modal', undefined, { variant, modalZIndex });
+            break;
+          case 'adjust':
+            // Cursor stays visible but z-index is managed by z-index manager
+            trackCursorEvent('cursor_adjusted_for_modal', undefined, { variant, modalZIndex, newZIndex: cursorAdjustment.zIndex });
+            break;
+          case 'restore':
+            setIsVisible(!device.isTouch && !accessibilityDisabled);
+            trackCursorEvent('cursor_restored_after_modal', undefined, { variant });
+            break;
+        }
+      }
+    };
+
     // Add event listeners
     window.addEventListener('accessibility-disable-cursor', handleAccessibilityDisable);
     window.addEventListener('accessibility-enable-cursor', handleAccessibilityEnable);
     window.addEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
     window.addEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
+    window.addEventListener('modal-state-changed', handleModalStateChange as EventListener);
 
     // Cleanup function
     return () => {
@@ -174,9 +207,77 @@ const ABTestCursorManager: React.FC<ABTestCursorManagerProps> = ({ children }) =
       window.removeEventListener('accessibility-enable-cursor', handleAccessibilityEnable);
       window.removeEventListener('accessibility-reduce-motion', handleReducedMotion as EventListener);
       window.removeEventListener('accessibility-switch-cursor-variant', handleVariantSwitch as EventListener);
+      window.removeEventListener('modal-state-changed', handleModalStateChange as EventListener);
     };
 
   }, [variant, config, trackCursorEvent, accessibilityDisabled]);
+
+  // Handle Next.js page transitions
+  useEffect(() => {
+    const handleRouteChangeStart = (url: string) => {
+      setIsTransitioning(true);
+
+      // Clean up GSAP animations before transition
+      if (gsapCleanupRef.current) {
+        gsapCleanupRef.current();
+      }
+
+      // Temporarily hide cursor during transition
+      setIsVisible(false);
+
+      trackCursorEvent('page_transition_start', undefined, {
+        variant,
+        from: router.asPath,
+        to: url,
+        accessibility_mode: accessibilityDisabled
+      });
+    };
+
+    const handleRouteChangeComplete = (url: string) => {
+      setIsTransitioning(false);
+
+      // Restore cursor visibility after transition
+      setTimeout(() => {
+        setIsVisible(!isTouchDevice && !accessibilityDisabled);
+      }, 100);
+
+      // Reload GSAP for the new page if needed
+      if (!isTouchDevice && !accessibilityDisabled) {
+        loadGSAPForVariant(variant).catch((error) => {
+          console.error('Failed to reload GSAP after page transition:', error);
+        });
+      }
+
+      trackCursorEvent('page_transition_complete', undefined, {
+        variant,
+        to: url,
+        accessibility_mode: accessibilityDisabled
+      });
+    };
+
+    const handleRouteChangeError = (err: Error, url: string) => {
+      setIsTransitioning(false);
+      setIsVisible(!isTouchDevice && !accessibilityDisabled);
+
+      trackCursorEvent('page_transition_error', undefined, {
+        variant,
+        to: url,
+        error: err.message,
+        accessibility_mode: accessibilityDisabled
+      });
+    };
+
+    // Add router event listeners
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+    router.events.on('routeChangeError', handleRouteChangeError);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+      router.events.off('routeChangeError', handleRouteChangeError);
+    };
+  }, [router, variant, isTouchDevice, accessibilityDisabled, trackCursorEvent]);
 
   // Handle visibility changes
   useEffect(() => {
