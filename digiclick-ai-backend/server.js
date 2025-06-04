@@ -15,7 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'digiclick-ai-super-secret-key-2024
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://digiclickai.netlify.app', 'https://your-domain.com']
+    ? ['https://digiclickai.com', 'https://digiclickai.netlify.app']
     : ['http://localhost:3000', 'http://localhost:3002', 'http://localhost:3003'],
   credentials: true
 }));

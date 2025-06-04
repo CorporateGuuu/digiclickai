@@ -12,7 +12,7 @@ const https = require('https');
 
 class DeploymentVerification {
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.netlify.app';
+    this.baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.com';
     this.backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://digiclick-ai-backend.onrender.com';
     this.results = {
       timestamp: new Date().toISOString(),

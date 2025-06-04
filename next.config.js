@@ -113,7 +113,7 @@ const nextConfig = {
   distDir: 'out',
 
   images: {
-    domains: ['localhost', 'mdtstech.store', 'images.unsplash.com', '*'],
+    domains: ['localhost', 'digiclickai.com', 'images.unsplash.com', '*'],
     formats: ['image/avif', 'image/webp'],
     unoptimized: true, // Required for static export
   },

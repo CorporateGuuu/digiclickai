@@ -2,12 +2,12 @@
   "ci": {
     "collect": {
       "url": [
-        "https://digiclickai.netlify.app/",
-        "https://digiclickai.netlify.app/cursor-context-demo",
-        "https://digiclickai.netlify.app/portfolio",
-        "https://digiclickai.netlify.app/about",
-        "https://digiclickai.netlify.app/contact",
-        "https://digiclickai.netlify.app/pricing"
+        "https://digiclickai.com/",
+        "https://digiclickai.com/cursor-context-demo",
+        "https://digiclickai.com/portfolio",
+        "https://digiclickai.com/about",
+        "https://digiclickai.com/contact",
+        "https://digiclickai.com/pricing"
       ],
       "numberOfRuns": 3,
       "settings": {

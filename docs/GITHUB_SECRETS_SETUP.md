@@ -80,7 +80,7 @@ Description: Backend API endpoint for DigiClick AI services
 #### 4. NEXT_PUBLIC_APP_URL
 ```
 Name: NEXT_PUBLIC_APP_URL
-Value: https://digiclickai.netlify.app
+Value: https://digiclickai.com
 Description: Frontend application URL for DigiClick AI
 ```
 

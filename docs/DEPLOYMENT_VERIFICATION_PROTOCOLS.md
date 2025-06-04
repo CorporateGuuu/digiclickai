@@ -294,7 +294,7 @@ node scripts/post-rollback-verification.js
 ### **Required Environment Variables**
 ```bash
 # Deployment URLs
-NEXT_PUBLIC_APP_URL=https://digiclickai.netlify.app
+NEXT_PUBLIC_APP_URL=https://digiclickai.com
 NEXT_PUBLIC_API_URL=https://digiclick-ai-backend.onrender.com
 
 # Monitoring Configuration

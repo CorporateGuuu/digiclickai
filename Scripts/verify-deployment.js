@@ -8,7 +8,7 @@ const http = require('http');
 
 class DeploymentVerifier {
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.DEPLOY_URL || 'https://digiclickai.netlify.app';
+    this.baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.DEPLOY_URL || 'https://digiclickai.com';
     this.results = {
       accessibility: [],
       performance: [],

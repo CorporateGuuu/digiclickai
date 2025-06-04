@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Base URL of the website
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL || 'https://digiclickai.netlify.app';
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL || 'https://digiclickai.com';
 
 // Generate sitemap for DigiClick AI
 function generateSitemap() {

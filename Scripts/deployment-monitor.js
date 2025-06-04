@@ -9,7 +9,7 @@ const { execSync } = require('child_process');
 class DeploymentMonitor {
   constructor() {
     this.config = {
-      productionUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.netlify.app',
+      productionUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.com',
       stagingUrl: process.env.STAGING_URL || 'https://staging--digiclickai.netlify.app',
       healthCheckInterval: 30000, // 30 seconds
       maxFailures: 3,

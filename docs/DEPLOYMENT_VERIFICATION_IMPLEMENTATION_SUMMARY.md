@@ -172,7 +172,7 @@ Successfully implemented comprehensive deployment verification and monitoring pr
 ### **Required GitHub Secrets**
 ```bash
 # Deployment Configuration
-NEXT_PUBLIC_APP_URL=https://digiclickai.netlify.app
+NEXT_PUBLIC_APP_URL=https://digiclickai.com
 NEXT_PUBLIC_API_URL=https://digiclick-ai-backend.onrender.com
 
 # Notification Configuration

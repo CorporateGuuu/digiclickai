@@ -8,7 +8,7 @@ export default function DigiClickSEO({
   image = '/images/digiclick-ai-og.jpg',
   keywords = 'AI automation, artificial intelligence, machine learning, custom AI development, intelligent automation, business automation, AI solutions'
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.netlify.app';
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://digiclickai.com';
   const fullUrl = `${siteUrl}${pathname}`;
   const fullTitle = title.includes('DigiClick AI') ? title : `${title} | DigiClick AI`;
 
