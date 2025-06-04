@@ -40,6 +40,152 @@
   transition: all 0.3s ease;
 }
 
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLink {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navLink:hover {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* Mobile Menu Button */
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: #00d4ff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mobileMenuButton:hover {
+  color: #7b2cbf;
+  transform: scale(1.1);
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100vh;
+  background: rgba(18, 18, 18, 0.98);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(0, 212, 255, 0.2);
+  transition: right 0.3s ease;
+  z-index: 1001;
+  overflow-y: auto;
+  padding: 2rem 0;
+}
+
+.mobileMenu.open {
+  right: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #00d4ff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #7b2cbf;
+  transform: rotate(90deg);
+}
+
+.mobileNavLinks {
+  list-style: none;
+  padding: 0;
+  margin: 3rem 0 0 0;
+}
+
+.mobileNavLinks li {
+  margin: 0;
+}
+
+.mobileNavLinks a {
+  display: block;
+  color: #e0e0e0;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.mobileNavLinks a:hover {
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  border-left-color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.mobileNavDivider {
+  color: #7b2cbf;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1.5rem 2rem 0.5rem;
+  border-top: 1px solid rgba(0, 212, 255, 0.1);
+  margin-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}
+
 .logoText {
   color: #00d4ff;
   text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);

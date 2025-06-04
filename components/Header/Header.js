@@ -32,19 +32,38 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      {/* Placeholder for new header design */}
-      <div className={styles.headerPlaceholder}>
+      <div className={styles.container}>
         <div className={styles.logo}>
-          <Link href="/">MDTS</Link>
+          <Link href="/" style={{
+            color: '#00d4ff',
+            textDecoration: 'none',
+            fontFamily: "'Orbitron', monospace",
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <span style={{ color: '#00d4ff' }}>DigiClick</span>
+            <span style={{ color: '#7b2cbf' }}>AI</span>
+          </Link>
         </div>
 
-        {/* Mobile menu button - keeping this for mobile functionality */}
+        <nav className={styles.nav}>
+          <Link href="/" className={styles.navLink}>Home</Link>
+          <Link href="/about" className={styles.navLink}>About</Link>
+          <Link href="/portfolio" className={styles.navLink}>Portfolio</Link>
+          <Link href="/pricing" className={styles.navLink}>Pricing</Link>
+          <Link href="/contact" className={styles.navLink}>Contact</Link>
+        </nav>
+
+        {/* Mobile menu button */}
         <button
           className={styles.mobileMenuButton}
           onClick={toggleMobileMenu}
           aria-label="Menu"
         >
-          <i className="fas fa-bars">☰</i>
+          <span style={{ fontSize: '1.5rem', color: '#00d4ff' }}>☰</span>
         </button>
       </div>
 
@@ -60,25 +79,19 @@ const Header = () => {
 
         <ul className={styles.mobileNavLinks}>
           <li><Link href="/">Home</Link></li>
-          <li><Link href="/products">Products</Link></li>
-          <li><Link href="/categories">Categories</Link></li>
-          <li><Link href="/lcd-buyback">LCD Buyback</Link></li>
-          <li><Link href="/trade-off">Trade-Off</Link></li>
-          <li><Link href="/finance">Financing</Link></li>
-          <li><Link href="/gapp">Apple Parts Program</Link></li>
-          <li className={styles.mobileNavDivider}>Shop By Category</li>
-          <li><Link href="/categories/iphone-parts">iPhone Parts</Link></li>
-          <li><Link href="/categories/samsung-parts">Samsung Parts</Link></li>
-          <li><Link href="/categories/ipad-parts">iPad Parts</Link></li>
-          <li><Link href="/categories/macbook-parts">MacBook Parts</Link></li>
-          <li><Link href="/categories/repair-tools">Repair Tools</Link></li>
+          <li><Link href="/about">About</Link></li>
+          <li><Link href="/portfolio">Portfolio</Link></li>
+          <li><Link href="/pricing">Pricing</Link></li>
+          <li><Link href="/contact">Contact</Link></li>
+          <li className={styles.mobileNavDivider}>Services</li>
+          <li><Link href="/ai-automation">AI Automation</Link></li>
+          <li><Link href="/web-design">Web Design</Link></li>
+          <li><Link href="/analytics">Analytics Dashboard</Link></li>
+          <li><Link href="/cursor-demo">Cursor Demo</Link></li>
           <li className={styles.mobileNavDivider}>Account</li>
-          <li><Link href="/cart">Cart</Link></li>
           <li><Link href="/auth/signin">Sign In</Link></li>
           <li><Link href="/auth/register">Register</Link></li>
-          <li><Link href="/user/orders">My Orders</Link></li>
-          <li><Link href="/user/profile">My Profile</Link></li>
-          <li><Link href="/wishlist">Wishlist</Link></li>
+          <li><Link href="/dashboard">Dashboard</Link></li>
         </ul>
       </div>
     </header>
