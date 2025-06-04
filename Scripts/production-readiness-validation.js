@@ -51,6 +51,7 @@ class ProductionReadinessValidator {
       await this.validateDynamicContentGeneration();
       await this.validateAuthenticationDashboard();
       await this.validateInteractivePortfolioShowcase();
+      await this.validateAnalyticsDashboard();
       await this.validatePerformance();
       await this.validateBrowserCompatibility();
       await this.validateMobileCompatibility();
@@ -2321,6 +2322,176 @@ class ProductionReadinessValidator {
                                 content.includes('after');
 
     return { passed: hasCaseStudyFeatures };
+  }
+
+  async validateAnalyticsDashboard() {
+    console.log('📊 Validating Custom Analytics Dashboard & Performance Monitoring...');
+
+    try {
+      // Check analytics dashboard
+      console.log('  Checking analytics dashboard...');
+      const analyticsDashboard = this.checkAnalyticsDashboard();
+      if (analyticsDashboard.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Analytics dashboard implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Analytics dashboard missing');
+      }
+
+      // Check cursor interaction analytics
+      console.log('  Checking cursor interaction analytics...');
+      const cursorAnalytics = this.checkCursorInteractionAnalytics();
+      if (cursorAnalytics.passed) {
+        this.results.cursor_system.passed++;
+        this.results.cursor_system.details.push('✅ Cursor interaction analytics implemented');
+      } else {
+        this.results.cursor_system.failed++;
+        this.results.cursor_system.details.push('❌ Cursor interaction analytics missing');
+      }
+
+      // Check AI feature analytics
+      console.log('  Checking AI feature analytics...');
+      const aiAnalytics = this.checkAIFeatureAnalytics();
+      if (aiAnalytics.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ AI feature analytics implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ AI feature analytics missing');
+      }
+
+      // Check conversion funnel analytics
+      console.log('  Checking conversion funnel analytics...');
+      const conversionAnalytics = this.checkConversionFunnelAnalytics();
+      if (conversionAnalytics.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ Conversion funnel analytics implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ Conversion funnel analytics missing');
+      }
+
+      // Check KPI dashboard and monitoring
+      console.log('  Checking KPI dashboard and monitoring...');
+      const kpiDashboard = this.checkKPIDashboardMonitoring();
+      if (kpiDashboard.passed) {
+        this.results.accessibility.passed++;
+        this.results.accessibility.details.push('✅ KPI dashboard and monitoring implemented');
+      } else {
+        this.results.accessibility.failed++;
+        this.results.accessibility.details.push('❌ KPI dashboard and monitoring missing');
+      }
+
+      console.log('✅ Analytics dashboard validation completed\n');
+    } catch (error) {
+      this.results.cursor_system.failed++;
+      this.results.cursor_system.details.push(`❌ Analytics dashboard validation failed: ${error.message}`);
+      console.log('❌ Analytics dashboard validation failed\n');
+    }
+  }
+
+  checkAnalyticsDashboard() {
+    const dashboardPath = path.join(process.cwd(), 'src/lib/analytics-dashboard.js');
+
+    if (!fs.existsSync(dashboardPath)) {
+      return { passed: false, reason: 'Analytics dashboard missing' };
+    }
+
+    const content = fs.readFileSync(dashboardPath, 'utf8');
+    const hasRequiredFeatures = content.includes('AnalyticsDashboard') &&
+                               content.includes('trackingConfig') &&
+                               content.includes('kpiDefinitions') &&
+                               content.includes('conversionFunnelStages') &&
+                               content.includes('dashboardViews') &&
+                               content.includes('setupCursorTracking') &&
+                               content.includes('setupAIFeatureTracking') &&
+                               content.includes('setupConversionTracking') &&
+                               content.includes('generateDashboard') &&
+                               content.includes('GDPR');
+
+    return { passed: hasRequiredFeatures };
+  }
+
+  checkCursorInteractionAnalytics() {
+    const dashboardPath = path.join(process.cwd(), 'src/lib/analytics-dashboard.js');
+
+    if (!fs.existsSync(dashboardPath)) {
+      return { passed: false, reason: 'Cursor interaction analytics missing' };
+    }
+
+    const content = fs.readFileSync(dashboardPath, 'utf8');
+    const hasCursorFeatures = content.includes('cursorInteractions') &&
+                             content.includes('trackCursorInteraction') &&
+                             content.includes('trackHovers') &&
+                             content.includes('trackClicks') &&
+                             content.includes('trackMovement') &&
+                             content.includes('trackCustomStates') &&
+                             content.includes('sampleRate') &&
+                             content.includes('cursor_engagement') &&
+                             content.includes('heatmap');
+
+    return { passed: hasCursorFeatures };
+  }
+
+  checkAIFeatureAnalytics() {
+    const dashboardPath = path.join(process.cwd(), 'src/lib/analytics-dashboard.js');
+
+    if (!fs.existsSync(dashboardPath)) {
+      return { passed: false, reason: 'AI feature analytics missing' };
+    }
+
+    const content = fs.readFileSync(dashboardPath, 'utf8');
+    const hasAIFeatures = content.includes('aiFeatures') &&
+                         content.includes('trackAIFeature') &&
+                         content.includes('trackChatbotUsage') &&
+                         content.includes('trackContentGeneration') &&
+                         content.includes('trackPersonalization') &&
+                         content.includes('trackRecommendations') &&
+                         content.includes('ai_feature_adoption') &&
+                         content.includes('chatbot_satisfaction');
+
+    return { passed: hasAIFeatures };
+  }
+
+  checkConversionFunnelAnalytics() {
+    const dashboardPath = path.join(process.cwd(), 'src/lib/analytics-dashboard.js');
+
+    if (!fs.existsSync(dashboardPath)) {
+      return { passed: false, reason: 'Conversion funnel analytics missing' };
+    }
+
+    const content = fs.readFileSync(dashboardPath, 'utf8');
+    const hasConversionFeatures = content.includes('conversionFunnel') &&
+                                 content.includes('trackConversionStage') &&
+                                 content.includes('stages') &&
+                                 content.includes('trackDropoffs') &&
+                                 content.includes('trackTimeSpent') &&
+                                 content.includes('conversion_rate') &&
+                                 content.includes('funnel_analysis') &&
+                                 content.includes('dropoff_analysis');
+
+    return { passed: hasConversionFeatures };
+  }
+
+  checkKPIDashboardMonitoring() {
+    const dashboardPath = path.join(process.cwd(), 'src/lib/analytics-dashboard.js');
+
+    if (!fs.existsSync(dashboardPath)) {
+      return { passed: false, reason: 'KPI dashboard and monitoring missing' };
+    }
+
+    const content = fs.readFileSync(dashboardPath, 'utf8');
+    const hasKPIFeatures = content.includes('customKPIs') &&
+                          content.includes('realTimeUpdates') &&
+                          content.includes('alertThresholds') &&
+                          content.includes('historicalComparison') &&
+                          content.includes('generateKPISummary') &&
+                          content.includes('updateKPIMetric') &&
+                          content.includes('triggerKPIAlert') &&
+                          content.includes('realTimeMetrics');
+
+    return { passed: hasKPIFeatures };
   }
 
   generateReport() {
