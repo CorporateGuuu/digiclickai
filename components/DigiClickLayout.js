@@ -8,7 +8,7 @@ import Chatbot from './Chatbot/Chatbot';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import ParticlesBackground from './ParticlesBackground/ParticlesBackground';
 import DigiClickSEO from './DigiClickSEO';
-import DigiClickAnalytics from './DigiClickAnalytics';
+import DigiClickAnalyticsComponent, { DigiClickAnalytics } from './DigiClickAnalytics';
 import DigiClickLoading from './DigiClickLoading';
 import DigiClickGlobalStyles from './DigiClickGlobalStyles';
 import Header from './Header/Header';
@@ -32,7 +32,12 @@ export default function DigiClickLayout({
     document.body.classList.add('digiclick-theme');
     document.documentElement.setAttribute('data-theme', theme);
     setIsLoading(false);
-    DigiClickAnalytics.trackPageView(router.pathname, user?.id);
+
+    // Track page view if analytics is available
+    if (typeof window !== 'undefined' && window.DigiClickAnalytics) {
+      window.DigiClickAnalytics.trackPageView(router.pathname, user?.id);
+    }
+
     return () => {
       document.body.classList.remove('digiclick-theme');
     };
@@ -45,7 +50,7 @@ export default function DigiClickLayout({
   return (
     <>
       <DigiClickSEO title={title} description={description} pathname={router.pathname} />
-      <DigiClickAnalytics googleAnalyticsId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+      <DigiClickAnalyticsComponent googleAnalyticsId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
       <div className={`digiclick-layout ${className}`} data-theme={theme}>
         <Header />
         {showParticles && (

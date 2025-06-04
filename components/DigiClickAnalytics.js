@@ -190,8 +190,28 @@ export default function DigiClickAnalyticsComponent({ googleAnalyticsId }) {
         dangerouslySetInnerHTML={{
           __html: `
             // DigiClick AI Custom Analytics
-            window.DigiClickAnalytics = ${JSON.stringify(DigiClickAnalytics)};
-            
+            window.DigiClickAnalytics = {
+              trackPageView: function(pathname, userId) {
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'GA_MEASUREMENT_ID'}', {
+                    page_path: pathname,
+                    user_id: userId
+                  });
+                  window.gtag('event', 'page_view', {
+                    page_title: document.title,
+                    page_location: window.location.href,
+                    page_path: pathname,
+                    user_id: userId
+                  });
+                }
+              },
+              trackEvent: function(eventName, parameters) {
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('event', eventName, parameters || {});
+                }
+              }
+            };
+
             // Track initial page load
             if (typeof window !== 'undefined') {
               window.addEventListener('load', function() {
