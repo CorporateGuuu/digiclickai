@@ -16,9 +16,6 @@ export default function HomePage() {
         <meta name="description" content="Transform your business with DigiClick AI's cutting-edge automation solutions. Experience our enhanced cursor system, AI-powered websites, and intelligent business automation." />
         <meta name="keywords" content="DigiClick AI, AI automation, enhanced cursor system, AI web design, business automation, artificial intelligence" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
 
       <div style={{

@@ -84,7 +84,6 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@notionhq/client": "^2.3.0",
-
     "@stripe/stripe-js": "^7.2.0",
     "@testing-library/dom": "^10.4.0",
     "@types/node": "^20.10.0",
@@ -146,7 +145,9 @@
   },
   "devDependencies": {
     "@axe-core/cli": "^4.10.1",
+    "@axe-core/playwright": "^4.10.2",
     "@cloudflare/workers-types": "^4.20250430.0",
+    "@playwright/test": "^1.52.0",
     "@sentry/nextjs": "^7.118.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
