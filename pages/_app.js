@@ -1,6 +1,19 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import { AuthProvider } from '../contexts/AuthContext';
+
+// Dynamic import for client-side only cursor
+const EnhancedCustomCursor = dynamic(
+  () => import('../components/CustomCursor/EnhancedCustomCursor'),
+  { ssr: false }
+);
+
+// Dynamic import for analytics
+const DigiClickAnalyticsComponent = dynamic(
+  () => import('../components/DigiClickAnalytics'),
+  { ssr: false }
+);
 
 // Load GSAP globally for enhanced cursor system
 if (typeof window !== 'undefined') {
@@ -57,6 +70,12 @@ function AppContent({ Component, pageProps }) {
           <link rel="shortcut icon" href="/favicon.ico" />
           <style>{globalStyles}</style>
         </Head>
+
+        {/* Analytics */}
+        <DigiClickAnalyticsComponent googleAnalyticsId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+
+        {/* Enhanced Custom Cursor */}
+        <EnhancedCustomCursor theme="default" />
 
         <Component {...pageProps} />
       </div>

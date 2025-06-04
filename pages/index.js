@@ -1,5 +1,12 @@
 import React from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
+
+// Dynamic import for header
+const Header = dynamic(() => import('../components/Header/Header'), { ssr: false });
+
+// Dynamic import for particles background
+const ParticlesBackground = dynamic(() => import('../components/ParticlesBackground/ParticlesBackground'), { ssr: false });
 
 export default function HomePage() {
   return (
@@ -22,6 +29,12 @@ export default function HomePage() {
         overflow: 'hidden',
         position: 'relative'
       }}>
+        {/* Header Navigation */}
+        <Header />
+
+        {/* Particles Background */}
+        <ParticlesBackground />
+
         {/* Background Animation */}
         <div style={{
           position: 'absolute',
