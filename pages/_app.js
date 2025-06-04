@@ -58,11 +58,9 @@ function AppContent({ Component, pageProps }) {
 
       // Initialize Sentry RUM
       if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-        const Sentry = require('@sentry/react');
-        const { BrowserTracing } = require('@sentry/tracing');
+        const Sentry = require('@sentry/nextjs');
         Sentry.init({
           dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-          integrations: [new BrowserTracing()],
           tracesSampleRate: 1.0,
         });
       }
