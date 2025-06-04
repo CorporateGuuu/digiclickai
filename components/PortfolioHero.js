@@ -11,22 +11,22 @@ const PortfolioHero = () => {
       <div className={styles.eventsGrid}>
         <div className={styles.eventCard}>
           <img src="/images/vip-tables.jpg" alt="VIP Tables" className={styles.eventImage} />
-          <h3>VIP Tables</h3>
+          <h3 className={styles.eventTitle}>VIP Tables</h3>
           <button className={styles.reserveButton}>RESERVE NOW</button>
         </div>
         <div className={styles.eventCard}>
           <img src="/images/timeless-tuesdays.jpg" alt="Timeless Tuesdays" className={styles.eventImage} />
-          <h3>Tuesdays</h3>
+          <h3 className={styles.eventTitle}>Tuesdays</h3>
           <button className={styles.reserveButton}>RESERVE NOW</button>
         </div>
         <div className={styles.eventCard}>
           <img src="/images/industry-wednesdays.jpg" alt="Industry Wednesdays" className={styles.eventImage} />
-          <h3>Industry Wednesdays</h3>
+          <h3 className={styles.eventTitle}>Industry Wednesdays</h3>
           <button className={styles.reserveButton}>RESERVE NOW</button>
         </div>
         <div className={styles.eventCard}>
           <img src="/images/latin-thursdays.jpg" alt="Latin Thursdays" className={styles.eventImage} />
-          <h3>Latin Thursdays</h3>
+          <h3 className={styles.eventTitle}>Latin Thursdays</h3>
           <button className={styles.reserveButton}>RESERVE NOW</button>
         </div>
       </div>
