@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 // Dynamic import for header
@@ -107,7 +108,7 @@ export default function HomePage() {
               flexWrap: 'wrap',
               marginBottom: '3rem'
             }}>
-              <button style={{
+              <Link href="/contact" style={{
                 background: 'linear-gradient(45deg, #00d4ff, #7b2cbf)',
                 color: 'white',
                 border: 'none',
@@ -121,12 +122,15 @@ export default function HomePage() {
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
                 boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)',
-                minWidth: '200px'
+                minWidth: '200px',
+                textDecoration: 'none',
+                display: 'inline-block',
+                textAlign: 'center'
               }}>
                 Get Started
-              </button>
+              </Link>
 
-              <button style={{
+              <Link href="/about" style={{
                 background: 'transparent',
                 color: '#00d4ff',
                 border: '2px solid #00d4ff',
@@ -139,10 +143,13 @@ export default function HomePage() {
                 transition: 'all 0.3s ease',
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
-                minWidth: '200px'
+                minWidth: '200px',
+                textDecoration: 'none',
+                display: 'inline-block',
+                textAlign: 'center'
               }}>
                 Learn More
-              </button>
+              </Link>
             </div>
 
             {/* Features */}

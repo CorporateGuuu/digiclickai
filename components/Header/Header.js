@@ -52,6 +52,7 @@ const Header = () => {
         <nav className={styles.nav}>
           <Link href="/" className={styles.navLink}>Home</Link>
           <Link href="/about" className={styles.navLink}>About</Link>
+          <Link href="/services" className={styles.navLink}>Services</Link>
           <Link href="/portfolio" className={styles.navLink}>Portfolio</Link>
           <Link href="/pricing" className={styles.navLink}>Pricing</Link>
           <Link href="/contact" className={styles.navLink}>Contact</Link>
@@ -80,17 +81,13 @@ const Header = () => {
         <ul className={styles.mobileNavLinks}>
           <li><Link href="/">Home</Link></li>
           <li><Link href="/about">About</Link></li>
+          <li><Link href="/services">Services</Link></li>
           <li><Link href="/portfolio">Portfolio</Link></li>
           <li><Link href="/pricing">Pricing</Link></li>
           <li><Link href="/contact">Contact</Link></li>
-          <li className={styles.mobileNavDivider}>Services</li>
-          <li><Link href="/ai-automation">AI Automation</Link></li>
-          <li><Link href="/web-design">Web Design</Link></li>
-          <li><Link href="/analytics">Analytics Dashboard</Link></li>
+          <li className={styles.mobileNavDivider}>Demos</li>
           <li><Link href="/cursor-demo">Cursor Demo</Link></li>
           <li className={styles.mobileNavDivider}>Account</li>
-          <li><Link href="/auth/signin">Sign In</Link></li>
-          <li><Link href="/auth/register">Register</Link></li>
           <li><Link href="/dashboard">Dashboard</Link></li>
         </ul>
       </div>
