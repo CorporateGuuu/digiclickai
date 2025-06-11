@@ -1,5 +1,7 @@
 # DigiClick AI - Premium AI Automation Platform
 
+🚀 **Latest Update**: Fixed critical website issues and added comprehensive Services page
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/digiclick-ai)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/your-site/deploys)
 
