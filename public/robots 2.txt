@@ -1,0 +1,43 @@
+# DigiClick AI - Enhanced Cursor System
+# Production robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://digiclickai.netlify.app/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block access to sensitive areas
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Allow access to important pages
+Allow: /cursor-demo
+Allow: /portfolio
+Allow: /contact
+Allow: /about
+Allow: /pricing
+
+# Allow social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /

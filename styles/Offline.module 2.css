@@ -1,0 +1,121 @@
+.offlineContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.offlineContent {
+  max-width: 600px;
+  text-align: center;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 2px solid #d4af37;
+  /* Gold border */
+}
+
+.offlineIcon {
+  color: #d4af37;
+  /* Gold color */
+  margin-bottom: 1.5rem;
+}
+
+.offlineTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #000000;
+  /* Black */
+  margin-bottom: 1rem;
+}
+
+.offlineMessage {
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.offlineActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.retryButton,
+.homeButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton {
+  background-color: #e60000;
+  /* Red */
+  color: white;
+  border: none;
+}
+
+.retryButton:hover {
+  background-color: #cc0000;
+  /* Darker red */
+}
+
+.homeButton {
+  background-color: transparent;
+  color: #000000;
+  /* Black */
+  border: 2px solid #d4af37;
+  /* Gold border */
+  text-decoration: none;
+}
+
+.homeButton:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+  /* Light gold background */
+  color: #000000;
+}
+
+.offlineTips {
+  background-color: #f9fafb;
+  border-radius: 0.375rem;
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.offlineTips h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #d4af37;
+  /* Gold */
+  margin-bottom: 1rem;
+}
+
+.offlineTips ul {
+  color: #4b5563;
+  padding-left: 1.5rem;
+  line-height: 1.6;
+}
+
+.offlineTips li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .offlineActions {
+    flex-direction: column;
+  }
+
+  .retryButton,
+  .homeButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

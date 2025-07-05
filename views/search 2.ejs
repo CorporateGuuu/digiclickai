@@ -1,0 +1,275 @@
+<div class="search-container">
+  <div class="search-sidebar">
+    <div class="card">
+      <div class="card-header">
+        <h3>Filters</h3>
+      </div>
+      <div class="card-body">
+        <form id="search-filters" action="/search" method="get">
+          <input type="hidden" name="q" value="<%= query %>">
+          
+          <div class="filter-section">
+            <h4>Categories</h4>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="radio" id="category-all" name="category" value="" <%= !filters.category ? 'checked' : '' %>>
+                <label for="category-all">All Categories</label>
+              </div>
+              <% categories.forEach(category => { %>
+                <div class="filter-option">
+                  <input type="radio" id="category-<%= category.slug %>" name="category" value="<%= category.slug %>" <%= filters.category === category.slug ? 'checked' : '' %>>
+                  <label for="category-<%= category.slug %>"><%= category.name %> (<%= category.product_count %>)</label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+          
+          <div class="filter-section">
+            <h4>Brands</h4>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="radio" id="brand-all" name="brand" value="" <%= !filters.brand ? 'checked' : '' %>>
+                <label for="brand-all">All Brands</label>
+              </div>
+              <% brands.forEach(brand => { %>
+                <div class="filter-option">
+                  <input type="radio" id="brand-<%= brand.brand.toLowerCase().replace(/\s+/g, '-') %>" name="brand" value="<%= brand.brand %>" <%= filters.brand === brand.brand ? 'checked' : '' %>>
+                  <label for="brand-<%= brand.brand.toLowerCase().replace(/\s+/g, '-') %>"><%= brand.brand %> (<%= brand.product_count %>)</label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+          
+          <div class="filter-section">
+            <h4>Price Range</h4>
+            <div class="price-range">
+              <div class="price-inputs">
+                <div>
+                  <label for="min_price">Min</label>
+                  <input type="number" id="min_price" name="min_price" value="<%= filters.min_price %>" min="<%= Math.floor(priceRange.min_price) %>" max="<%= Math.ceil(priceRange.max_price) %>" placeholder="Min">
+                </div>
+                <div>
+                  <label for="max_price">Max</label>
+                  <input type="number" id="max_price" name="max_price" value="<%= filters.max_price %>" min="<%= Math.floor(priceRange.min_price) %>" max="<%= Math.ceil(priceRange.max_price) %>" placeholder="Max">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Apply Filters</button>
+          <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="search-results">
+    <div class="search-header">
+      <h1><%= query ? `Search results for "${query}"` : 'All Products' %></h1>
+      <div class="search-stats">
+        <p><%= pagination.totalProducts %> products found</p>
+      </div>
+      <div class="search-sort">
+        <label for="sort">Sort by:</label>
+        <select id="sort" name="sort" onchange="updateSort(this.value)">
+          <option value="relevance" <%= filters.sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
+          <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+          <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+          <option value="newest" <%= filters.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+          <option value="name_asc" <%= filters.sort === 'name_asc' ? 'selected' : '' %>>Name: A to Z</option>
+        </select>
+      </div>
+    </div>
+    
+    <% if (products.length > 0) { %>
+      <div class="grid">
+        <% products.forEach(product => { %>
+          <div class="card">
+            <div class="card-image">
+              <a href="/products/<%= product.slug %>">
+                <img src="<%= product.image_url || '/placeholder.svg' %>" alt="<%= product.name %>">
+              </a>
+            </div>
+            <div class="card-content">
+              <div class="card-title">
+                <a href="/products/<%= product.slug %>"><%= product.name %></a>
+              </div>
+              <div class="card-category"><%= product.category_name || 'Uncategorized' %></div>
+              <div class="card-price">
+                <% if (product.discount_percentage > 0) { %>
+                  <span style="text-decoration: line-through; color: #666;">$<%= parseFloat(product.price).toFixed(2) %></span>
+                  <span>$<%= (parseFloat(product.price) * (1 - parseFloat(product.discount_percentage) / 100)).toFixed(2) %></span>
+                <% } else { %>
+                  $<%= parseFloat(product.price).toFixed(2) %>
+                <% } %>
+              </div>
+              <a href="/products/<%= product.slug %>" class="btn">View Details</a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <% if (pagination.totalPages > 1) { %>
+        <div class="pagination">
+          <% if (pagination.currentPage > 1) { %>
+            <a href="<%= buildPaginationUrl(pagination.currentPage - 1) %>" class="pagination-prev">&laquo; Previous</a>
+          <% } %>
+          
+          <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+            <% if (
+              i === 1 || 
+              i === pagination.totalPages || 
+              (i >= pagination.currentPage - 2 && i <= pagination.currentPage + 2)
+            ) { %>
+              <a href="<%= buildPaginationUrl(i) %>" class="<%= i === pagination.currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } else if (
+              (i === 2 && pagination.currentPage > 4) || 
+              (i === pagination.totalPages - 1 && pagination.currentPage < pagination.totalPages - 3)
+            ) { %>
+              <span class="pagination-ellipsis">&hellip;</span>
+            <% } %>
+          <% } %>
+          
+          <% if (pagination.currentPage < pagination.totalPages) { %>
+            <a href="<%= buildPaginationUrl(pagination.currentPage + 1) %>" class="pagination-next">Next &raquo;</a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="no-results">
+        <p>No products found matching your criteria.</p>
+        <p>Try adjusting your filters or search term.</p>
+        <a href="/search" class="btn">Clear All Filters</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<style>
+  .search-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 1.5rem;
+  }
+  
+  .search-sidebar {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+  }
+  
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-section h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .filter-options {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .filter-option {
+    margin-bottom: 0.5rem;
+  }
+  
+  .price-range {
+    margin-bottom: 1rem;
+  }
+  
+  .price-inputs {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .price-inputs input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .search-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .search-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .search-sort select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 3rem 0;
+  }
+  
+  @media (max-width: 768px) {
+    .search-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .search-sidebar {
+      position: static;
+    }
+  }
+</style>
+
+<script>
+  function updateSort(value) {
+    const form = document.getElementById('search-filters');
+    
+    // Create or update sort input
+    let sortInput = form.querySelector('input[name="sort"]');
+    if (!sortInput) {
+      sortInput = document.createElement('input');
+      sortInput.type = 'hidden';
+      sortInput.name = 'sort';
+      form.appendChild(sortInput);
+    }
+    sortInput.value = value;
+    
+    // Submit form
+    form.submit();
+  }
+  
+  function resetFilters() {
+    window.location.href = '/search<%= query ? `?q=${encodeURIComponent(query)}` : '' %>';
+  }
+</script>
+
+<%
+  // Helper function to build pagination URLs
+  function buildPaginationUrl(page) {
+    const params = new URLSearchParams();
+    
+    if (query) params.set('q', query);
+    if (filters.category) params.set('category', filters.category);
+    if (filters.brand) params.set('brand', filters.brand);
+    if (filters.min_price) params.set('min_price', filters.min_price);
+    if (filters.max_price) params.set('max_price', filters.max_price);
+    if (filters.sort && filters.sort !== 'relevance') params.set('sort', filters.sort);
+    
+    params.set('page', page);
+    
+    return `/search?${params.toString()}`;
+  }
+%>

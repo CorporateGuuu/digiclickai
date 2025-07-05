@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-05-02T17:23:15.374Z",
+  "results": {
+    "brokenLinks": false,
+    "performance": true,
+    "lint": false,
+    "componentTests": false
+  },
+  "overallSuccess": false
+}

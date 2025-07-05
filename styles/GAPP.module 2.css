@@ -1,0 +1,500 @@
+.gappContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #333;
+}
+
+.gappHero {
+  margin-bottom: 3rem;
+}
+
+.gappBanner {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-image: url('/images/gapp-banner.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.gappBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 48, 135, 0.9), rgba(0, 48, 135, 0.7));
+}
+
+.gappBannerContent {
+  position: relative;
+  z-index: 1;
+  padding: 3rem;
+  color: white;
+  text-align: left;
+  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.gappBannerContent h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.gappBannerContent h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gappBannerContent p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gappOptions {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.gappOptions h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #003087;
+}
+
+.gappOptions p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.optionCard {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.optionCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.optionCard h4 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #003087;
+}
+
+.optionCard p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.contactInfo {
+  font-size: 1rem;
+  margin: 2rem auto;
+  max-width: 700px;
+}
+
+.signupButton {
+  display: inline-block;
+  background-color: #003087;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.signupButton:hover {
+  background-color: #002266;
+}
+
+.partsSection {
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.partsSection h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #003087;
+}
+
+.partsSection h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.partsBanner {
+  margin: 2rem 0;
+}
+
+.bannerImage {
+  max-width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.partsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.partCard {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.partImageContainer {
+  position: relative;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.partLabel {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: #003087;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.partImage {
+  max-width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.partContent {
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.partContent h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #003087;
+}
+
+.partContent p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.coreReturnsSection,
+.withoutCoreReturnsSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+  align-items: center;
+}
+
+.coreReturnsContent,
+.withoutCoreReturnsContent {
+  text-align: left;
+}
+
+.coreReturnsContent h3,
+.withoutCoreReturnsContent h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #003087;
+}
+
+.coreReturnsContent h4,
+.withoutCoreReturnsContent h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.coreReturnsContent p,
+.withoutCoreReturnsContent p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.saveBuyback {
+  font-size: 1.2rem;
+  color: #003087;
+  margin: 1.5rem 0;
+}
+
+.howItWorks,
+.benefits {
+  margin-bottom: 1.5rem;
+}
+
+.howItWorks h5,
+.benefits h5 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: #003087;
+}
+
+.benefits ul {
+  padding-left: 1.5rem;
+}
+
+.benefits li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.coreReturnsImage img,
+.withoutCoreReturnsImage img {
+  max-width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.examplesSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.exampleCard {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.exampleCard h4 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #003087;
+}
+
+.exampleCard h5 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.exampleCard p {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.totalCost {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  color: #003087;
+}
+
+.whyChooseSection {
+  margin-bottom: 4rem;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+}
+
+.whyChooseSection h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #003087;
+  text-align: center;
+}
+
+.whyChooseSection h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+  text-align: center;
+}
+
+.whyChooseSection ul {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding-left: 2rem;
+}
+
+.whyChooseSection li {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.whyChooseSection p {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.repairGuidesSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+  align-items: center;
+}
+
+.repairGuidesContent h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #003087;
+}
+
+.repairGuidesContent p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.repairGuidesImage img {
+  max-width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.marketingMaterialsSection {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.marketingMaterialsSection h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #003087;
+}
+
+.marketingMaterialsSection h4 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #555;
+}
+
+.faqSection {
+  margin-bottom: 4rem;
+}
+
+.faqSection h3 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  color: #003087;
+  text-align: center;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.faqItem {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.faqItem h4 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #003087;
+}
+
+.faqItem p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+
+  .coreReturnsSection,
+  .withoutCoreReturnsSection,
+  .repairGuidesSection {
+    grid-template-columns: 1fr;
+  }
+
+  .withoutCoreReturnsImage {
+    order: 1;
+  }
+
+  .withoutCoreReturnsContent {
+    order: 2;
+  }
+
+  .gappBanner {
+    height: 300px;
+  }
+
+  .gappBannerContent {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .gappBannerContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .gappBannerContent h2 {
+    font-size: 1.2rem;
+  }
+
+  .gappBannerContent p {
+    font-size: 1rem;
+  }
+}

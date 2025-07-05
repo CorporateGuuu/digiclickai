@@ -1,0 +1,64 @@
+<h1>Welcome to Phone Electronics Store</h1>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-content">
+      <h2 class="card-title">Products</h2>
+      <p>Browse our collection of smartphones, audio devices, and accessories.</p>
+      <a href="/products">View Products</a>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-content">
+      <h2 class="card-title">Categories</h2>
+      <p>Explore products by category.</p>
+      <a href="/categories">View Categories</a>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-content">
+      <h2 class="card-title">Featured</h2>
+      <p>Check out our featured products.</p>
+      <a href="/products?featured=true">View Featured Products</a>
+    </div>
+  </div>
+</div>
+
+<% if (featuredProducts && featuredProducts.length > 0) { %>
+  <h2 style="margin-top: 3rem;">Featured Products</h2>
+  <div class="grid">
+    <% featuredProducts.forEach(product => { %>
+      <div class="card">
+        <div class="card-image">
+          <img src="<%= product.image_url || '/placeholder.svg' %>" alt="<%= product.name %>">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title"><%= product.name %></h3>
+          <p class="card-category"><%= product.category_name %></p>
+          <p class="card-price">$<%= parseFloat(product.price).toFixed(2) %></p>
+          <a href="/products/<%= product.slug %>">View Details</a>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } %>
+
+<% if (categories && categories.length > 0) { %>
+  <h2 style="margin-top: 3rem;">Browse Categories</h2>
+  <div class="grid">
+    <% categories.forEach(category => { %>
+      <div class="card">
+        <div class="card-image">
+          <img src="<%= category.image_url || '/placeholder.svg' %>" alt="<%= category.name %>">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title"><%= category.name %></h3>
+          <p class="card-category"><%= category.product_count %> products</p>
+          <a href="/categories/<%= category.slug %>">View Products</a>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } %>

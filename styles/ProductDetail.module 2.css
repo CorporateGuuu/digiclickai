@@ -1,0 +1,241 @@
+.breadcrumbs {
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.breadcrumbs a {
+  color: #6b7280;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.breadcrumbs a:first-child {
+  margin-left: 0;
+}
+
+.breadcrumbs a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.breadcrumbs span {
+  margin-left: 0.5rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.productDetail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .productDetail {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.productMedia {
+  position: relative;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.productName {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.productMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.productCategory,
+.productSku {
+  display: inline-block;
+}
+
+.stockStatus {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.inStock {
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.outOfStock {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.productPrice {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.currentPrice {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.discountBadge {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.productDescription {
+  margin-bottom: 2rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.productActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.quantityWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quantityWrapper label {
+  font-weight: 500;
+  color: #111827;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.horizontalQuantity {
+  flex-direction: row;
+  width: fit-content;
+}
+
+.quantityButton {
+  width: 36px;
+  height: 36px;
+  background-color: #f3f4f6;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantitySelector button:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.quantitySelector button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantityInput {
+  width: 50px;
+  height: 36px;
+  border: none;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.quantitySelector input:focus {
+  outline: none;
+}
+
+.wishlistButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wishlistButton:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.socialShareContainer {
+  margin-bottom: 2rem;
+}
+
+.socialShareTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.productFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4b5563;
+}
+
+.feature svg {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}

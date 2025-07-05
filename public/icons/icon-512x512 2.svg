@@ -1,0 +1,5 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+    <rect width="512" height="512" fill="white" />
+    <rect x="102" y="102" width="308" height="308" fill="#0066cc" rx="8" />
+    <text x="256" y="264" font-family="Arial" font-size="154" font-weight="bold" fill="white" text-anchor="middle">MD</text>
+  </svg>
