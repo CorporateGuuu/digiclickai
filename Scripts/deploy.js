@@ -129,20 +129,7 @@ function buildApplication() {
   return execCommand('npm run build', 'Building application');
 }
 
-function deployToVercel(staging = false) {
-  log(`\n🚀 Deploying to Vercel ${staging ? '(staging)' : '(production)'}...`, 'yellow');
-  
-  // Check if Vercel CLI is installed
-  try {
-    execSync('vercel --version', { stdio: 'pipe' });
-  } catch (error) {
-    log('❌ Vercel CLI not found. Install with: npm i -g vercel', 'red');
-    return false;
-  }
-  
-  const deployCommand = staging ? 'vercel --previews' : 'vercel --prod';
-  return execCommand(deployCommand, `Deploying to Vercel ${staging ? 'staging' : 'production'}`);
-}
+
 
 function deployToNetlify(staging = false) {
   log(`\n🚀 Deploying to Netlify ${staging ? '(staging)' : '(production)'}...`, 'yellow');
@@ -155,7 +142,7 @@ function deployToNetlify(staging = false) {
     return false;
   }
   
-  const deployCommand = staging ? 'netlify deploy --dir=.next' : 'netlify deploy --prod --dir=.next';
+  const deployCommand = staging ? 'netlify deploy --dir=out' : 'netlify deploy --prod --dir=out';
   return execCommand(deployCommand, `Deploying to Netlify ${staging ? 'staging' : 'production'}`);
 }
 
@@ -282,14 +269,11 @@ async function main() {
   let deploymentSuccess = false;
   
   switch (platform.toLowerCase()) {
-    case 'vercel':
-      deploymentSuccess = deployToVercel(staging);
-      break;
     case 'netlify':
       deploymentSuccess = deployToNetlify(staging);
       break;
     default:
-      log(`❌ Unknown platform: ${platform}. Supported: vercel, netlify`, 'red');
+      log(`❌ Unknown platform: ${platform}. Supported: netlify`, 'red');
       process.exit(1);
   }
   
@@ -321,7 +305,6 @@ module.exports = {
   checkEnvironmentVariables,
   checkCursorFiles,
   buildApplication,
-  deployToVercel,
   deployToNetlify,
   generateSitemap
 };

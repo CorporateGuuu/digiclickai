@@ -1,0 +1,258 @@
+{
+  "alertLevels": {
+    "warning": {
+      "name": "Performance Degradation Warning",
+      "emoji": "⚠️",
+      "color": "warning",
+      "priority": "medium",
+      "channels": ["slack"],
+      "thresholds": {
+        "lighthouse_score": {
+          "min": 85,
+          "max": 89,
+          "baseline": 90,
+          "tolerance": 5
+        },
+        "core_web_vitals": {
+          "fcp": {
+            "threshold": 2500,
+            "degradation_percent": 15,
+            "unit": "ms"
+          },
+          "lcp": {
+            "threshold": 4000,
+            "degradation_percent": 15,
+            "unit": "ms"
+          },
+          "cls": {
+            "threshold": 0.1,
+            "degradation_percent": 20,
+            "unit": "score"
+          },
+          "tti": {
+            "threshold": 5000,
+            "degradation_percent": 15,
+            "unit": "ms"
+          }
+        },
+        "cursor_performance": {
+          "fps": {
+            "min": 55,
+            "max": 59,
+            "target": 60,
+            "unit": "fps"
+          },
+          "memory_usage": {
+            "threshold": 60,
+            "degradation_percent": 20,
+            "unit": "MB"
+          },
+          "response_time": {
+            "threshold": 20,
+            "degradation_percent": 25,
+            "unit": "ms"
+          }
+        },
+        "bundle_sizes": {
+          "javascript": {
+            "threshold": 500,
+            "degradation_percent": 20,
+            "unit": "KB"
+          },
+          "css": {
+            "threshold": 100,
+            "degradation_percent": 25,
+            "unit": "KB"
+          }
+        }
+      }
+    },
+    "critical": {
+      "name": "Critical Performance Alert",
+      "emoji": "❌",
+      "color": "danger",
+      "priority": "high",
+      "channels": ["slack", "email"],
+      "thresholds": {
+        "lighthouse_score": {
+          "max": 84,
+          "baseline": 85,
+          "tolerance": 0
+        },
+        "core_web_vitals": {
+          "fcp": {
+            "threshold": 2500,
+            "unit": "ms",
+            "google_standard": "fail"
+          },
+          "lcp": {
+            "threshold": 4000,
+            "unit": "ms",
+            "google_standard": "fail"
+          },
+          "cls": {
+            "threshold": 0.1,
+            "unit": "score",
+            "google_standard": "fail"
+          },
+          "tti": {
+            "threshold": 5000,
+            "degradation_percent": 25,
+            "unit": "ms"
+          }
+        },
+        "cursor_performance": {
+          "fps": {
+            "max": 45,
+            "target": 60,
+            "unit": "fps"
+          },
+          "memory_usage": {
+            "threshold": 80,
+            "unit": "MB"
+          },
+          "response_time": {
+            "threshold": 30,
+            "unit": "ms"
+          },
+          "unresponsive": true
+        },
+        "bundle_sizes": {
+          "javascript": {
+            "threshold": 500,
+            "degradation_percent": 30,
+            "unit": "KB"
+          },
+          "css": {
+            "threshold": 100,
+            "degradation_percent": 35,
+            "unit": "KB"
+          }
+        }
+      }
+    },
+    "emergency": {
+      "name": "System-wide Performance Failure",
+      "emoji": "🚨",
+      "color": "danger",
+      "priority": "urgent",
+      "channels": ["slack", "email", "escalation"],
+      "thresholds": {
+        "multiple_failures": {
+          "min_critical_count": 3,
+          "description": "3 or more critical thresholds exceeded simultaneously"
+        },
+        "system_failure": {
+          "cursor_system_complete_failure": true,
+          "page_load_timeout": 10000,
+          "memory_leak_detected": true,
+          "unit": "ms"
+        },
+        "user_impact": {
+          "bounce_rate_increase": 25,
+          "session_duration_decrease": 30,
+          "unit": "percent"
+        }
+      }
+    }
+  },
+  "recommendations": {
+    "lighthouse_score": {
+      "below_85": [
+        "Optimize images using next-gen formats (WebP, AVIF)",
+        "Implement critical CSS inlining",
+        "Enable code splitting and lazy loading",
+        "Reduce unused JavaScript and CSS",
+        "Optimize third-party scripts"
+      ],
+      "85_to_89": [
+        "Fine-tune image optimization",
+        "Review and optimize font loading strategies",
+        "Consider implementing service worker caching",
+        "Optimize animation performance"
+      ]
+    },
+    "core_web_vitals": {
+      "fcp": [
+        "Optimize server response times",
+        "Implement resource hints (preload, prefetch)",
+        "Minimize render-blocking resources",
+        "Optimize critical rendering path"
+      ],
+      "lcp": [
+        "Optimize largest contentful element",
+        "Implement image optimization and lazy loading",
+        "Reduce server response times",
+        "Remove unused CSS and JavaScript"
+      ],
+      "cls": [
+        "Add size attributes to images and videos",
+        "Reserve space for dynamic content",
+        "Use CSS aspect-ratio for responsive elements",
+        "Avoid inserting content above existing content"
+      ]
+    },
+    "cursor_performance": {
+      "fps": [
+        "Optimize GSAP animations for hardware acceleration",
+        "Reduce particle count in enhanced/gaming variants",
+        "Implement animation frame throttling",
+        "Use transform3d for GPU acceleration"
+      ],
+      "memory": [
+        "Clean up event listeners on component unmount",
+        "Dispose of unused GSAP animations",
+        "Implement particle pooling system",
+        "Monitor and fix memory leaks"
+      ],
+      "response_time": [
+        "Debounce rapid cursor interactions",
+        "Optimize cursor state transition logic",
+        "Use requestAnimationFrame for smooth updates",
+        "Reduce DOM manipulation frequency"
+      ]
+    },
+    "bundle_sizes": {
+      "javascript": [
+        "Enable code splitting with dynamic imports",
+        "Remove unused dependencies",
+        "Optimize third-party library usage",
+        "Implement tree shaking"
+      ],
+      "css": [
+        "Remove unused CSS rules",
+        "Optimize CSS delivery",
+        "Use CSS modules for component-specific styles",
+        "Minimize CSS bundle size"
+      ]
+    }
+  },
+  "escalation": {
+    "warning_to_critical": {
+      "time_threshold": 300,
+      "description": "Escalate to critical if warning persists for 5 minutes"
+    },
+    "critical_to_emergency": {
+      "time_threshold": 180,
+      "description": "Escalate to emergency if critical persists for 3 minutes"
+    },
+    "emergency_contacts": [
+      {
+        "role": "Lead Developer",
+        "email": "lead-dev@digiclickai.com",
+        "phone": "+1-XXX-XXX-XXXX"
+      },
+      {
+        "role": "DevOps Engineer",
+        "email": "devops@digiclickai.com",
+        "phone": "+1-XXX-XXX-XXXX"
+      }
+    ]
+  },
+  "monitoring": {
+    "check_interval": 60,
+    "trend_analysis_window": 300,
+    "baseline_calculation_period": 86400,
+    "alert_cooldown": 300
+  }
+}

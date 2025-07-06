@@ -1,0 +1,158 @@
+[
+  {
+    "path": "/*",
+    "timings": [
+      {
+        "metric": "first-contentful-paint",
+        "budget": 2500,
+        "tolerance": 500
+      },
+      {
+        "metric": "largest-contentful-paint", 
+        "budget": 4000,
+        "tolerance": 1000
+      },
+      {
+        "metric": "cumulative-layout-shift",
+        "budget": 0.1,
+        "tolerance": 0.05
+      },
+      {
+        "metric": "total-blocking-time",
+        "budget": 300,
+        "tolerance": 100
+      },
+      {
+        "metric": "speed-index",
+        "budget": 3000,
+        "tolerance": 500
+      },
+      {
+        "metric": "interactive",
+        "budget": 5000,
+        "tolerance": 1000
+      }
+    ],
+    "resourceSizes": [
+      {
+        "resourceType": "script",
+        "budget": 500,
+        "tolerance": 100
+      },
+      {
+        "resourceType": "stylesheet",
+        "budget": 100,
+        "tolerance": 25
+      },
+      {
+        "resourceType": "image",
+        "budget": 1000,
+        "tolerance": 200
+      },
+      {
+        "resourceType": "font",
+        "budget": 200,
+        "tolerance": 50
+      },
+      {
+        "resourceType": "total",
+        "budget": 2000,
+        "tolerance": 400
+      }
+    ],
+    "resourceCounts": [
+      {
+        "resourceType": "script",
+        "budget": 15,
+        "tolerance": 5
+      },
+      {
+        "resourceType": "stylesheet",
+        "budget": 8,
+        "tolerance": 2
+      },
+      {
+        "resourceType": "image",
+        "budget": 20,
+        "tolerance": 5
+      },
+      {
+        "resourceType": "font",
+        "budget": 4,
+        "tolerance": 1
+      }
+    ]
+  },
+  {
+    "path": "/cursor-context-demo",
+    "timings": [
+      {
+        "metric": "first-contentful-paint",
+        "budget": 2000,
+        "tolerance": 400
+      },
+      {
+        "metric": "largest-contentful-paint",
+        "budget": 3500,
+        "tolerance": 750
+      },
+      {
+        "metric": "cumulative-layout-shift",
+        "budget": 0.05,
+        "tolerance": 0.025
+      },
+      {
+        "metric": "total-blocking-time",
+        "budget": 200,
+        "tolerance": 75
+      },
+      {
+        "metric": "interactive",
+        "budget": 4000,
+        "tolerance": 800
+      }
+    ],
+    "resourceSizes": [
+      {
+        "resourceType": "script",
+        "budget": 600,
+        "tolerance": 120,
+        "note": "Higher budget for GSAP and cursor system"
+      },
+      {
+        "resourceType": "stylesheet",
+        "budget": 120,
+        "tolerance": 30,
+        "note": "Additional CSS for cursor animations"
+      }
+    ]
+  },
+  {
+    "path": "/portfolio",
+    "timings": [
+      {
+        "metric": "first-contentful-paint",
+        "budget": 2200,
+        "tolerance": 450
+      },
+      {
+        "metric": "largest-contentful-paint",
+        "budget": 3800,
+        "tolerance": 800
+      },
+      {
+        "metric": "cumulative-layout-shift",
+        "budget": 0.08,
+        "tolerance": 0.03
+      }
+    ],
+    "resourceSizes": [
+      {
+        "resourceType": "image",
+        "budget": 1500,
+        "tolerance": 300,
+        "note": "Higher budget for portfolio images"
+      }
+    ]
+  }
+]
