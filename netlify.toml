@@ -2,9 +2,6 @@
   command = "npm run build"
   publish = "out"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
 # Cache control for static assets
 [[headers]]
   for = "/static/*"
@@ -34,6 +31,19 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
+# Ensure HTML files are served with correct content type
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+# Prevent serving .txt files as pages
+[[headers]]
+  for = "/*.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    X-Robots-Tag = "noindex, nofollow"
+
 # Enable HTTP/2 Server Push
 [[headers]]
   for = "/*"
@@ -50,11 +60,32 @@
   status = 301
   force = true
 
-# SPA fallback
+# Explicit redirects for main pages to ensure HTML is served
 [[redirects]]
-  from = "/*"
+  from = "/"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/services"
+  to = "/services/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact/index.html"
+  status = 200
+
+# Handle 404s for static site
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
 
 # Enable brotli and gzip compression
 [build.processing]
