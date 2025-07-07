@@ -1,9 +1,9 @@
 # DigiClick AI - Premium AI Automation Platform
 
-🚀 **Latest Update**: Fixed critical website issues and added comprehensive Services page
+🚀 **Latest Update**: Migrated to GitHub Pages deployment with simplified CI/CD pipeline
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/digiclick-ai)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/your-site/deploys)
+[![GitHub Pages Deploy](https://github.com/CorporateGuuu/digiclickai/actions/workflows/simple-deploy.yml/badge.svg)](https://github.com/CorporateGuuu/digiclickai/actions/workflows/simple-deploy.yml)
+[![Live Site](https://img.shields.io/badge/Live%20Site-digiclickai.com-00d4ff)](https://digiclickai.com)
 
 > **Transform your business with cutting-edge AI automation solutions featuring an immersive custom cursor experience.**
 
@@ -138,30 +138,42 @@ digiclick-ai/
 
 ## 🚀 Deployment
 
-### Quick Deploy to Vercel
-```bash
-# Deploy with automated checks
-npm run deploy
+### Automated GitHub Pages Deployment
+The site automatically deploys to GitHub Pages on every push to the main branch:
 
-# Or deploy to specific platform
-npm run deploy:vercel
-npm run deploy:netlify
+```bash
+# Simply push your changes
+git add .
+git commit -m "Your changes"
+git push origin main
+
+# GitHub Actions will automatically:
+# 1. Build the Next.js static export
+# 2. Deploy to GitHub Pages
+# 3. Serve at https://digiclickai.com
 ```
 
-### Manual Deployment
+### Manual Build and Test
 ```bash
-# Build the application
+# Build the static export
 npm run build
 
-# Deploy to your preferred platform
-# See DEPLOYMENT_GUIDE.md for detailed instructions
+# Test the build locally
+npx serve out
+
+# The 'out' directory contains the static files
+# deployed to GitHub Pages
 ```
 
 ### Environment Variables
 ```env
-# Required
-NEXT_PUBLIC_API_URL=https://your-backend-api.com
-NEXT_PUBLIC_APP_URL=https://your-domain.com
+# Production (GitHub Pages)
+NEXT_PUBLIC_API_URL=https://digiclickai-backend.onrender.com
+NEXT_PUBLIC_APP_URL=https://digiclickai.com
+
+# Development
+NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Optional
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
@@ -268,9 +280,10 @@ npm run performance:test
 
 ## 🔗 Links
 
-- **Live Demo**: [https://digiclick-ai.vercel.app](https://digiclick-ai.vercel.app)
-- **Cursor Demo**: [https://digiclick-ai.vercel.app/cursor-demo](https://digiclick-ai.vercel.app/cursor-demo)
-- **Backend API**: [https://digiclick-ai-backend.onrender.com](https://digiclick-ai-backend.onrender.com)
+- **Live Site**: [https://digiclickai.com](https://digiclickai.com)
+- **GitHub Pages**: [https://corporateguuu.github.io/digiclickai/](https://corporateguuu.github.io/digiclickai/)
+- **Repository**: [https://github.com/CorporateGuuu/digiclickai](https://github.com/CorporateGuuu/digiclickai)
+- **Backend API**: [https://digiclickai-backend.onrender.com](https://digiclickai-backend.onrender.com)
 
 ## 📄 License
 
@@ -280,7 +293,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **GSAP** - Animation library powering smooth cursor effects
 - **Next.js** - React framework for optimal performance
-- **Vercel** - Deployment platform for seamless hosting
+- **GitHub Pages** - Reliable static hosting platform
+- **GitHub Actions** - Automated CI/CD pipeline
 - **DigiClick AI Team** - For the vision and design direction
 
 ---

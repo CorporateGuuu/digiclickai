@@ -1,4 +1,4 @@
-# DigiClick AI Custom Cursor Implementation & Deployment Guide
+# DigiClick AI - GitHub Pages Deployment Guide
 
 ## 🚀 Quick Start
 
@@ -13,6 +13,15 @@ npm install # Install all other dependencies if not already done
 npm run dev
 ```
 Navigate to `http://localhost:3000` to test the custom cursor functionality.
+
+## 🌐 GitHub Pages Deployment Architecture
+
+The DigiClick AI website uses a simplified deployment architecture:
+- **Source**: GitHub repository (main branch)
+- **Build**: GitHub Actions with Next.js static export
+- **Hosting**: GitHub Pages with custom domain
+- **Domain**: digiclickai.com (CNAME configured)
+- **SSL**: Automatic HTTPS via GitHub Pages
 
 ## 🎯 Custom Cursor Integration (Already Implemented)
 
@@ -164,51 +173,52 @@ Visit these pages to test cursor functionality:
 ### **Dashboard:**
 - `/dashboard` - Protected dashboard with analytics
 
-## 🚀 Production Deployment
+## 🚀 GitHub Pages Deployment
 
-### **Vercel Deployment:**
+### **Automated Deployment (Recommended):**
+The site automatically deploys on every push to the main branch:
+
 ```bash
-# Build and deploy
-npm run build
-vercel --prod
+# Make your changes
+git add .
+git commit -m "Update website content"
+git push origin main
 
-# Or use Vercel CLI for automatic deployment
-vercel
+# GitHub Actions automatically:
+# 1. Builds Next.js static export (npm run build)
+# 2. Uploads to GitHub Pages
+# 3. Deploys to https://digiclickai.com
 ```
 
-### **Netlify Deployment:**
+### **Manual Build and Test:**
 ```bash
-# Build the application
+# Build static export locally
 npm run build
 
-# Deploy to Netlify (manual)
-# Upload the .next folder to Netlify
+# Test the build
+npx serve out
 
-# Or use Netlify CLI
-netlify deploy --prod --dir=.next
+# The 'out' directory contains the static files
+# that get deployed to GitHub Pages
 ```
 
-### **Custom Server Deployment:**
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Or use PM2 for process management
-pm2 start npm --name "digiclick-ai" -- start
-```
+### **Deployment Workflow:**
+The `.github/workflows/simple-deploy.yml` file handles:
+- Node.js 18 setup
+- Dependency installation
+- Next.js build with static export
+- GitHub Pages deployment
+- Custom domain configuration
 
 ## 🔧 Environment Variables
 
-### **Required Variables:**
+### **Production Variables (GitHub Pages):**
 ```env
 # Backend API
-NEXT_PUBLIC_API_URL=https://digiclick-ai-backend.onrender.com
+NEXT_PUBLIC_API_URL=https://digiclickai-backend.onrender.com
 
-# Frontend Domain
-NEXT_PUBLIC_APP_URL=https://your-domain.com
+# Frontend Domain (Custom Domain)
+NEXT_PUBLIC_APP_URL=https://digiclickai.com
 
 # Optional: Analytics
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
@@ -224,6 +234,13 @@ NEXT_PUBLIC_CURSOR_TRAIL_LENGTH=20
 NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+### **GitHub Pages Configuration:**
+- **Repository**: CorporateGuuu/digiclickai
+- **Branch**: main (source)
+- **Build Command**: npm run build
+- **Output Directory**: out/
+- **Custom Domain**: digiclickai.com (via CNAME file)
 
 ## 📊 SEO and Search Console Setup
 
@@ -355,28 +372,127 @@ Enable debug mode for troubleshooting:
 
 ## 🔄 Continuous Integration
 
-### **GitHub Actions Example:**
+### **GitHub Actions Configuration:**
+The current deployment workflow (`.github/workflows/simple-deploy.yml`):
+
 ```yaml
-name: Deploy DigiClick AI
+name: Deploy to GitHub Pages
+
 on:
   push:
-    branches: [main]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - run: npm install
-      - run: npm run build
-      - run: npm run test:cursor # Custom cursor tests
-      - uses: amondnet/vercel-action@v20
+          node-version: "18"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build with Next.js
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          static_site_generator: next
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
-This comprehensive guide ensures successful deployment and optimal performance of your DigiClick AI Custom Cursor system across all environments.
+## 🔧 Custom Domain Setup (GitHub Pages)
+
+### **DNS Configuration:**
+To use digiclickai.com with GitHub Pages:
+
+1. **Add CNAME file** (already done):
+   ```
+   digiclickai.com
+   ```
+
+2. **Configure DNS records** in your domain provider:
+   - **Remove existing A records**
+   - **Add CNAME record**:
+     - Name: `@` (or blank for root domain)
+     - Value: `corporateguuu.github.io`
+     - TTL: 300 (5 minutes)
+
+3. **Alternative for root domains** (if CNAME not supported):
+   ```
+   A records:
+   185.199.108.153
+   185.199.109.153
+   185.199.110.153
+   185.199.111.153
+   ```
+
+### **Verification:**
+```bash
+# Check DNS propagation
+dig CNAME digiclickai.com
+
+# Test site
+curl -I https://digiclickai.com
+
+# Verify HTTPS
+curl -I https://digiclickai.com | grep -i "strict-transport-security"
+```
+
+### **GitHub Pages Settings:**
+- **Source**: Deploy from a branch
+- **Branch**: main / (root)
+- **Custom domain**: digiclickai.com
+- **Enforce HTTPS**: ✅ Enabled (automatic after DNS propagation)
+
+## 📊 Deployment Status
+
+### **Current Architecture:**
+- ✅ **GitHub Repository**: CorporateGuuu/digiclickai
+- ✅ **GitHub Actions**: Automated build and deploy
+- ✅ **GitHub Pages**: Static hosting with custom domain
+- ✅ **CNAME Configuration**: digiclickai.com → corporateguuu.github.io
+- ⏳ **DNS Migration**: Pending user DNS configuration
+- ⏳ **HTTPS Certificate**: Will be automatic after DNS update
+
+### **Migration Benefits:**
+- **Simplified Architecture**: Single platform (GitHub)
+- **No External Dependencies**: No Netlify/Vercel secrets required
+- **Reliable Hosting**: GitHub's infrastructure
+- **Automatic SSL**: Free HTTPS certificates
+- **Version Control Integration**: Direct deployment from repository
+
+This comprehensive guide ensures successful deployment and optimal performance of your DigiClick AI system on GitHub Pages.
