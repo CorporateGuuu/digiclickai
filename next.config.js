@@ -4,11 +4,10 @@ const nextConfig = {
   output: 'export',
   distDir: 'out',
   trailingSlash: true,
-
   images: {
-    domains: ['localhost', 'digiclickai.com', 'images.unsplash.com'],
-    formats: ['image/avif', 'image/webp'],
-    unoptimized: true, // Required for static export
+    unoptimized: true,
+    domains: ['localhost', 'digiclickai.com', 'corporateguuu.github.io'],
+    formats: ['image/webp', 'image/avif'],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -16,9 +15,37 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    optimizeCss: true,
-    scrollRestoration: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  webpack: (config, { dev, isServer }) => {
+    // Handle GSAP licensing
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'gsap/dist/gsap': 'gsap/dist/gsap.min.js',
+    };
+    return config;
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
   },
 };
 
