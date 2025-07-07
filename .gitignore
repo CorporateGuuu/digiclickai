@@ -146,10 +146,6 @@ monitoring/logs/
 !package.json
 !package-lock.json
 !netlify.toml
-!netlify.yaml
-!netlify.json
-!netlify.sh
-!netlify-build.sh
 !requirements.txt
 !runtime.txt
 !.python-version
@@ -157,5 +153,4 @@ monitoring/logs/
 !Dockerfile
 !docker-compose*.yml
 !render.yaml
-!vercel.json
 !.github/

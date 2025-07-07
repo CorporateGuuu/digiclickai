@@ -131,19 +131,33 @@ function buildApplication() {
 
 
 
-function deployToNetlify(staging = false) {
-  log(`\n🚀 Deploying to Netlify ${staging ? '(staging)' : '(production)'}...`, 'yellow');
-  
-  // Check if Netlify CLI is installed
+function deployToGitHubPages(staging = false) {
+  log(`\n🚀 Deploying to GitHub Pages ${staging ? '(staging)' : '(production)'}...`, 'yellow');
+
+  // Check if git is available
   try {
-    execSync('netlify --version', { stdio: 'pipe' });
+    execSync('git --version', { stdio: 'pipe' });
   } catch (error) {
-    log('❌ Netlify CLI not found. Install with: npm i -g netlify-cli', 'red');
+    log('❌ Git not found. Please install Git.', 'red');
     return false;
   }
-  
-  const deployCommand = staging ? 'netlify deploy --dir=out' : 'netlify deploy --prod --dir=out';
-  return execCommand(deployCommand, `Deploying to Netlify ${staging ? 'staging' : 'production'}`);
+
+  // Add, commit, and push changes to trigger GitHub Actions deployment
+  const commands = [
+    'git add .',
+    `git commit -m "Deploy DigiClick AI - ${new Date().toISOString()}"`,
+    'git push origin main'
+  ];
+
+  for (const command of commands) {
+    if (!execCommand(command, `Executing: ${command}`)) {
+      return false;
+    }
+  }
+
+  log('✅ Changes pushed to GitHub. GitHub Actions will handle deployment.', 'green');
+  log('🌐 Site will be available at: https://digiclickai.com', 'cyan');
+  return true;
 }
 
 function generateSitemap() {
@@ -269,11 +283,12 @@ async function main() {
   let deploymentSuccess = false;
   
   switch (platform.toLowerCase()) {
-    case 'netlify':
-      deploymentSuccess = deployToNetlify(staging);
+    case 'github':
+    case 'github-pages':
+      deploymentSuccess = deployToGitHubPages(staging);
       break;
     default:
-      log(`❌ Unknown platform: ${platform}. Supported: netlify`, 'red');
+      log(`❌ Unknown platform: ${platform}. Supported: github, github-pages`, 'red');
       process.exit(1);
   }
   
@@ -305,6 +320,6 @@ module.exports = {
   checkEnvironmentVariables,
   checkCursorFiles,
   buildApplication,
-  deployToNetlify,
+  deployToGitHubPages,
   generateSitemap
 };
